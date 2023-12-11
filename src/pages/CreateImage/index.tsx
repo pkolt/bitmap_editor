@@ -15,7 +15,17 @@ interface FormData {
 
 const defaultValues: FormData = { name: '', width: '128', height: '64' };
 
-const numPattern = /^[1-9]\d+$/;
+const validatorSize = (value: string) => {
+  if (!/^[1-9]\d+$/.test(value)) {
+    return 'Value must be a number';
+  }
+
+  const num = parseInt(value, 10);
+  if (num % 8 !== 0) {
+    const helpValue = Math.floor(num / 8) * 8;
+    return `The value must be a multiple of 8 (maybe ${helpValue} ?)`;
+  }
+}
 
 const CreateImage = () => {
   const navigate = useNavigate();
@@ -55,8 +65,8 @@ const CreateImage = () => {
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className="w-50">
             <Input label="Name:" autoFocus {...register('name', { required: true, minLength: 3 })} />
-            <Input label="Width:" {...register('width', { required: true, pattern: numPattern })} />
-            <Input label="Height:" {...register('height', { required: true, pattern: numPattern })} />
+            <Input label="Width:" {...register('width', { required: true, validate: validatorSize })} />
+            <Input label="Height:" {...register('height', { required: true, validate: validatorSize })} />
             <div className="text-center">
               <button type="submit" className="btn btn-primary" disabled={!isValid}>
                 Save
