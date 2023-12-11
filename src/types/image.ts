@@ -4,4 +4,6 @@ export interface ImageEntity {
   width: number;
   height: number;
   data: number[];
+  createdAt: number;
+  updatedAt: number;
 }

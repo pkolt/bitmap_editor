@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 import { Page } from '@/components/Page';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -44,6 +45,7 @@ const CreateImage = () => {
 
   const onSubmit = (data: FormData) => {
     const id = uuidv4();
+    const timestamp = DateTime.now().toMillis();
 
     const image: ImageEntity = {
       id,
@@ -51,6 +53,8 @@ const CreateImage = () => {
       width: parseInt(data.width, 10),
       height: parseInt(data.height, 10),
       data: [],
+      createdAt: timestamp,
+      updatedAt: timestamp,
     };
 
     addImage(image);
