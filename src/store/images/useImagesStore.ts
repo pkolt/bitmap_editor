@@ -5,7 +5,8 @@ import { persist } from 'zustand/middleware';
 interface ImagesStore {
   images: ImageEntity[];
   findImage: (id: string) => ImageEntity | undefined;
-  addImage: (data: ImageEntity) => void;
+  addImage: (image: ImageEntity) => void;
+  changeImage: (image: ImageEntity) => void;
   removeImage: (id: string) => void;
 }
 
@@ -14,7 +15,8 @@ export const useImageStore = create(
     (set, get) => ({
       images: [],
       findImage: (id: string) => get().images.find((it) => it.id === id),
-      addImage: (data) => set(() => ({ images: [...get().images, data] })),
+      addImage: (image) => set(() => ({ images: [...get().images, image] })),
+      changeImage: (image) => set(() => ({ images: get().images.map((it) => (it.id === image.id ? image : it)) })),
       removeImage: (id) => set(() => ({ images: get().images.filter((it) => it.id !== id) })),
     }),
     {

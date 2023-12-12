@@ -1,12 +1,24 @@
+import { ImageEditor } from '@/components/ImageEditor';
 import { Page } from '@/components/Page';
 import { PageUrl } from '@/constants/urls';
 import { useImageStore } from '@/store/images/useImagesStore';
+import { ImageEntityData } from '@/types/image';
+import { useCallback } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 
 const Editor = () => {
   const { id } = useParams();
-  const { findImage } = useImageStore();
+  const { findImage, changeImage } = useImageStore();
   const image = findImage(id ?? '');
+
+  const onChange = useCallback(
+    (data: ImageEntityData) => {
+      if (image) {
+        changeImage({ ...image, data });
+      }
+    },
+    [changeImage, image],
+  );
 
   if (!image) {
     return <Navigate to={PageUrl.Home} replace />;
@@ -15,7 +27,8 @@ const Editor = () => {
   return (
     <Page title="Pixel Editor">
       <main className="d-flex flex-column flex-grow-1 justify-content-center align-items-center">
-        <h1>{image.name}</h1>
+        <h3 className="mb-3">{image.name}</h3>
+        <ImageEditor image={image} onChange={onChange} />
       </main>
     </Page>
   );

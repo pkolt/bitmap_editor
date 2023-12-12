@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { PageUrl } from '@/constants/urls';
 import { ImageEntity } from '@/types/image';
 import { useImageStore } from '@/store/images/useImagesStore';
+import { PIXELS_PER_COLUMN } from '@/constants/image';
 
 interface FormData {
   name: string;
@@ -22,11 +23,11 @@ const validatorSize = (value: string) => {
   }
 
   const num = parseInt(value, 10);
-  if (num % 8 !== 0) {
-    const helpValue = Math.floor(num / 8) * 8;
-    return `The value must be a multiple of 8 (maybe ${helpValue} ?)`;
+  if (num % PIXELS_PER_COLUMN !== 0) {
+    const helpValue = Math.floor(num / PIXELS_PER_COLUMN) * PIXELS_PER_COLUMN;
+    return `The value must be a multiple of ${PIXELS_PER_COLUMN} (maybe ${helpValue} ?)`;
   }
-}
+};
 
 const CreateImage = () => {
   const navigate = useNavigate();

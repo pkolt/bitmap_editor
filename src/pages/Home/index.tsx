@@ -5,7 +5,7 @@ import { useImageStore } from '@/store/images/useImagesStore';
 import { useMemo } from 'react';
 
 const Home = () => {
-  const { images } = useImageStore();
+  const { images, removeImage } = useImageStore();
   const orderedImages = useMemo(() => images.sort((a, b) => b.updatedAt - a.updatedAt), [images]);
   return (
     <Page title="Pixel Editor">
@@ -17,8 +17,12 @@ const Home = () => {
               {orderedImages.map((it) => {
                 const url = PageUrl.Editor.replace(':id', it.id);
                 return (
-                  <li key={it.id} className="list-group-item btn-link">
-                    <Link to={url}>{it.name}</Link>
+                  <li key={it.id} className="list-group-item d-flex gap-1">
+                    <Link to={url} className="btn-link">
+                      {it.name}
+                    </Link>{' '}
+                    ({it.width}x{it.height})
+                    <i className="bi bi-trash-fill text-danger" role="button" onClick={() => removeImage(it.id)} />
                   </li>
                 );
               })}
