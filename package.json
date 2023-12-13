@@ -15,6 +15,7 @@
     "lint-all-fix": "npm run lint-js-fix && npm run lint-fmt-fix"
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.2",
     "bootstrap-icons": "^1.11.2",
     "classnames": "^2.3.2",
@@ -27,6 +28,7 @@
     "zustand": "^4.4.7"
   },
   "devDependencies": {
+    "@types/bootstrap": "^5.2.10",
     "@types/luxon": "^3.3.7",
     "@types/node": "^18.19.3",
     "@types/react": "^18.2.43",
