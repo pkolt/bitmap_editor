@@ -1,7 +1,7 @@
 import cn from 'classnames';
 import { ImageEntity, ImageEntityData } from '@/types/image';
 import styles from './index.module.css';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { createImageData, getImageDataLength, invertBitImageData, isSetBitImageData } from './utils';
 
 interface PixelEditorProps {
@@ -12,13 +12,17 @@ interface PixelEditorProps {
 export const PixelEditor = ({ image, onChange }: PixelEditorProps): JSX.Element => {
   const style = { '--width': image.width, '--height': image.height } as React.CSSProperties;
   const data = image.data;
+  const validImageDataLength = getImageDataLength(image.width, image.height);
+
+  const handleReset = useCallback(() => {
+    onChange(createImageData(image.width, image.height));
+  }, [image.height, image.width, onChange]);
 
   useEffect(() => {
-    const validLength = getImageDataLength(image.width, image.height);
-    if (data.length != validLength) {
-      onChange(createImageData(image.width, image.height));
+    if (data.length != validImageDataLength) {
+      handleReset();
     }
-  }, [data.length, image.height, image.width, onChange]);
+  }, [data.length, handleReset, validImageDataLength]);
 
   const items: JSX.Element[] = [];
   const len = image.width * image.height;
@@ -33,8 +37,15 @@ export const PixelEditor = ({ image, onChange }: PixelEditorProps): JSX.Element 
   }
 
   return (
-    <div className={styles.container} style={style}>
-      {items}
+    <div>
+      <div className="mb-5">
+        <button className="btn btn-sm btn-outline-primary" onClick={handleReset}>
+          Reset
+        </button>
+      </div>
+      <div className={styles['pixel-list']} style={style}>
+        {items}
+      </div>
     </div>
   );
 };

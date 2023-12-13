@@ -1,4 +1,4 @@
-.container {
+.pixel-list {
   display: grid;
   grid-template-columns: repeat(var(--width), 10px);
   background: #ccc;
