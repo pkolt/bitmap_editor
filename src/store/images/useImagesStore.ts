@@ -7,7 +7,7 @@ interface ImagesStore {
   findImage: (id: string) => ImageEntity | undefined;
   addImage: (image: ImageEntity) => void;
   changeImage: (image: ImageEntity) => void;
-  removeImage: (id: string) => void;
+  deleteImage: (id: string) => void;
 }
 
 export const useImageStore = create(
@@ -17,7 +17,7 @@ export const useImageStore = create(
       findImage: (id: string) => get().images.find((it) => it.id === id),
       addImage: (image) => set(() => ({ images: [...get().images, image] })),
       changeImage: (image) => set(() => ({ images: get().images.map((it) => (it.id === image.id ? image : it)) })),
-      removeImage: (id) => set(() => ({ images: get().images.filter((it) => it.id !== id) })),
+      deleteImage: (id) => set(() => ({ images: get().images.filter((it) => it.id !== id) })),
     }),
     {
       name: 'images',
