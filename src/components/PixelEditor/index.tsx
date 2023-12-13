@@ -2,7 +2,7 @@ import cn from 'classnames';
 import { ImageEntity, ImageEntityData } from '@/types/image';
 import styles from './index.module.css';
 import { useCallback, useEffect } from 'react';
-import { createImageData, getImageDataLength, invertBitImageData, isSetBitImageData } from './utils';
+import { createImageData, getImageDataLength, invertBitImageData, isSetBitImageData, setBitImageData } from './utils';
 
 interface PixelEditorProps {
   image: ImageEntity;
@@ -32,8 +32,21 @@ export const PixelEditor = ({ image, onChange }: PixelEditorProps): JSX.Element 
       invertBitImageData(nextData, i);
       onChange(nextData);
     };
+    const onMouseMove = (event: React.MouseEvent) => {
+      if (event.buttons) {
+        const nextData = [...data];
+        setBitImageData(nextData, i, true);
+        onChange(nextData);
+      }
+    };
     const value = isSetBitImageData(data, i);
-    items.push(<div key={i} className={cn(styles.pixel, value && styles['pixel-selected'])} onClick={onClick}></div>);
+    items.push(
+      <div
+        key={i}
+        className={cn(styles.pixel, value && styles['pixel-selected'])}
+        onClick={onClick}
+        onMouseMove={onMouseMove}></div>,
+    );
   }
 
   return (
