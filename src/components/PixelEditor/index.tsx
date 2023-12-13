@@ -2,6 +2,7 @@ import cn from 'classnames';
 import { ImageEntity, ImageEntityData } from '@/types/image';
 import styles from './index.module.css';
 import { useEffect } from 'react';
+import { createImageData, getImageDataLength, invertBitImageData, isSetBitImageData } from './utils';
 
 interface PixelEditorProps {
   image: ImageEntity;
@@ -10,27 +11,30 @@ interface PixelEditorProps {
 
 export const PixelEditor = ({ image, onChange }: PixelEditorProps): JSX.Element => {
   const style = { '--width': image.width, '--height': image.height } as React.CSSProperties;
-  const length = image.width * image.height;
   const data = image.data;
 
   useEffect(() => {
-    if (data.length != length) {
-      onChange(new Array(length).fill(false));
+    const validLength = getImageDataLength(image.width, image.height);
+    if (data.length != validLength) {
+      onChange(createImageData(image.width, image.height));
     }
-  }, [data.length, length, onChange]);
+  }, [data.length, image.height, image.width, onChange]);
+
+  const items: JSX.Element[] = [];
+  const len = image.width * image.height;
+  for (let i = 0; i < len; i++) {
+    const onClick = () => {
+      const nextData = [...data];
+      invertBitImageData(nextData, i);
+      onChange(nextData);
+    };
+    const value = isSetBitImageData(data, i);
+    items.push(<div key={i} className={cn(styles.pixel, value && styles['pixel-selected'])} onClick={onClick}></div>);
+  }
 
   return (
     <div className={styles.container} style={style}>
-      {data.map((value, index) => {
-        const onClick = () => {
-          const nextData = [...data];
-          nextData[index] = !nextData[index];
-          onChange(nextData);
-        };
-        return (
-          <div key={index} className={cn(styles.pixel, value && styles['pixel-selected'])} onClick={onClick}></div>
-        );
-      })}
+      {items}
     </div>
   );
 };
