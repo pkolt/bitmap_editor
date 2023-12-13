@@ -25,7 +25,7 @@ const DrawImage = () => {
   }
 
   return (
-    <Page title="Pixel Editor">
+    <Page title={image.name}>
       <main className="d-flex flex-column flex-grow-1 justify-content-center align-items-center">
         <h3 className="mb-3">{image.name}</h3>
         <PixelEditor image={image} onChange={onChange} />
