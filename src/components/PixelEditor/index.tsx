@@ -3,12 +3,12 @@ import { ImageEntity, ImageEntityData } from '@/types/image';
 import styles from './index.module.css';
 import { useEffect } from 'react';
 
-interface ImageEditorProps {
+interface PixelEditorProps {
   image: ImageEntity;
   onChange: (data: ImageEntityData) => void;
 }
 
-export const ImageEditor = ({ image, onChange }: ImageEditorProps): JSX.Element => {
+export const PixelEditor = ({ image, onChange }: PixelEditorProps): JSX.Element => {
   const style = { '--width': image.width, '--height': image.height } as React.CSSProperties;
   const length = image.width * image.height;
   const data = image.data;

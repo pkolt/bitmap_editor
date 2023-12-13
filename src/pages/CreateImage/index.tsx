@@ -60,7 +60,7 @@ const CreateImage = () => {
 
     addImage(image);
 
-    navigate(PageUrl.Editor.replace(':id', id), { replace: true });
+    navigate(PageUrl.DrawImage.replace(':id', id), { replace: true });
   };
 
   return (

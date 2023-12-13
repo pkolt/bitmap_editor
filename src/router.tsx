@@ -5,7 +5,7 @@ import { PageUrl } from './constants/urls';
 
 const Home = lazy(() => import('./pages/Home'));
 const CreateImage = lazy(() => import('./pages/CreateImage'));
-const Editor = lazy(() => import('./pages/Editor'));
+const DrawImage = lazy(() => import('./pages/DrawImage'));
 
 export const router = createBrowserRouter([
   {
@@ -17,7 +17,7 @@ export const router = createBrowserRouter([
     element: <CreateImage />,
   },
   {
-    path: PageUrl.Editor,
-    element: <Editor />,
+    path: PageUrl.DrawImage,
+    element: <DrawImage />,
   },
 ]);

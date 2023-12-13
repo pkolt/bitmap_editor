@@ -1,4 +1,4 @@
-import { ImageEditor } from '@/components/ImageEditor';
+import { PixelEditor } from '@/components/PixelEditor';
 import { Page } from '@/components/Page';
 import { PageUrl } from '@/constants/urls';
 import { useImageStore } from '@/store/images/useImagesStore';
@@ -6,7 +6,7 @@ import { ImageEntityData } from '@/types/image';
 import { useCallback } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 
-const Editor = () => {
+const DrawImage = () => {
   const { id } = useParams();
   const { findImage, changeImage } = useImageStore();
   const image = findImage(id ?? '');
@@ -28,10 +28,10 @@ const Editor = () => {
     <Page title="Pixel Editor">
       <main className="d-flex flex-column flex-grow-1 justify-content-center align-items-center">
         <h3 className="mb-3">{image.name}</h3>
-        <ImageEditor image={image} onChange={onChange} />
+        <PixelEditor image={image} onChange={onChange} />
       </main>
     </Page>
   );
 };
 
-export default Editor;
+export default DrawImage;

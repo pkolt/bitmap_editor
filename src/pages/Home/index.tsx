@@ -18,7 +18,7 @@ const Home = () => {
               <h2 className="text-center">Open</h2>
               <ul className="list-group list-group-flush mb-3">
                 {orderedImages.map((it) => {
-                  const url = PageUrl.Editor.replace(':id', it.id);
+                  const url = PageUrl.DrawImage.replace(':id', it.id);
                   return (
                     <li key={it.id} className="list-group-item d-flex gap-1">
                       <Link to={url} className="btn-link">
