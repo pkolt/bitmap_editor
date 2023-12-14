@@ -25,7 +25,11 @@ const Home = () => {
                         {it.name}
                       </Link>{' '}
                       ({it.width}x{it.height})
-                      <i className="bi bi-trash-fill text-danger" role="button" onClick={() => setDeleteImageId(it.id)} />
+                      <i
+                        className="bi bi-trash-fill text-danger"
+                        role="button"
+                        onClick={() => setDeleteImageId(it.id)}
+                      />
                     </li>
                   );
                 })}

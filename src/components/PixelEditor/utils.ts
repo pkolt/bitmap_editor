@@ -1,5 +1,5 @@
 import { PIXELS_PER_COLUMN } from '@/constants/image';
-import { ImageEntityData } from '@/types/image';
+import { ImageEntity, ImageEntityData } from '@/types/image';
 import { isSetBit, setBit, clearBit } from '@/utils/bitwise';
 
 export const getImageDataLength = (width: number, height: number): number => {
@@ -27,4 +27,10 @@ export const setBitImageData = (data: ImageEntityData, index: number, value: boo
   const { pos, reg, bit } = convertParamsBitImageData(data, index);
   data[pos] = value ? setBit(reg, bit) : clearBit(reg, bit);
   return data;
+};
+
+export const exportImageToClang = (image: ImageEntity): string => {
+  const commentCode = `// ${image.name} (${image.width}x${image.height})`;
+  const imgCode = `const uint8_t data[] = {${image.data.map((value) => `0x${value.toString(16)}`).join(', ')}};`;
+  return `${commentCode}\n${imgCode}`;
 };

@@ -4,9 +4,9 @@ import { Modal as ModalBootstrap } from 'bootstrap';
 
 interface ModalProps {
   title: string;
-  onAccept: () => void;
+  onAccept?: () => void;
   onClose: () => void;
-  children: JSX.Element;
+  children: JSX.Element | JSX.Element[];
 }
 
 export const Modal: React.FC<ModalProps> = ({ title, onAccept, onClose, children }) => {
@@ -20,7 +20,9 @@ export const Modal: React.FC<ModalProps> = ({ title, onAccept, onClose, children
   }, [modal, onClose]);
 
   const handleAccept = useCallback(() => {
-    onAccept();
+    if (onAccept) {
+      onAccept();
+    }
     handleClose();
   }, [handleClose, onAccept]);
 
@@ -52,14 +54,16 @@ export const Modal: React.FC<ModalProps> = ({ title, onAccept, onClose, children
             <button type="button" className="btn-close" aria-label="Close" onClick={handleClose} />
           </div>
           <div className="modal-body">{children}</div>
-          <div className="modal-footer">
-            <button type="button" className="btn btn-secondary" onClick={handleClose}>
-              Cancel
-            </button>
-            <button type="button" className="btn btn-primary" onClick={handleAccept}>
-              Accept
-            </button>
-          </div>
+          {onAccept && (
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" onClick={handleClose}>
+                Cancel
+              </button>
+              <button type="button" className="btn btn-primary" onClick={handleAccept}>
+                Accept
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
