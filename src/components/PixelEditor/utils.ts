@@ -1,6 +1,6 @@
 import { PIXELS_PER_COLUMN } from '@/constants/image';
 import { ImageEntityData } from '@/types/image';
-import { invertBit, isSetBit, setBit, clearBit } from '@/utils/bitwise';
+import { isSetBit, setBit, clearBit } from '@/utils/bitwise';
 
 export const getImageDataLength = (width: number, height: number): number => {
   return (width * height) / PIXELS_PER_COLUMN;
@@ -26,11 +26,5 @@ export const isSetBitImageData = (data: ImageEntityData, index: number): boolean
 export const setBitImageData = (data: ImageEntityData, index: number, value: boolean) => {
   const { pos, reg, bit } = convertParamsBitImageData(data, index);
   data[pos] = value ? setBit(reg, bit) : clearBit(reg, bit);
-  return data;
-};
-
-export const invertBitImageData = (data: ImageEntityData, index: number) => {
-  const { pos, reg, bit } = convertParamsBitImageData(data, index);
-  data[pos] = invertBit(reg, bit);
   return data;
 };

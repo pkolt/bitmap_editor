@@ -4,6 +4,7 @@
   background: #ccc;
   gap: 1px;
   border: 1px solid #ccc;
+  max-width: max-content;
 }
 
 .pixel {
