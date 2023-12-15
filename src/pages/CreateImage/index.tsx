@@ -18,7 +18,7 @@ interface FormData {
 const defaultValues: FormData = { name: '', width: '128', height: '64' };
 
 const validatorSize = (value: string) => {
-  if (!/^[1-9]\d+$/.test(value)) {
+  if (!/^[1-9]\d*$/.test(value)) {
     return 'Value must be a number';
   }
 

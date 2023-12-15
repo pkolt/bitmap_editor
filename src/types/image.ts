@@ -1,4 +1,4 @@
-export type ImageEntityData = number[];
+export type ImageEntityData = boolean[];
 
 export interface ImageEntity {
   id: string;

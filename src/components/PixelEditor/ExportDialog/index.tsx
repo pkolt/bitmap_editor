@@ -1,6 +1,6 @@
 import { Modal } from '@/components/Modal';
 import { useImageStore } from '@/store/images/useImagesStore';
-import { exportImageToClang } from '../utils';
+import { imageToProgramCode } from '../utils';
 import { useId, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -17,7 +17,7 @@ export const ExportDialog = ({ imageId, onClose }: ExportDialogProps): JSX.Eleme
   const textareaId = useId();
   const { findImage } = useImageStore();
   const image = findImage(imageId);
-  const defaultData = useMemo<string>(() => (image ? exportImageToClang(image) : ''), [image]);
+  const defaultData = useMemo<string>(() => (image ? imageToProgramCode(image) : ''), [image]);
   const { register, handleSubmit, watch } = useForm<FormData>({
     mode: 'onChange',
     defaultValues: { data: defaultData },

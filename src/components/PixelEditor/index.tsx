@@ -2,7 +2,7 @@ import cn from 'classnames';
 import { ImageEntity, ImageEntityData } from '@/types/image';
 import styles from './index.module.css';
 import { useCallback, useEffect, useState } from 'react';
-import { createImageData, getImageDataLength, isSetBitImageData, setBitImageData } from './utils';
+import { createImageData, getImageDataLength } from './utils';
 import { ResetDialog } from './ResetDialog';
 import { ExportDialog } from './ExportDialog';
 
@@ -57,17 +57,17 @@ export const PixelEditor = ({ image, onChange }: PixelEditorProps): JSX.Element 
   for (let i = 0; i < len; i++) {
     const onClick = () => {
       const nextData = [...data];
-      setBitImageData(nextData, i, isDraw);
+      nextData[i] = isDraw ? true : false;
       onChange(nextData);
     };
     const onMouseOver = (event: React.MouseEvent) => {
-      if (event.buttons) {
+      if (event.buttons || event.ctrlKey) {
         const nextData = [...data];
-        setBitImageData(nextData, i, isDraw);
+        nextData[i] = isDraw ? true : false;
         onChange(nextData);
       }
     };
-    const value = isSetBitImageData(data, i);
+    const value = data[i];
     items.push(
       <div
         key={i}
