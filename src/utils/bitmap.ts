@@ -3,25 +3,27 @@ import { clearBit, isSetBit, setBit } from './bitwise';
 const BITS_PER_ELEMENT = 32;
 const SSD1306_COLUMN_BITS = 8;
 
+
 export class Bitmap {
   width: number;
   height: number;
   #data: Uint32Array;
 
-  constructor(width: number, height: number, data?: number[]) {
+  static fromArray(width: number, height: number, data: number[]): Bitmap {
+    return new Bitmap(width, height, data && data.length > 0 ? Uint32Array.from(data) : undefined);
+  }
+
+  constructor(width: number, height: number, data?: Uint32Array) {
     this.width = width;
     this.height = height;
 
-    const bytesLength = Math.ceil((width * height) / BITS_PER_ELEMENT);
+    const arrLength = Math.ceil((width * height) / BITS_PER_ELEMENT);
 
-    if (data && data.length > 0) {
-      if (data.length !== bytesLength) {
-        throw new Error('Invalid image data');
-      }
-      this.#data = Uint32Array.from(data);
-    } else {
-      this.#data = new Uint32Array(bytesLength);
+    if (data && data.length !== arrLength) {
+      throw new Error('Invalid image data');
     }
+
+    this.#data = data ? data : new Uint32Array(arrLength);
   }
 
   get length(): number {
@@ -38,6 +40,14 @@ export class Bitmap {
     const pos = Math.floor(index / BITS_PER_ELEMENT);
     const bit = index - (BITS_PER_ELEMENT * pos);
     this.#data[pos] = value ? setBit(this.#data[pos], bit) : clearBit(this.#data[pos], bit);
+  }
+
+  reset() {
+    this.#data.fill(0);
+  }
+
+  clone(): Bitmap {
+    return new Bitmap(this.width, this.height, this.#data);
   }
 
   toSSD1306(): Uint8Array {

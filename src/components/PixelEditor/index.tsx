@@ -1,7 +1,7 @@
 import cn from 'classnames';
 import { ImageEntity, ImageEntityData } from '@/types/image';
 import styles from './index.module.css';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ResetDialog } from './ResetDialog';
 import { ExportDialog } from './ExportDialog';
 import { Bitmap } from '@/utils/bitmap';
@@ -18,19 +18,23 @@ interface PixelEditorProps {
 }
 
 export const PixelEditor = ({ image, onChange }: PixelEditorProps): JSX.Element => {
+  const style = { '--width': image.width, '--height': image.height } as React.CSSProperties;
+
   const [isDraw, setIsDraw] = useState(true);
   const [dialog, setDialog] = useState(Dialog.None);
+  const [bitmap, setBitmap] = useState(Bitmap.fromArray(image.width, image.height, image.data));
+  const [isChanged, setIsChanged] = useState(false);
 
-  const style = { '--width': image.width, '--height': image.height } as React.CSSProperties;
-  const data = image.data;
-  const bitmap = useMemo(
-    () => new Bitmap(image.width, image.height, image.data),
-    [image.data, image.height, image.width],
-  );
+  const handleSave = useCallback(() => {
+    onChange(bitmap.toJSON());
+    setIsChanged(false);
+  }, [bitmap, onChange]);
 
   const resetImage = useCallback(() => {
-    onChange(new Bitmap(image.width, image.height).toJSON());
-  }, [image.height, image.width, onChange]);
+    bitmap.reset();
+    setBitmap(bitmap.clone());
+    onChange(bitmap.toJSON());
+  }, [bitmap, onChange]);
 
   const handleCloseDialog = () => {
     setDialog(Dialog.None);
@@ -50,33 +54,36 @@ export const PixelEditor = ({ image, onChange }: PixelEditorProps): JSX.Element 
   };
 
   const items: JSX.Element[] = [];
-  const len = image.width * image.height;
-  if (data) {
-    for (let i = 0; i < len; i++) {
-      const isSelected = bitmap.get(i);
-      const onClick = () => {
+  for (let i = 0; i < bitmap.length; i++) {
+    const isSelected = bitmap.get(i);
+    const onClick = () => {
+      bitmap.set(i, isDraw ? true : false);
+      setBitmap(bitmap.clone());
+      setIsChanged(true);
+    };
+    const onMouseOver = (event: React.MouseEvent) => {
+      if (event.buttons || event.ctrlKey) {
         bitmap.set(i, isDraw ? true : false);
-        onChange(bitmap.toJSON());
-      };
-      const onMouseOver = (event: React.MouseEvent) => {
-        if (event.buttons || event.ctrlKey) {
-          bitmap.set(i, isDraw ? true : false);
-          onChange(bitmap.toJSON());
-        }
-      };
-      items.push(
-        <div
-          key={i}
-          className={cn(styles.pixel, isSelected && styles['pixel-selected'])}
-          onClick={onClick}
-          onMouseOver={onMouseOver}></div>,
-      );
-    }
+        setBitmap(bitmap.clone());
+        setIsChanged(true);
+      }
+    };
+    items.push(
+      <div
+        key={i}
+        className={cn(styles.pixel, isSelected && styles['pixel-selected'])}
+        onClick={onClick}
+        onMouseOver={onMouseOver}></div>,
+    );
   }
 
   return (
     <>
       <div className="d-flex flex-column align-items-center">
+        <div className="d-flex gap-2 mb-3 text-black-50">
+          <i className="bi bi-info-circle" />
+          Hold the Ctr key to draw or click the mouse key
+        </div>
         <div className="mb-3 d-flex gap-2">
           <button className="btn btn-outline-primary" onClick={handleClickReset}>
             Reset
@@ -91,6 +98,12 @@ export const PixelEditor = ({ image, onChange }: PixelEditorProps): JSX.Element 
           </div>
           <button className="btn btn-outline-primary" onClick={handleClickExport}>
             <i className="bi bi-code-slash" /> Export to C++
+          </button>
+          <button
+            className={cn('btn', isChanged ? 'btn-success' : 'btn-outline-success')}
+            onClick={handleSave}
+            disabled={!isChanged}>
+            Save
           </button>
         </div>
         <div className={styles['pixel-list']} style={style}>
