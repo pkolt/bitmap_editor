@@ -1,10 +1,10 @@
 import cn from 'classnames';
 import { ImageEntity, ImageEntityData } from '@/types/image';
 import styles from './index.module.css';
-import { useCallback, useEffect, useState } from 'react';
-import { createImageData, getImageDataLength } from './utils';
+import { useCallback, useMemo, useState } from 'react';
 import { ResetDialog } from './ResetDialog';
 import { ExportDialog } from './ExportDialog';
+import { Bitmap } from '@/utils/bitmap';
 
 enum Dialog {
   None,
@@ -23,10 +23,13 @@ export const PixelEditor = ({ image, onChange }: PixelEditorProps): JSX.Element 
 
   const style = { '--width': image.width, '--height': image.height } as React.CSSProperties;
   const data = image.data;
-  const validImageDataLength = getImageDataLength(image.width, image.height);
+  const bitmap = useMemo(
+    () => new Bitmap(image.width, image.height, image.data),
+    [image.data, image.height, image.width],
+  );
 
   const resetImage = useCallback(() => {
-    onChange(createImageData(image.width, image.height));
+    onChange(new Bitmap(image.width, image.height).toJSON());
   }, [image.height, image.width, onChange]);
 
   const handleCloseDialog = () => {
@@ -46,35 +49,29 @@ export const PixelEditor = ({ image, onChange }: PixelEditorProps): JSX.Element 
     setDialog(Dialog.Export);
   };
 
-  useEffect(() => {
-    if (data.length != validImageDataLength) {
-      resetImage();
-    }
-  }, [data.length, resetImage, validImageDataLength]);
-
   const items: JSX.Element[] = [];
   const len = image.width * image.height;
-  for (let i = 0; i < len; i++) {
-    const onClick = () => {
-      const nextData = [...data];
-      nextData[i] = isDraw ? true : false;
-      onChange(nextData);
-    };
-    const onMouseOver = (event: React.MouseEvent) => {
-      if (event.buttons || event.ctrlKey) {
-        const nextData = [...data];
-        nextData[i] = isDraw ? true : false;
-        onChange(nextData);
-      }
-    };
-    const value = data[i];
-    items.push(
-      <div
-        key={i}
-        className={cn(styles.pixel, value && styles['pixel-selected'])}
-        onClick={onClick}
-        onMouseOver={onMouseOver}></div>,
-    );
+  if (data) {
+    for (let i = 0; i < len; i++) {
+      const isSelected = bitmap.get(i);
+      const onClick = () => {
+        bitmap.set(i, isDraw ? true : false);
+        onChange(bitmap.toJSON());
+      };
+      const onMouseOver = (event: React.MouseEvent) => {
+        if (event.buttons || event.ctrlKey) {
+          bitmap.set(i, isDraw ? true : false);
+          onChange(bitmap.toJSON());
+        }
+      };
+      items.push(
+        <div
+          key={i}
+          className={cn(styles.pixel, isSelected && styles['pixel-selected'])}
+          onClick={onClick}
+          onMouseOver={onMouseOver}></div>,
+      );
+    }
   }
 
   return (
