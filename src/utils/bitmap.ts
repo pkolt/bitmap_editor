@@ -3,7 +3,6 @@ import { clearBit, isSetBit, setBit } from './bitwise';
 const BITS_PER_ELEMENT = 32;
 const SSD1306_COLUMN_BITS = 8;
 
-
 export class Bitmap {
   width: number;
   height: number;
@@ -32,13 +31,13 @@ export class Bitmap {
 
   get(index: number): boolean {
     const pos = Math.floor(index / BITS_PER_ELEMENT);
-    const bit = index - (BITS_PER_ELEMENT * pos);
+    const bit = index - BITS_PER_ELEMENT * pos;
     return isSetBit(this.#data[pos], bit);
   }
 
   set(index: number, value: boolean): void {
     const pos = Math.floor(index / BITS_PER_ELEMENT);
-    const bit = index - (BITS_PER_ELEMENT * pos);
+    const bit = index - BITS_PER_ELEMENT * pos;
     this.#data[pos] = value ? setBit(this.#data[pos], bit) : clearBit(this.#data[pos], bit);
   }
 
