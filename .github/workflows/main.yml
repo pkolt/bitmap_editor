@@ -44,7 +44,6 @@ jobs:
   linters:
     name: Run Linters
     needs: [install]
-    if: github.ref != 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout ✅
@@ -66,7 +65,6 @@ jobs:
   typescript:
     name: Check TypeScript
     needs: [install]
-    if: github.ref != 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout ✅
@@ -88,7 +86,6 @@ jobs:
   build:
     name: Build site
     needs: [install]
-    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout ✅
@@ -115,7 +112,6 @@ jobs:
     name: Deploy site
     # Add a dependency to the build job
     needs: [build]
-    if: github.ref == 'refs/heads/master'
     # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
     permissions:
       pages: write # to deploy to Pages
