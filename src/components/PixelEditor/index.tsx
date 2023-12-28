@@ -1,10 +1,12 @@
 import cn from 'classnames';
 import { ImageEntity, ImageEntityData } from '@/types/image';
 import styles from './index.module.css';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { ResetDialog } from './ResetDialog';
 import { ExportDialog } from './ExportDialog';
 import { Bitmap } from '@/utils/bitmap';
+
+const AUTO_SAVE_TIMEOUT_MS = 2000;
 
 enum Dialog {
   None,
@@ -20,15 +22,22 @@ interface PixelEditorProps {
 export const PixelEditor = ({ image, onChange }: PixelEditorProps): JSX.Element => {
   const style = { '--width': image.width, '--height': image.height } as React.CSSProperties;
 
+  const refAutoSaveTimeout = useRef<NodeJS.Timeout | null>(null);
   const [isDraw, setIsDraw] = useState(true);
   const [dialog, setDialog] = useState(Dialog.None);
   const [bitmap, setBitmap] = useState(Bitmap.fromArray(image.width, image.height, image.data));
-  const [isChanged, setIsChanged] = useState(false);
-  const isEmptyBitmap = bitmap.isEmpty();
+  const isEmptyBitmap = useMemo(() => bitmap.isEmpty(), [bitmap]);
 
-  const handleSave = useCallback(() => {
-    onChange(bitmap.toJSON());
-    setIsChanged(false);
+  const handleChange = useCallback(() => {
+    // Reset previous timer
+    if (refAutoSaveTimeout.current) {
+      clearTimeout(refAutoSaveTimeout.current);
+      refAutoSaveTimeout.current = null;
+    }
+
+    refAutoSaveTimeout.current = setTimeout(() => {
+      onChange(bitmap.toJSON());
+    }, AUTO_SAVE_TIMEOUT_MS);
   }, [bitmap, onChange]);
 
   const resetImage = useCallback(() => {
@@ -60,13 +69,13 @@ export const PixelEditor = ({ image, onChange }: PixelEditorProps): JSX.Element 
     const onClick = () => {
       bitmap.set(i, isDraw ? true : false);
       setBitmap(bitmap.clone());
-      setIsChanged(true);
+      handleChange();
     };
     const onMouseOver = (event: React.MouseEvent) => {
       if (event.buttons || event.ctrlKey) {
         bitmap.set(i, isDraw ? true : false);
         setBitmap(bitmap.clone());
-        setIsChanged(true);
+        handleChange();
       }
     };
     items.push(
@@ -99,12 +108,6 @@ export const PixelEditor = ({ image, onChange }: PixelEditorProps): JSX.Element 
           </div>
           <button className="btn btn-outline-primary" onClick={handleClickExport} disabled={isEmptyBitmap}>
             <i className="bi bi-code-slash" /> Export to C++
-          </button>
-          <button
-            className={cn('btn', isChanged ? 'btn-success' : 'btn-outline-success')}
-            onClick={handleSave}
-            disabled={!isChanged}>
-            Save
           </button>
         </div>
         <div className={styles['pixel-list']} style={style}>
