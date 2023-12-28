@@ -1,5 +1,5 @@
 export enum PageUrl {
   Home = '/',
-  CreateImage = '/create',
-  DrawImage = '/draw/:id',
+  CreateImage = '/create_bitmap',
+  DrawImage = '/bitmap/:id',
 }

@@ -25,7 +25,7 @@ const DrawImage = () => {
   }
 
   return (
-    <Page title={`Pixel Editor: ${image.name}`}>
+    <Page title={`Bitmap Editor: ${image.name}`}>
       <main className="d-flex flex-column flex-grow-1 justify-content-center align-items-center">
         <h3 className="mb-3">
           {image.name} ({image.width}x{image.height})

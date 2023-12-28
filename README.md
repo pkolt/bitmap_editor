@@ -1,1 +1,1 @@
-# Pixel Editor
+# Bitmap Editor

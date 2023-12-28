@@ -11,7 +11,7 @@ const Home = () => {
   const [deleteImageId, setDeleteImageId] = useState<string | null>(null);
   return (
     <>
-      <Page title="Pixel Editor">
+      <Page title="Bitmap Editor">
         <main className="d-flex flex-column flex-grow-1 justify-content-center align-items-center">
           {orderedImages.length > 0 && (
             <div className="mb-3">
@@ -42,7 +42,7 @@ const Home = () => {
             </div>
           )}
           <Link to={PageUrl.CreateImage} className="btn btn-primary btn-lg">
-            Create new image
+            Create new bitmap
           </Link>
         </main>
       </Page>
