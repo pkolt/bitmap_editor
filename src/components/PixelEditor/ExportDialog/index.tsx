@@ -31,11 +31,12 @@ export const ExportDialog = ({ imageId, onClose }: ExportDialogProps): JSX.Eleme
     return null;
   }
   return (
-    <Modal title="Export image" onClose={onClose}>
+    <Modal title="Export bitmap" onClose={onClose}>
       <form onSubmit={handleSubmit(() => {})} className="mb-3">
-        <label htmlFor={textareaId} className="form-label">
-          {image.name} ({image.width}x{image.height})
-        </label>
+        <div className="alert alert-warning d-flex align-items-center gap-1">
+          <i className="bi bi-exclamation-triangle" />
+          <div>Exported image is format SSD1306 OLED display</div>
+        </div>
         <textarea className="form-control" rows={10} id={textareaId} {...register('data')} />
       </form>
       <div className="d-flex justify-content-center">
