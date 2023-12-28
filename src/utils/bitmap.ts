@@ -42,6 +42,15 @@ export class Bitmap {
     this.#data[pos] = value ? setBit(this.#data[pos], bit) : clearBit(this.#data[pos], bit);
   }
 
+  isEmpty(): boolean {
+    for (const value of this.#data) {
+      if (value > 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   reset() {
     this.#data.fill(0);
   }

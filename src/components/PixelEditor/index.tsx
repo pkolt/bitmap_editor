@@ -24,6 +24,7 @@ export const PixelEditor = ({ image, onChange }: PixelEditorProps): JSX.Element 
   const [dialog, setDialog] = useState(Dialog.None);
   const [bitmap, setBitmap] = useState(Bitmap.fromArray(image.width, image.height, image.data));
   const [isChanged, setIsChanged] = useState(false);
+  const isEmptyBitmap = bitmap.isEmpty();
 
   const handleSave = useCallback(() => {
     onChange(bitmap.toJSON());
@@ -96,7 +97,7 @@ export const PixelEditor = ({ image, onChange }: PixelEditorProps): JSX.Element 
               <i className="bi bi-eraser" /> Eraser
             </button>
           </div>
-          <button className="btn btn-outline-primary" onClick={handleClickExport}>
+          <button className="btn btn-outline-primary" onClick={handleClickExport} disabled={isEmptyBitmap}>
             <i className="bi bi-code-slash" /> Export to C++
           </button>
           <button
