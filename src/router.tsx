@@ -4,8 +4,8 @@ import { createBrowserRouter } from 'react-router-dom';
 import { PageUrl } from './constants/urls';
 
 const Home = lazy(() => import('./pages/Home'));
-const CreateImage = lazy(() => import('./pages/CreateImage'));
-const DrawImage = lazy(() => import('./pages/DrawImage'));
+const CreateBitmap = lazy(() => import('./pages/CreateBitmap'));
+const DrawBitmap = lazy(() => import('./pages/DrawBitmap'));
 
 export const router = createBrowserRouter([
   {
@@ -13,11 +13,11 @@ export const router = createBrowserRouter([
     element: <Home />,
   },
   {
-    path: PageUrl.CreateImage,
-    element: <CreateImage />,
+    path: PageUrl.CreateBitmap,
+    element: <CreateBitmap />,
   },
   {
-    path: PageUrl.DrawImage,
-    element: <DrawImage />,
+    path: PageUrl.DrawBitmap,
+    element: <DrawBitmap />,
   },
 ]);

@@ -1,10 +1,11 @@
 import cn from 'classnames';
-import { ImageEntity, ImageEntityData } from '@/types/image';
+import { BitmapEntity, BitmapEntityData } from '@/types/bitmap';
 import styles from './index.module.css';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { ResetDialog } from './ResetDialog';
 import { ExportDialog } from './ExportDialog';
 import { Bitmap } from '@/utils/bitmap';
+import { RenameDialog } from './RenameDialog';
 
 const AUTO_SAVE_TIMEOUT_MS = 2000;
 
@@ -12,20 +13,21 @@ enum Dialog {
   None,
   Reset,
   Export,
+  Rename,
 }
 
 interface PixelEditorProps {
-  image: ImageEntity;
-  onChange: (data: ImageEntityData) => void;
+  bitmapEntity: BitmapEntity;
+  onChange: (data: BitmapEntityData) => void;
 }
 
-export const PixelEditor = ({ image, onChange }: PixelEditorProps): JSX.Element => {
-  const style = { '--width': image.width, '--height': image.height } as React.CSSProperties;
+export const PixelEditor = ({ bitmapEntity, onChange }: PixelEditorProps): JSX.Element => {
+  const style = { '--width': bitmapEntity.width, '--height': bitmapEntity.height } as React.CSSProperties;
 
   const refAutoSaveTimeout = useRef<NodeJS.Timeout | null>(null);
   const [isDraw, setIsDraw] = useState(true);
   const [dialog, setDialog] = useState(Dialog.None);
-  const [bitmap, setBitmap] = useState(Bitmap.fromArray(image.width, image.height, image.data));
+  const [bitmap, setBitmap] = useState(Bitmap.fromArray(bitmapEntity.width, bitmapEntity.height, bitmapEntity.data));
   const isEmptyBitmap = useMemo(() => bitmap.isEmpty(), [bitmap]);
 
   const handleChange = useCallback(() => {
@@ -40,7 +42,7 @@ export const PixelEditor = ({ image, onChange }: PixelEditorProps): JSX.Element 
     }, AUTO_SAVE_TIMEOUT_MS);
   }, [bitmap, onChange]);
 
-  const resetImage = useCallback(() => {
+  const resetBitmap = useCallback(() => {
     bitmap.reset();
     setBitmap(bitmap.clone());
     onChange(bitmap.toJSON());
@@ -55,12 +57,16 @@ export const PixelEditor = ({ image, onChange }: PixelEditorProps): JSX.Element 
   };
 
   const handleAcceptResetDialog = () => {
-    resetImage();
+    resetBitmap();
     handleCloseDialog();
   };
 
   const handleClickExport = () => {
     setDialog(Dialog.Export);
+  };
+
+  const handleClickRename = () => {
+    setDialog(Dialog.Rename);
   };
 
   const items: JSX.Element[] = [];
@@ -109,13 +115,17 @@ export const PixelEditor = ({ image, onChange }: PixelEditorProps): JSX.Element 
           <button className="btn btn-outline-primary" onClick={handleClickExport} disabled={isEmptyBitmap}>
             <i className="bi bi-code-slash" /> Export to C++
           </button>
+          <button className="btn btn-outline-primary" onClick={handleClickRename}>
+            Rename
+          </button>
         </div>
         <div className={styles['pixel-list']} style={style}>
           {items}
         </div>
       </div>
       {dialog === Dialog.Reset && <ResetDialog onClose={handleCloseDialog} onAccept={handleAcceptResetDialog} />}
-      {dialog === Dialog.Export && <ExportDialog onClose={handleCloseDialog} imageId={image.id} />}
+      {dialog === Dialog.Export && <ExportDialog onClose={handleCloseDialog} bitmapId={bitmapEntity.id} />}
+      {dialog === Dialog.Rename && <RenameDialog onClose={handleCloseDialog} bitmapId={bitmapEntity.id} />}
     </>
   );
 };

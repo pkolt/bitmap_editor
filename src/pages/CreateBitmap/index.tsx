@@ -5,8 +5,8 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { Input } from '@/components/Input';
 import { useNavigate } from 'react-router-dom';
 import { PageUrl } from '@/constants/urls';
-import { ImageEntity } from '@/types/image';
-import { useImageStore } from '@/store/images/useImagesStore';
+import { BitmapEntity } from '@/types/bitmap';
+import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { PIXELS_PER_COLUMN } from '@/constants/image';
 
 interface FormData {
@@ -29,9 +29,9 @@ const validatorSize = (value: string) => {
   }
 };
 
-const CreateImage = () => {
+const CreateBitmap = () => {
   const navigate = useNavigate();
-  const { addImage } = useImageStore();
+  const { addBitmap: addImage } = useBitmapStore();
 
   const methods = useForm<FormData>({
     mode: 'onChange',
@@ -48,7 +48,7 @@ const CreateImage = () => {
     const id = uuidv4();
     const timestamp = DateTime.now().toMillis();
 
-    const image: ImageEntity = {
+    const image: BitmapEntity = {
       id,
       name: data.name,
       width: parseInt(data.width, 10),
@@ -60,7 +60,7 @@ const CreateImage = () => {
 
     addImage(image);
 
-    navigate(PageUrl.DrawImage.replace(':id', id), { replace: true });
+    navigate(PageUrl.DrawBitmap.replace(':id', id), { replace: true });
   };
 
   return (
@@ -84,4 +84,4 @@ const CreateImage = () => {
   );
 };
 
-export default CreateImage;
+export default CreateBitmap;

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Modal as ModalBootstrap } from 'bootstrap';
 
@@ -9,7 +9,11 @@ interface ModalProps {
   children: JSX.Element | JSX.Element[];
 }
 
-export const Modal: React.FC<ModalProps> = ({ title, onAccept, onClose, children }) => {
+export interface ModalRef {
+  close: () => void;
+}
+
+export const Modal = forwardRef<ModalRef, ModalProps>(({ title, onAccept, onClose, children }, ref) => {
   const [modal, setModal] = useState<ModalBootstrap | null>(null);
 
   const handleClose = useCallback(() => {
@@ -45,6 +49,18 @@ export const Modal: React.FC<ModalProps> = ({ title, onAccept, onClose, children
     [handleClose],
   );
 
+  useImperativeHandle(
+    ref,
+    () => {
+      return {
+        close() {
+          handleClose();
+        },
+      };
+    },
+    [handleClose],
+  );
+
   const element = (
     <div className="modal" tabIndex={-1} ref={setModalRef}>
       <div className="modal-dialog">
@@ -70,4 +86,4 @@ export const Modal: React.FC<ModalProps> = ({ title, onAccept, onClose, children
   );
 
   return createPortal(element, document.body);
-};
+});

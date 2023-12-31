@@ -7,8 +7,8 @@ interface ResetDialogProps {
 
 export const ResetDialog = ({ onAccept, onClose }: ResetDialogProps): JSX.Element => {
   return (
-    <Modal title="Reset image" onClose={onClose} onAccept={onAccept}>
-      <p>Reset image?</p>
+    <Modal title="Reset bitmap" onClose={onClose} onAccept={onAccept}>
+      <p>Reset bitmap?</p>
     </Modal>
   );
 };

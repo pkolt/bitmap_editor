@@ -1,24 +1,24 @@
 import { Link } from 'react-router-dom';
 import { PageUrl } from '@/constants/urls';
 import { Page } from '@/components/Page';
-import { useImageStore } from '@/store/images/useImagesStore';
+import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { useMemo, useState } from 'react';
-import { DeleteImageDialog } from './DeleteImageDialog';
+import { DeleteBitmapDialog } from './DeleteBitmapDialog';
 
 const Home = () => {
-  const { images } = useImageStore();
-  const orderedImages = useMemo(() => images.sort((a, b) => b.updatedAt - a.updatedAt), [images]);
-  const [deleteImageId, setDeleteImageId] = useState<string | null>(null);
+  const { bitmaps } = useBitmapStore();
+  const orderedBitmaps = useMemo(() => bitmaps.sort((a, b) => b.updatedAt - a.updatedAt), [bitmaps]);
+  const [deleteBitmapId, setDeleteBitmapId] = useState<string | null>(null);
   return (
     <>
       <Page title="Bitmap Editor">
         <main className="d-flex flex-column flex-grow-1 justify-content-center align-items-center">
-          {orderedImages.length > 0 && (
+          {orderedBitmaps.length > 0 && (
             <div className="mb-3">
               <h2 className="text-center">Open</h2>
               <ul className="list-group list-group-flush mb-3">
-                {orderedImages.map((it) => {
-                  const url = PageUrl.DrawImage.replace(':id', it.id);
+                {orderedBitmaps.map((it) => {
+                  const url = PageUrl.DrawBitmap.replace(':id', it.id);
                   return (
                     <li key={it.id} className="list-group-item d-flex gap-1">
                       <Link to={url} className="btn-link">
@@ -28,7 +28,7 @@ const Home = () => {
                       <i
                         className="bi bi-trash-fill text-danger"
                         role="button"
-                        onClick={() => setDeleteImageId(it.id)}
+                        onClick={() => setDeleteBitmapId(it.id)}
                       />
                     </li>
                   );
@@ -41,12 +41,12 @@ const Home = () => {
               </h5>
             </div>
           )}
-          <Link to={PageUrl.CreateImage} className="btn btn-primary btn-lg">
+          <Link to={PageUrl.CreateBitmap} className="btn btn-primary btn-lg">
             Create new bitmap
           </Link>
         </main>
       </Page>
-      {deleteImageId && <DeleteImageDialog imageId={deleteImageId} onClose={() => setDeleteImageId(null)} />}
+      {deleteBitmapId && <DeleteBitmapDialog bitmapId={deleteBitmapId} onClose={() => setDeleteBitmapId(null)} />}
     </>
   );
 };

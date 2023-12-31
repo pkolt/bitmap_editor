@@ -1,18 +1,18 @@
 import { PixelEditor } from '@/components/PixelEditor';
 import { Page } from '@/components/Page';
 import { PageUrl } from '@/constants/urls';
-import { useImageStore } from '@/store/images/useImagesStore';
-import { ImageEntityData } from '@/types/image';
+import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
+import { BitmapEntityData } from '@/types/bitmap';
 import { useCallback } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 
-const DrawImage = () => {
+const DrawBitmap = () => {
   const { id } = useParams();
-  const { findImage, changeImage } = useImageStore();
-  const image = findImage(id ?? '');
+  const { findBitmap: findBitmap, changeBitmap: changeImage } = useBitmapStore();
+  const image = findBitmap(id ?? '');
 
   const onChange = useCallback(
-    (data: ImageEntityData) => {
+    (data: BitmapEntityData) => {
       if (image) {
         changeImage({ ...image, data });
       }
@@ -30,10 +30,10 @@ const DrawImage = () => {
         <h3 className="mb-3">
           {image.name} ({image.width}x{image.height})
         </h3>
-        <PixelEditor image={image} onChange={onChange} />
+        <PixelEditor bitmapEntity={image} onChange={onChange} />
       </main>
     </Page>
   );
 };
 
-export default DrawImage;
+export default DrawBitmap;

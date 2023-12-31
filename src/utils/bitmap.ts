@@ -19,7 +19,7 @@ export class Bitmap {
     const arrLength = Math.ceil((width * height) / BITS_PER_ELEMENT);
 
     if (data && data.length !== arrLength) {
-      throw new Error('Invalid image data');
+      throw new Error('Invalid bitmap data');
     }
 
     this.#data = data ? data : new Uint32Array(arrLength);

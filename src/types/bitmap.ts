@@ -1,11 +1,11 @@
-export type ImageEntityData = number[];
+export type BitmapEntityData = number[];
 
-export interface ImageEntity {
+export interface BitmapEntity {
   id: string;
   name: string;
   width: number;
   height: number;
-  data: ImageEntityData;
+  data: BitmapEntityData;
   createdAt: number;
   updatedAt: number;
 }

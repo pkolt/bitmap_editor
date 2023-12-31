@@ -1,11 +1,11 @@
 import { Modal } from '@/components/Modal';
-import { useImageStore } from '@/store/images/useImagesStore';
-import { imageToProgramCode } from '../utils';
+import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
+import { bitmapToProgramCode } from '../utils';
 import { useId, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
 interface ExportDialogProps {
-  imageId: string;
+  bitmapId: string;
   onClose: () => void;
 }
 
@@ -13,11 +13,11 @@ interface FormData {
   data: string;
 }
 
-export const ExportDialog = ({ imageId, onClose }: ExportDialogProps): JSX.Element | null => {
+export const ExportDialog = ({ bitmapId, onClose }: ExportDialogProps): JSX.Element | null => {
   const textareaId = useId();
-  const { findImage } = useImageStore();
-  const image = findImage(imageId);
-  const defaultData = useMemo<string>(() => (image ? imageToProgramCode(image) : ''), [image]);
+  const { findBitmap: findBitmap } = useBitmapStore();
+  const bitmapEntity = findBitmap(bitmapId);
+  const defaultData = useMemo<string>(() => (bitmapEntity ? bitmapToProgramCode(bitmapEntity) : ''), [bitmapEntity]);
   const { register, handleSubmit, watch } = useForm<FormData>({
     mode: 'onChange',
     defaultValues: { data: defaultData },
@@ -27,7 +27,7 @@ export const ExportDialog = ({ imageId, onClose }: ExportDialogProps): JSX.Eleme
     navigator.clipboard.writeText(data);
   };
 
-  if (!image) {
+  if (!bitmapEntity) {
     return null;
   }
   return (
@@ -35,7 +35,7 @@ export const ExportDialog = ({ imageId, onClose }: ExportDialogProps): JSX.Eleme
       <form onSubmit={handleSubmit(() => {})} className="mb-3">
         <div className="alert alert-warning d-flex align-items-center gap-1">
           <i className="bi bi-exclamation-triangle" />
-          <div>Exported image is format SSD1306 OLED display</div>
+          <div>Exported bitmap is format SSD1306 OLED display</div>
         </div>
         <textarea className="form-control" rows={10} id={textareaId} {...register('data')} />
       </form>
