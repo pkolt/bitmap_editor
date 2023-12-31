@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "check-ts": "tsc --noEmit",
     "eslint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "eslint-fix": "npm run lint-js -- --fix",
+    "eslint-fix": "npm run eslint -- --fix",
     "format": "prettier --check src",
     "format-fix": "prettier --write src",
     "lint-all": "npm run check-ts && npm run eslint && npm run format",
