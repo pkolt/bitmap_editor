@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  node_version: '18'
+  node_version: '20'
 
 jobs:
   install:
