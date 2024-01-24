@@ -29,7 +29,7 @@ export const useBitmapStore = create<BitmapsState>()(
           // ...
         }
         return persistedState as BitmapsState;
-      }
+      },
     },
   ),
 );

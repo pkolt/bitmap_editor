@@ -28,19 +28,22 @@ export const PixelEditor = ({ bitmapEntity, onChange }: PixelEditorProps): JSX.E
   const [bitmap, setBitmap] = useState(Bitmap.fromArray(bitmapEntity.width, bitmapEntity.height, bitmapEntity.data));
   const isEmptyBitmap = useMemo(() => bitmap.isEmpty(), [bitmap]);
 
-  const handleChangeBitmap = useCallback((value: Bitmap) => {
-    setBitmap(value);
+  const handleChangeBitmap = useCallback(
+    (value: Bitmap) => {
+      setBitmap(value);
 
-    // Reset previous timer
-    if (refAutoSaveTimeout.current) {
-      clearTimeout(refAutoSaveTimeout.current);
-      refAutoSaveTimeout.current = null;
-    }
+      // Reset previous timer
+      if (refAutoSaveTimeout.current) {
+        clearTimeout(refAutoSaveTimeout.current);
+        refAutoSaveTimeout.current = null;
+      }
 
-    refAutoSaveTimeout.current = setTimeout(() => {
-      onChange(bitmap.toJSON());
-    }, AUTO_SAVE_TIMEOUT_MS);
-  }, [bitmap, onChange]);
+      refAutoSaveTimeout.current = setTimeout(() => {
+        onChange(bitmap.toJSON());
+      }, AUTO_SAVE_TIMEOUT_MS);
+    },
+    [bitmap, onChange],
+  );
 
   const resetBitmap = useCallback(() => {
     bitmap.reset();
