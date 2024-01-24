@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styles from './index.module.css';
 import { Bitmap } from '@/utils/bitmap';
 
@@ -9,24 +9,28 @@ const BORDER_SIZE = 1;
 const BORDER_COLOR = '#ccc';
 const STEP_SIZE = SQUARE_SIZE + BORDER_SIZE;
 
-const getCanvasSize = (size: number) => {
-  return size * SQUARE_SIZE + (size + 1) * BORDER_SIZE;
+type CanvasContext = CanvasRenderingContext2D;
+
+interface Sizes {
+  canvasWidth: number;
+  canvasHeight: number;
+  bitmapWidth: number;
+  bitmapHeight: number;
+}
+
+const getCanvasSize = (bitmapSize: number) => bitmapSize * SQUARE_SIZE + (bitmapSize + 1) * BORDER_SIZE;
+
+const clearDisplay = (ctx: CanvasContext, sizes: Sizes): void => {
+  ctx.clearRect(0, 0, sizes.canvasWidth, sizes.canvasHeight);
 };
 
-const clearDisplay = (ctx: CanvasRenderingContext2D, width: number, height: number): void => {
-  const canvasWidth = getCanvasSize(width);
-  const canvasHeight = getCanvasSize(height);
-  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-};
-
-const drawGrid = (ctx: CanvasRenderingContext2D, width: number, height: number): void => {
-  const canvasWidth = getCanvasSize(width);
-  const canvasHeight = getCanvasSize(height);
+const drawGrid = (ctx: CanvasContext, sizes: Sizes): void => {
+  const { canvasWidth, canvasHeight, bitmapWidth, bitmapHeight } = sizes;
 
   ctx.strokeStyle = BORDER_COLOR;
   ctx.lineWidth = BORDER_SIZE;
 
-  for (let i = 0; i <= height; i++) {
+  for (let i = 0; i <= bitmapHeight; i++) {
     const y = i * STEP_SIZE;
     ctx.beginPath();
     ctx.moveTo(0, y);
@@ -34,7 +38,7 @@ const drawGrid = (ctx: CanvasRenderingContext2D, width: number, height: number):
     ctx.stroke();
   }
 
-  for (let i = 0; i <= width; i++) {
+  for (let i = 0; i <= bitmapWidth; i++) {
     const x = i * STEP_SIZE;
     ctx.beginPath();
     ctx.moveTo(x, 0);
@@ -43,16 +47,16 @@ const drawGrid = (ctx: CanvasRenderingContext2D, width: number, height: number):
   }
 };
 
-const drawBitmap = (ctx: CanvasRenderingContext2D, bitmap: Bitmap): void => {
-  const width = bitmap.width;
-  const height = bitmap.height;
+const drawBitmap = (ctx: CanvasContext, bitmap: Bitmap): void => {
+  const bitmapWidth = bitmap.width;
+  const bitmapHeight = bitmap.height;
 
   ctx.fillStyle = SQUARE_COLOR;
 
   let index = 0;
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      const isFill = bitmap.get(index);
+  for (let y = 0; y < bitmapHeight; y++) {
+    for (let x = 0; x < bitmapWidth; x++) {
+      const isFill = bitmap.getByIndex(index);
       if (isFill) {
         const posX = x * STEP_SIZE + BORDER_SIZE;
         const posY = y * STEP_SIZE + BORDER_SIZE;
@@ -63,39 +67,80 @@ const drawBitmap = (ctx: CanvasRenderingContext2D, bitmap: Bitmap): void => {
   }
 };
 
+const getBitmapCoords = (event: React.MouseEvent<HTMLCanvasElement>, canvas: HTMLCanvasElement, sizes: Sizes) => {
+  const x = event.clientX - canvas.getBoundingClientRect().left;
+  const y = event.clientY - canvas.getBoundingClientRect().top;
+  const bitmapX = Math.floor(x / (sizes.canvasWidth / sizes.bitmapWidth));
+  const bitmapY = Math.floor(y / (sizes.canvasHeight / sizes.bitmapHeight));
+  return { bitmapX, bitmapY };
+};
+
 interface BitmapViewProps {
   bitmap: Bitmap;
+  onChangeBitmap: (bitmap: Bitmap) => void;
+  eraser: boolean;
 }
 
-export const BitmapView = ({ bitmap }: BitmapViewProps): JSX.Element => {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const width = bitmap.width;
-  const height = bitmap.height;
+export const BitmapView = ({ bitmap, onChangeBitmap, eraser }: BitmapViewProps): JSX.Element => {
+  const [sizes, setSizes] = useState<Sizes | null>(null);
+  const [ctx, setCtx] = useState<CanvasContext | null>(null);
+  const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
+  const bitmapWidth = bitmap.width;
+  const bitmapHeight = bitmap.height;
 
-  // Set canvas sizes
-  useLayoutEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) {
-      return;
-    }
-    canvas.width = getCanvasSize(width);
-    canvas.height = getCanvasSize(height);
-  }, [height, width]);
+  const setCanvasRef = useCallback(
+    (elem: HTMLCanvasElement | null) => {
+      if (!elem) {
+        return;
+      }
+      const canvasWidth = getCanvasSize(bitmapWidth);
+      const canvasHeight = getCanvasSize(bitmapHeight);
+      elem.width = canvasWidth;
+      elem.height = canvasHeight;
+      setSizes({ canvasWidth, canvasHeight, bitmapWidth, bitmapHeight });
+      setCtx(elem.getContext('2d'));
+      setCanvas(elem);
+    },
+    [bitmapHeight, bitmapWidth],
+  );
+
+  const handleClick = useCallback(
+    (event: React.MouseEvent<HTMLCanvasElement>) => {
+      if (!canvas || !sizes) {
+        return;
+      }
+      const { bitmapX, bitmapY } = getBitmapCoords(event, canvas, sizes);
+      const nextBitmap = bitmap.clone();
+      nextBitmap.setByCoords(bitmapX, bitmapY, !eraser);
+      onChangeBitmap(nextBitmap);
+    },
+    [bitmap, canvas, eraser, onChangeBitmap, sizes],
+  );
+
+  const handleMouseMove = useCallback(
+    (event: React.MouseEvent<HTMLCanvasElement>) => {
+      if (event.buttons || event.ctrlKey) {
+        if (!canvas || !sizes) {
+          return;
+        }
+        const { bitmapX, bitmapY } = getBitmapCoords(event, canvas, sizes);
+        const nextBitmap = bitmap.clone();
+        nextBitmap.setByCoords(bitmapX, bitmapY, !eraser);
+        onChangeBitmap(nextBitmap);
+      }
+    },
+    [bitmap, canvas, eraser, onChangeBitmap, sizes],
+  );
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) {
-      return;
-    }
-    const ctx = canvas.getContext('2d');
-    if (!ctx) {
+    if (!ctx || !sizes) {
       return;
     }
 
-    clearDisplay(ctx, width, height);
+    clearDisplay(ctx, sizes);
     drawBitmap(ctx, bitmap);
-    drawGrid(ctx, width, height);
-  }, [bitmap, height, width]);
+    drawGrid(ctx, sizes);
+  }, [bitmap, ctx, sizes]);
 
-  return <canvas ref={canvasRef} className={styles.container} />;
+  return <canvas ref={setCanvasRef} className={styles.container} onClick={handleClick} onMouseMove={handleMouseMove} />;
 };

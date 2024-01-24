@@ -2,7 +2,7 @@ import { BitmapEntity } from '@/types/bitmap';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-interface BitmapsStore {
+interface BitmapsState {
   bitmaps: BitmapEntity[];
   findBitmap: (id: string) => BitmapEntity | undefined;
   addBitmap: (bitmap: BitmapEntity) => void;
@@ -10,8 +10,8 @@ interface BitmapsStore {
   deleteBitmap: (id: string) => void;
 }
 
-export const useBitmapStore = create(
-  persist<BitmapsStore>(
+export const useBitmapStore = create<BitmapsState>()(
+  persist(
     (set, get) => ({
       bitmaps: [],
       findBitmap: (id: string) => get().bitmaps.find((it) => it.id === id),
@@ -22,6 +22,14 @@ export const useBitmapStore = create(
     }),
     {
       name: 'bitmaps',
+      version: 1, // a migration will be triggered if the version in the storage mismatches this one
+      migrate: (persistedState, version) => {
+        if (version === 0) {
+          // if the stored value is in version 0, we convert data
+          // ...
+        }
+        return persistedState as BitmapsState;
+      }
     },
   ),
 );

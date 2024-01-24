@@ -1,11 +1,11 @@
 import cn from 'classnames';
 import { BitmapEntity, BitmapEntityData } from '@/types/bitmap';
-import styles from './index.module.css';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { ResetDialog } from './ResetDialog';
 import { ExportDialog } from './ExportDialog';
 import { Bitmap } from '@/utils/bitmap';
 import { RenameDialog } from './RenameDialog';
+import { BitmapView } from './BitmapView';
 
 const AUTO_SAVE_TIMEOUT_MS = 2000;
 
@@ -22,15 +22,15 @@ interface PixelEditorProps {
 }
 
 export const PixelEditor = ({ bitmapEntity, onChange }: PixelEditorProps): JSX.Element => {
-  const style = { '--width': bitmapEntity.width, '--height': bitmapEntity.height } as React.CSSProperties;
-
   const refAutoSaveTimeout = useRef<NodeJS.Timeout | null>(null);
-  const [isDraw, setIsDraw] = useState(true);
+  const [eraser, setEraser] = useState(false);
   const [dialog, setDialog] = useState(Dialog.None);
   const [bitmap, setBitmap] = useState(Bitmap.fromArray(bitmapEntity.width, bitmapEntity.height, bitmapEntity.data));
   const isEmptyBitmap = useMemo(() => bitmap.isEmpty(), [bitmap]);
 
-  const handleChange = useCallback(() => {
+  const handleChangeBitmap = useCallback((value: Bitmap) => {
+    setBitmap(value);
+
     // Reset previous timer
     if (refAutoSaveTimeout.current) {
       clearTimeout(refAutoSaveTimeout.current);
@@ -69,30 +69,6 @@ export const PixelEditor = ({ bitmapEntity, onChange }: PixelEditorProps): JSX.E
     setDialog(Dialog.Rename);
   };
 
-  const items: JSX.Element[] = [];
-  for (let i = 0; i < bitmap.length; i++) {
-    const isSelected = bitmap.get(i);
-    const onClick = () => {
-      bitmap.set(i, isDraw ? true : false);
-      setBitmap(bitmap.clone());
-      handleChange();
-    };
-    const onMouseOver = (event: React.MouseEvent) => {
-      if (event.buttons || event.ctrlKey) {
-        bitmap.set(i, isDraw ? true : false);
-        setBitmap(bitmap.clone());
-        handleChange();
-      }
-    };
-    items.push(
-      <div
-        key={i}
-        className={cn(styles.pixel, isSelected && styles['pixel-selected'])}
-        onClick={onClick}
-        onMouseOver={onMouseOver}></div>,
-    );
-  }
-
   return (
     <>
       <div className="d-flex flex-column align-items-center">
@@ -105,10 +81,10 @@ export const PixelEditor = ({ bitmapEntity, onChange }: PixelEditorProps): JSX.E
             Reset
           </button>
           <div className="btn-group">
-            <button className={cn('btn btn-outline-primary', isDraw && 'active')} onClick={() => setIsDraw(true)}>
+            <button className={cn('btn btn-outline-primary', !eraser && 'active')} onClick={() => setEraser(false)}>
               <i className="bi bi-brush" /> Draw
             </button>
-            <button className={cn('btn btn-outline-primary', !isDraw && 'active')} onClick={() => setIsDraw(false)}>
+            <button className={cn('btn btn-outline-primary', eraser && 'active')} onClick={() => setEraser(true)}>
               <i className="bi bi-eraser" /> Eraser
             </button>
           </div>
@@ -119,9 +95,7 @@ export const PixelEditor = ({ bitmapEntity, onChange }: PixelEditorProps): JSX.E
             Rename
           </button>
         </div>
-        <div className={styles['pixel-list']} style={style}>
-          {items}
-        </div>
+        <BitmapView bitmap={bitmap} onChangeBitmap={handleChangeBitmap} eraser={eraser} />
       </div>
       {dialog === Dialog.Reset && <ResetDialog onClose={handleCloseDialog} onAccept={handleAcceptResetDialog} />}
       {dialog === Dialog.Export && <ExportDialog onClose={handleCloseDialog} bitmapId={bitmapEntity.id} />}

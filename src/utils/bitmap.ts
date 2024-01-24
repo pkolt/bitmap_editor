@@ -29,25 +29,44 @@ export class Bitmap {
     return this.width * this.height;
   }
 
-  get(index: number): boolean {
+  getByIndex(index: number): boolean {
     const pos = Math.floor(index / BITS_PER_ELEMENT);
     const bit = index - BITS_PER_ELEMENT * pos;
     return isSetBit(this.#data[pos], bit);
   }
 
-  set(index: number, value: boolean): void {
+  setByIndex(index: number, value: boolean): void {
     const pos = Math.floor(index / BITS_PER_ELEMENT);
     const bit = index - BITS_PER_ELEMENT * pos;
     this.#data[pos] = value ? setBit(this.#data[pos], bit) : clearBit(this.#data[pos], bit);
   }
 
-  isEmpty(): boolean {
-    for (const value of this.#data) {
-      if (value > 0) {
-        return false;
-      }
+  invertByIndex(index: number): void {
+    this.setByIndex(index, !this.getByIndex(index));
+  }
+
+  #coordsToIndex(x: number, y: number): number {
+    const index = y * this.width + x;
+    if (index >= this.length) {
+      throw new Error(`Invalid coordinates: ${x}, ${y}.`);
     }
-    return true;
+    return index;
+  }
+
+  getByCoords(x: number, y: number): boolean {
+    return this.getByIndex(this.#coordsToIndex(x, y));
+  }
+
+  setByCoords(x: number, y: number, value: boolean): void {
+    return this.setByIndex(this.#coordsToIndex(x, y), value);
+  }
+
+  invertByCoords(x: number, y: number): void {
+    this.invertByIndex(this.#coordsToIndex(x, y));
+  }
+
+  isEmpty(): boolean {
+    return this.#data.every((v) => v === 0);
   }
 
   reset() {
@@ -65,7 +84,7 @@ export class Bitmap {
         const dstIndex = column + page * this.width;
         for (let bit = 0; bit < SSD1306_COLUMN_BITS; bit++) {
           const srcIndex = bit * this.width + this.width * SSD1306_COLUMN_BITS * page + column;
-          if (this.get(srcIndex)) {
+          if (this.getByIndex(srcIndex)) {
             result[dstIndex] = setBit(result[dstIndex], bit);
           }
         }
