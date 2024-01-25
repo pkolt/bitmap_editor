@@ -67,14 +67,6 @@ const drawBitmap = (ctx: CanvasContext, bitmap: Bitmap): void => {
   }
 };
 
-const getBitmapCoords = (event: React.MouseEvent<HTMLCanvasElement>, canvas: HTMLCanvasElement, sizes: Sizes) => {
-  const x = event.clientX - canvas.getBoundingClientRect().left;
-  const y = event.clientY - canvas.getBoundingClientRect().top;
-  const bitmapX = Math.floor(x / (sizes.canvasWidth / sizes.bitmapWidth));
-  const bitmapY = Math.floor(y / (sizes.canvasHeight / sizes.bitmapHeight));
-  return { bitmapX, bitmapY };
-};
-
 interface BitmapViewProps {
   bitmap: Bitmap;
   onChangeBitmap: (bitmap: Bitmap) => void;
@@ -106,13 +98,18 @@ export const BitmapView = ({ bitmap, onChangeBitmap, eraser }: BitmapViewProps):
 
   const handleClick = useCallback(
     (event: React.MouseEvent<HTMLCanvasElement>) => {
-      if (!canvas || !sizes) {
-        return;
+      if (canvas && sizes) {
+        const { left, top } = canvas.getBoundingClientRect();
+        const x = event.clientX - left;
+        const y = event.clientY - top;
+        if (x >= 0 && y >= 0) {
+          const bitmapX = Math.floor(x / (sizes.canvasWidth / sizes.bitmapWidth));
+          const bitmapY = Math.floor(y / (sizes.canvasHeight / sizes.bitmapHeight));
+          const nextBitmap = bitmap.clone();
+          nextBitmap.setByCoords(bitmapX, bitmapY, !eraser);
+          onChangeBitmap(nextBitmap);
+        }
       }
-      const { bitmapX, bitmapY } = getBitmapCoords(event, canvas, sizes);
-      const nextBitmap = bitmap.clone();
-      nextBitmap.setByCoords(bitmapX, bitmapY, !eraser);
-      onChangeBitmap(nextBitmap);
     },
     [bitmap, canvas, eraser, onChangeBitmap, sizes],
   );
@@ -120,16 +117,10 @@ export const BitmapView = ({ bitmap, onChangeBitmap, eraser }: BitmapViewProps):
   const handleMouseMove = useCallback(
     (event: React.MouseEvent<HTMLCanvasElement>) => {
       if (event.buttons || event.ctrlKey) {
-        if (!canvas || !sizes) {
-          return;
-        }
-        const { bitmapX, bitmapY } = getBitmapCoords(event, canvas, sizes);
-        const nextBitmap = bitmap.clone();
-        nextBitmap.setByCoords(bitmapX, bitmapY, !eraser);
-        onChangeBitmap(nextBitmap);
+        handleClick(event);
       }
     },
-    [bitmap, canvas, eraser, onChangeBitmap, sizes],
+    [handleClick],
   );
 
   useEffect(() => {
