@@ -12,6 +12,9 @@ export const NavBar = () => {
             <div className="h6 text-body-tertiary mb-0">Create bitmap image for OLED display</div>
           </div>
         </Link>
+        <a href="https://pkolt.github.io/bitmap_editor/" target="_blank" className="h3 m-0">
+          <i className="bi bi-github" />
+        </a>
       </div>
     </div>
   );
