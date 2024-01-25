@@ -1,5 +1,5 @@
 export enum PageUrl {
-  Home = '/',
-  CreateBitmap = '/create_bitmap',
-  DrawBitmap = '/bitmap/:id',
+  Home = '/bitmap_editor/',
+  CreateBitmap = '/bitmap_editor/create_bitmap/',
+  DrawBitmap = '/bitmap_editor/bitmap/:id/',
 }
