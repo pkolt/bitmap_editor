@@ -92,7 +92,7 @@ export const PixelEditor = ({ bitmapEntity, onChange }: PixelEditorProps): JSX.E
             </button>
           </div>
           <button className="btn btn-outline-primary" onClick={handleClickExport} disabled={isEmptyBitmap}>
-            <i className="bi bi-code-slash" /> Export to C++
+            <i className="bi bi-code-slash" /> Export to C
           </button>
           <button className="btn btn-outline-primary" onClick={handleClickRename}>
             Rename
