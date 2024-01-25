@@ -67,13 +67,13 @@ const drawBitmap = (ctx: CanvasContext, bitmap: Bitmap): void => {
   }
 };
 
-interface BitmapViewProps {
+interface BitmapEditorProps {
   bitmap: Bitmap;
   onChangeBitmap: (bitmap: Bitmap) => void;
   eraser: boolean;
 }
 
-export const BitmapView = ({ bitmap, onChangeBitmap, eraser }: BitmapViewProps): JSX.Element => {
+export const BitmapEditor = ({ bitmap, onChangeBitmap, eraser }: BitmapEditorProps): JSX.Element => {
   const [sizes, setSizes] = useState<Sizes | null>(null);
   const [ctx, setCtx] = useState<CanvasContext | null>(null);
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
@@ -82,16 +82,19 @@ export const BitmapView = ({ bitmap, onChangeBitmap, eraser }: BitmapViewProps):
 
   const setCanvasRef = useCallback(
     (elem: HTMLCanvasElement | null) => {
-      if (!elem) {
-        return;
+      if (elem) {
+        const canvasWidth = getCanvasSize(bitmapWidth);
+        const canvasHeight = getCanvasSize(bitmapHeight);
+        elem.width = canvasWidth;
+        elem.height = canvasHeight;
+        setSizes({ canvasWidth, canvasHeight, bitmapWidth, bitmapHeight });
+        setCtx(elem.getContext('2d'));
+        setCanvas(elem);
+      } else {
+        setSizes(null);
+        setCtx(null);
+        setCanvas(null);
       }
-      const canvasWidth = getCanvasSize(bitmapWidth);
-      const canvasHeight = getCanvasSize(bitmapHeight);
-      elem.width = canvasWidth;
-      elem.height = canvasHeight;
-      setSizes({ canvasWidth, canvasHeight, bitmapWidth, bitmapHeight });
-      setCtx(elem.getContext('2d'));
-      setCanvas(elem);
     },
     [bitmapHeight, bitmapWidth],
   );

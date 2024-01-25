@@ -5,7 +5,7 @@ import { ResetDialog } from './ResetDialog';
 import { ExportDialog } from './ExportDialog';
 import { Bitmap } from '@/utils/bitmap';
 import { RenameDialog } from './RenameDialog';
-import { BitmapView } from './BitmapView';
+import { BitmapEditor } from './BitmapEditor';
 
 const AUTO_SAVE_TIMEOUT_MS = 2000;
 
@@ -16,12 +16,12 @@ enum Dialog {
   Rename,
 }
 
-interface PixelEditorProps {
+interface EditorProps {
   bitmapEntity: BitmapEntity;
   onChange: (data: BitmapEntityData) => void;
 }
 
-export const PixelEditor = ({ bitmapEntity, onChange }: PixelEditorProps): JSX.Element => {
+export const Editor = ({ bitmapEntity, onChange }: EditorProps): JSX.Element => {
   const refAutoSaveTimeout = useRef<NodeJS.Timeout | null>(null);
   const [eraser, setEraser] = useState(false);
   const [dialog, setDialog] = useState(Dialog.None);
@@ -98,7 +98,7 @@ export const PixelEditor = ({ bitmapEntity, onChange }: PixelEditorProps): JSX.E
             Rename
           </button>
         </div>
-        <BitmapView bitmap={bitmap} onChangeBitmap={handleChangeBitmap} eraser={eraser} />
+        <BitmapEditor bitmap={bitmap} onChangeBitmap={handleChangeBitmap} eraser={eraser} />
       </div>
       {dialog === Dialog.Reset && <ResetDialog onClose={handleCloseDialog} onAccept={handleAcceptResetDialog} />}
       {dialog === Dialog.Export && <ExportDialog onClose={handleCloseDialog} bitmapId={bitmapEntity.id} />}

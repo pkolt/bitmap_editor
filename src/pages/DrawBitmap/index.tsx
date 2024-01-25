@@ -1,4 +1,4 @@
-import { PixelEditor } from '@/components/PixelEditor';
+import { Editor } from '@/components/Editor';
 import { Page } from '@/components/Page';
 import { PageUrl } from '@/constants/urls';
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
@@ -30,7 +30,7 @@ const DrawBitmap = () => {
         <h3 className="mb-3">
           {image.name} ({image.width}x{image.height})
         </h3>
-        <PixelEditor bitmapEntity={image} onChange={onChange} />
+        <Editor bitmapEntity={image} onChange={onChange} />
       </main>
     </Page>
   );
