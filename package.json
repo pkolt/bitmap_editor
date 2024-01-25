@@ -13,7 +13,9 @@
     "format": "prettier --check src",
     "format-fix": "prettier --write src",
     "lint-all": "npm run check-ts && npm run eslint && npm run format",
-    "lint-all-fix": "npm run eslint-fix && npm run format-fix"
+    "lint-all-fix": "npm run eslint-fix && npm run format-fix",
+    "prepare": "husky",
+    "pre-push": "npm run lint-all"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
@@ -41,6 +43,7 @@
     "eslint": "^8.56.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
+    "husky": "^9.0.5",
     "prettier": "^3.1.1",
     "typescript": "^5.3.3",
     "vite": "^5.0.10"
