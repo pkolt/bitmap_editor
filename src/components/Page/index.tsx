@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Footer } from '../Footer';
-import { NavBar } from '../NavBar';
+import { Header } from '../Header';
 
 interface PageProps {
   title: string;
@@ -14,7 +14,7 @@ export const Page = ({ title, children }: PageProps) => {
 
   return (
     <div className="container d-flex flex-column gap-4 min-vh-100">
-      <NavBar />
+      <Header />
       {children}
       <Footer />
     </div>

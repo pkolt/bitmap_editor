@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { PageUrl } from '@/constants/urls';
 
-export const NavBar = () => {
+export const Header = () => {
   return (
     <div className="navbar bg-body-tertiary rounded-bottom-2">
       <div className="container-fluid">
