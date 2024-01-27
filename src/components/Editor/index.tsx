@@ -77,7 +77,7 @@ export const Editor = ({ bitmapEntity, onChange }: EditorProps): JSX.Element => 
       <div className="d-flex flex-column align-items-center">
         <div className="d-flex gap-2 mb-3 text-black-50">
           <i className="bi bi-info-circle" />
-          Hold the Ctr key to draw or click the mouse key
+          Hold the Ctrl key to draw or click the mouse key
         </div>
         <div className="mb-3 d-flex gap-2">
           <button className="btn btn-outline-primary" onClick={handleClickReset}>
