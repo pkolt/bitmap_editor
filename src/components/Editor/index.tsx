@@ -1,11 +1,13 @@
 import cn from 'classnames';
-import { BitmapEntity, BitmapEntityData } from '@/types/bitmap';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { ResetDialog } from './ResetDialog';
 import { ExportDialog } from './ExportDialog';
 import { Bitmap } from '@/utils/bitmap';
 import { RenameDialog } from './RenameDialog';
 import { BitmapEditor } from './BitmapEditor';
+
+import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
+import { GridDialog } from './GridDialog';
 
 const AUTO_SAVE_TIMEOUT_MS = 2000;
 
@@ -14,14 +16,19 @@ enum Dialog {
   Reset,
   Export,
   Rename,
+  Grid,
 }
 
 interface EditorProps {
-  bitmapEntity: BitmapEntity;
-  onChange: (data: BitmapEntityData) => void;
+  bitmapId: string;
 }
 
-export const Editor = ({ bitmapEntity, onChange }: EditorProps): JSX.Element => {
+export const Editor = ({ bitmapId }: EditorProps): JSX.Element => {
+  const { findBitmap, changeBitmap } = useBitmapStore();
+  const bitmapEntity = findBitmap(bitmapId);
+  if (!bitmapEntity) {
+    throw Error(`Not found bitmap with id: ${bitmapId}`);
+  }
   const refAutoSaveTimeout = useRef<NodeJS.Timeout | null>(null);
   const [eraser, setEraser] = useState(false);
   const [dialog, setDialog] = useState(Dialog.None);
@@ -39,50 +46,44 @@ export const Editor = ({ bitmapEntity, onChange }: EditorProps): JSX.Element => 
       }
 
       refAutoSaveTimeout.current = setTimeout(() => {
-        onChange(bitmap.toJSON());
+        changeBitmap(bitmapId, { data: bitmap.toJSON() });
       }, AUTO_SAVE_TIMEOUT_MS);
     },
-    [bitmap, onChange],
+    [bitmap, changeBitmap, bitmapId],
   );
 
   const resetBitmap = useCallback(() => {
     bitmap.reset();
     setBitmap(bitmap.clone());
-    onChange(bitmap.toJSON());
-  }, [bitmap, onChange]);
+    changeBitmap(bitmapId, { data: bitmap.toJSON() });
+  }, [bitmap, bitmapId, changeBitmap]);
 
-  const handleCloseDialog = () => {
-    setDialog(Dialog.None);
-  };
-
-  const handleClickReset = () => {
-    setDialog(Dialog.Reset);
-  };
+  const handleCloseDialog = () => setDialog(Dialog.None);
+  const handleClickReset = () => setDialog(Dialog.Reset);
 
   const handleAcceptResetDialog = () => {
     resetBitmap();
     handleCloseDialog();
   };
 
-  const handleClickExport = () => {
-    setDialog(Dialog.Export);
-  };
-
-  const handleClickRename = () => {
-    setDialog(Dialog.Rename);
-  };
+  const handleClickExport = () => setDialog(Dialog.Export);
+  const handleClickRename = () => setDialog(Dialog.Rename);
+  const handleClickGrid = () => setDialog(Dialog.Grid);
 
   return (
     <>
       <div className="d-flex flex-column align-items-center">
+        <h3 className="mb-3 d-flex gap-2">
+          {bitmapEntity.name} ({bitmapEntity.width}x{bitmapEntity.height})
+          <button className="btn btn-outline-primary" onClick={handleClickRename}>
+            <i className="bi bi-pencil-square" /> Rename
+          </button>
+        </h3>
         <div className="d-flex gap-2 mb-3 text-black-50">
           <i className="bi bi-info-circle" />
           Hold the Ctrl key to draw or click the mouse key
         </div>
         <div className="mb-3 d-flex gap-2">
-          <button className="btn btn-outline-primary" onClick={handleClickReset}>
-            Reset
-          </button>
           <div className="btn-group">
             <button className={cn('btn btn-outline-primary', !eraser && 'active')} onClick={() => setEraser(false)}>
               <i className="bi bi-brush" /> Draw
@@ -91,18 +92,22 @@ export const Editor = ({ bitmapEntity, onChange }: EditorProps): JSX.Element => 
               <i className="bi bi-eraser" /> Eraser
             </button>
           </div>
+          <button className="btn btn-outline-primary" onClick={handleClickReset}>
+            Reset
+          </button>
           <button className="btn btn-outline-primary" onClick={handleClickExport} disabled={isEmptyBitmap}>
             <i className="bi bi-code-slash" /> Export to C
           </button>
-          <button className="btn btn-outline-primary" onClick={handleClickRename}>
-            Rename
+          <button className="btn btn-outline-primary" onClick={handleClickGrid}>
+            <i className="bi bi-border-all" /> Grid
           </button>
         </div>
         <BitmapEditor bitmap={bitmap} onChangeBitmap={handleChangeBitmap} eraser={eraser} />
       </div>
       {dialog === Dialog.Reset && <ResetDialog onClose={handleCloseDialog} onAccept={handleAcceptResetDialog} />}
-      {dialog === Dialog.Export && <ExportDialog onClose={handleCloseDialog} bitmapId={bitmapEntity.id} />}
-      {dialog === Dialog.Rename && <RenameDialog onClose={handleCloseDialog} bitmapId={bitmapEntity.id} />}
+      {dialog === Dialog.Export && <ExportDialog onClose={handleCloseDialog} bitmapId={bitmapId} />}
+      {dialog === Dialog.Rename && <RenameDialog onClose={handleCloseDialog} bitmapId={bitmapId} />}
+      {dialog === Dialog.Grid && <GridDialog onClose={handleCloseDialog} />}
     </>
   );
 };

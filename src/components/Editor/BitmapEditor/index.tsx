@@ -1,10 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styles from './index.module.css';
 import { Bitmap } from '@/utils/bitmap';
+import { useSettingsStore, type GridSettings } from '@/store/settings/useSettingsStore';
 
 // All sizes in pixels
 const SQUARE_SIZE = 10;
 const SQUARE_COLOR = '#000';
+const SEPARATOR_COLOR = '#ff6347';
+const SEPARATOR_SIZE = 1;
 const BORDER_SIZE = 1;
 const BORDER_COLOR = '#ccc';
 const STEP_SIZE = SQUARE_SIZE + BORDER_SIZE;
@@ -67,6 +70,37 @@ const drawBitmap = (ctx: CanvasContext, bitmap: Bitmap): void => {
   }
 };
 
+const drawSeparators = (ctx: CanvasContext, sizes: Sizes, grid: GridSettings): void => {
+  const { canvasWidth, canvasHeight, bitmapWidth, bitmapHeight } = sizes;
+
+  ctx.strokeStyle = SEPARATOR_COLOR;
+  ctx.lineWidth = SEPARATOR_SIZE;
+
+  if (grid.visibleRows) {
+    for (let i = 0; i <= bitmapHeight; i++) {
+      if (i % grid.rowSize === 0 && i > 0 && i < bitmapHeight) {
+        const y = i * STEP_SIZE;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvasWidth, y);
+        ctx.stroke();
+      }
+    }
+  }
+
+  if (grid.visibleColumns) {
+    for (let i = 0; i <= bitmapWidth; i++) {
+      if (i % grid.columnSize === 0 && i > 0 && i < bitmapWidth) {
+        const x = i * STEP_SIZE;
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvasHeight);
+        ctx.stroke();
+      }
+    }
+  }
+};
+
 interface BitmapEditorProps {
   bitmap: Bitmap;
   onChangeBitmap: (bitmap: Bitmap) => void;
@@ -74,6 +108,7 @@ interface BitmapEditorProps {
 }
 
 export const BitmapEditor = ({ bitmap, onChangeBitmap, eraser }: BitmapEditorProps): JSX.Element => {
+  const { grid } = useSettingsStore();
   const [sizes, setSizes] = useState<Sizes | null>(null);
   const [ctx, setCtx] = useState<CanvasContext | null>(null);
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
@@ -134,7 +169,8 @@ export const BitmapEditor = ({ bitmap, onChangeBitmap, eraser }: BitmapEditorPro
     clearDisplay(ctx, sizes);
     drawBitmap(ctx, bitmap);
     drawGrid(ctx, sizes);
-  }, [bitmap, ctx, sizes]);
+    drawSeparators(ctx, sizes, grid);
+  }, [bitmap, ctx, grid, sizes]);
 
   return <canvas ref={setCanvasRef} className={styles.container} onClick={handleClick} onMouseMove={handleMouseMove} />;
 };

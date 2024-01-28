@@ -30,7 +30,7 @@ export const RenameDialog = ({ bitmapId, onClose }: RenameDialogProps): JSX.Elem
 
   const onSubmit = (data: FormData) => {
     if (bitmapEntity) {
-      changeBitmap({ ...bitmapEntity, name: data.name });
+      changeBitmap(bitmapId, { name: data.name });
     }
     refModal.current?.close();
   };
