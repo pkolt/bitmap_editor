@@ -6,7 +6,7 @@ import { useSettingsStore, type GridSettings } from '@/store/settings/useSetting
 // All sizes in pixels
 const SQUARE_SIZE = 10;
 const SQUARE_COLOR = '#000';
-const SEPARATOR_COLOR = '#ff6347';
+const SEPARATOR_COLOR = '#777';
 const SEPARATOR_SIZE = 1;
 const BORDER_SIZE = 1;
 const BORDER_COLOR = '#ccc';
