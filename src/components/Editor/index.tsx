@@ -9,7 +9,8 @@ import { BitmapEditor } from './BitmapEditor';
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { GridDialog } from './GridDialog';
 
-const AUTO_SAVE_TIMEOUT_MS = 2000;
+const AUTO_SAVE_TIMEOUT_MS = 500;
+const HISTORY_LENGTH = 50;
 
 enum Dialog {
   None,
@@ -32,11 +33,23 @@ export const Editor = ({ bitmapId }: EditorProps): JSX.Element => {
   const refAutoSaveTimeout = useRef<NodeJS.Timeout | null>(null);
   const [eraser, setEraser] = useState(false);
   const [dialog, setDialog] = useState(Dialog.None);
-  const [bitmap, setBitmap] = useState(Bitmap.fromArray(bitmapEntity.width, bitmapEntity.height, bitmapEntity.data));
+  const [bitmap, setBitmap] = useState(Bitmap.fromObject(bitmapEntity));
+  const [history, setHistory] = useState<Bitmap[]>([bitmap.clone()]);
+  const [historyIndex, setHistoryIndex] = useState(0);
+
+  const saveHistory = useCallback((value: Bitmap) => {
+    setHistory((state) => {
+      const list = [...state, value].slice(HISTORY_LENGTH * -1);
+      setHistoryIndex(list.length - 1);
+      return list;
+    });
+  }, []);
+
   const isEmptyBitmap = useMemo(() => bitmap.isEmpty(), [bitmap]);
 
   const handleChangeBitmap = useCallback(
     (value: Bitmap) => {
+      const copyBitmap = value.clone();
       setBitmap(value);
 
       // Reset previous timer
@@ -46,29 +59,47 @@ export const Editor = ({ bitmapId }: EditorProps): JSX.Element => {
       }
 
       refAutoSaveTimeout.current = setTimeout(() => {
+        saveHistory(copyBitmap);
         changeBitmap(bitmapId, { data: bitmap.toJSON() });
       }, AUTO_SAVE_TIMEOUT_MS);
     },
-    [bitmap, changeBitmap, bitmapId],
+    [saveHistory, changeBitmap, bitmapId, bitmap],
   );
 
   const resetBitmap = useCallback(() => {
     bitmap.reset();
     setBitmap(bitmap.clone());
+    saveHistory(bitmap.clone());
     changeBitmap(bitmapId, { data: bitmap.toJSON() });
-  }, [bitmap, bitmapId, changeBitmap]);
+  }, [bitmap, bitmapId, changeBitmap, saveHistory]);
 
   const handleCloseDialog = () => setDialog(Dialog.None);
   const handleClickReset = () => setDialog(Dialog.Reset);
+  const handleClickExport = () => setDialog(Dialog.Export);
+  const handleClickRename = () => setDialog(Dialog.Rename);
+  const handleClickGrid = () => setDialog(Dialog.Grid);
 
   const handleAcceptResetDialog = () => {
     resetBitmap();
     handleCloseDialog();
   };
 
-  const handleClickExport = () => setDialog(Dialog.Export);
-  const handleClickRename = () => setDialog(Dialog.Rename);
-  const handleClickGrid = () => setDialog(Dialog.Grid);
+  const setBitmapFromHistory = useCallback(
+    (moveIndex: number) => {
+      const index = historyIndex + moveIndex;
+      const nextBitmap = history[index];
+      setHistoryIndex(index);
+      setBitmap(nextBitmap.clone());
+      changeBitmap(bitmapId, { data: nextBitmap.toJSON() });
+    },
+    [bitmapId, changeBitmap, history, historyIndex],
+  );
+
+  const disabledUndo = historyIndex <= 0;
+  const handleClickUndo = useCallback(() => setBitmapFromHistory(-1), [setBitmapFromHistory]);
+
+  const disabledRedo = historyIndex >= history.length - 1;
+  const handleClickRedo = useCallback(() => setBitmapFromHistory(1), [setBitmapFromHistory]);
 
   return (
     <>
@@ -92,6 +123,12 @@ export const Editor = ({ bitmapId }: EditorProps): JSX.Element => {
               <i className="bi bi-eraser" /> Eraser
             </button>
           </div>
+          <button className="btn btn-outline-primary" onClick={handleClickUndo} disabled={disabledUndo}>
+            <i className="bi bi-arrow-counterclockwise" /> Undo
+          </button>
+          <button className="btn btn-outline-primary" onClick={handleClickRedo} disabled={disabledRedo}>
+            <i className="bi bi-arrow-clockwise" /> Redo
+          </button>
           <button className="btn btn-outline-primary" onClick={handleClickReset}>
             Reset
           </button>

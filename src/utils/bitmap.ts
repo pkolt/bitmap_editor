@@ -8,7 +8,7 @@ export class Bitmap {
   height: number;
   #data: Uint32Array;
 
-  static fromArray(width: number, height: number, data: number[]): Bitmap {
+  static fromObject({ width, height, data }: { width: number; height: number; data: number[] }): Bitmap {
     return new Bitmap(width, height, data && data.length > 0 ? Uint32Array.from(data) : undefined);
   }
 
@@ -22,7 +22,7 @@ export class Bitmap {
       throw new Error('Invalid bitmap data');
     }
 
-    this.#data = data ? data : new Uint32Array(arrLength);
+    this.#data = data ? new Uint32Array(data) : new Uint32Array(arrLength);
   }
 
   get length(): number {
