@@ -49,7 +49,7 @@ export const Editor = ({ bitmapId }: EditorProps): JSX.Element => {
 
   const handleChangeBitmap = useCallback(
     (value: Bitmap) => {
-      const copyBitmap = value.clone();
+      const copiedBitmap = value.clone();
       setBitmap(value);
 
       // Reset previous timer
@@ -59,11 +59,11 @@ export const Editor = ({ bitmapId }: EditorProps): JSX.Element => {
       }
 
       refAutoSaveTimeout.current = setTimeout(() => {
-        saveHistory(copyBitmap);
-        changeBitmap(bitmapId, { data: bitmap.toJSON() });
+        saveHistory(copiedBitmap);
+        changeBitmap(bitmapId, { data: copiedBitmap.toJSON() });
       }, AUTO_SAVE_TIMEOUT_MS);
     },
-    [saveHistory, changeBitmap, bitmapId, bitmap],
+    [saveHistory, changeBitmap, bitmapId],
   );
 
   const resetBitmap = useCallback(() => {
