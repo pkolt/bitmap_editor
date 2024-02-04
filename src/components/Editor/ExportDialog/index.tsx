@@ -1,8 +1,12 @@
 import { Modal } from '@/components/Modal';
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
-import { bitmapToProgramCode } from '../utils';
-import { useId, useMemo } from 'react';
-import { useForm } from 'react-hook-form';
+import { DataFormat, Platform, SizeFormat, exportBitmap } from '../utils/exportBitmap';
+import { useMemo } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { CheckBox } from '@/components/CheckBox';
+import { Radio } from '@/components/Radio';
+import { Alert } from '@/components/Alert';
+import { Input } from '@/components/Input';
 
 interface ExportDialogProps {
   bitmapId: string;
@@ -10,21 +14,40 @@ interface ExportDialogProps {
 }
 
 interface FormData {
-  data: string;
+  name: string;
+  sizeFormat: SizeFormat;
+  dataFormat: DataFormat;
+  platform: Platform;
+  progmem: boolean;
 }
 
+const defaultValues: FormData = {
+  name: '',
+  sizeFormat: SizeFormat.Variables,
+  dataFormat: DataFormat.Hex,
+  platform: Platform.Arduino,
+  progmem: true,
+};
+
 export const ExportDialog = ({ bitmapId, onClose }: ExportDialogProps): JSX.Element | null => {
-  const textareaId = useId();
   const { findBitmap: findBitmap } = useBitmapStore();
   const bitmapEntity = findBitmap(bitmapId);
-  const defaultData = useMemo<string>(() => (bitmapEntity ? bitmapToProgramCode(bitmapEntity) : ''), [bitmapEntity]);
-  const { register, handleSubmit, watch } = useForm<FormData>({
+
+  const methods = useForm<FormData>({
     mode: 'onChange',
-    defaultValues: { data: defaultData },
+    defaultValues: { ...defaultValues, name: bitmapEntity?.name ?? '' },
   });
-  const data = watch('data');
+
+  const { register, handleSubmit, watch } = methods;
+
+  const formData = watch();
+  const exportCode = useMemo<string>(
+    () => (bitmapEntity ? exportBitmap({ entity: bitmapEntity, ...formData }) : ''),
+    [bitmapEntity, formData],
+  );
+
   const handleCopy = () => {
-    navigator.clipboard.writeText(data);
+    navigator.clipboard.writeText(exportCode);
   };
 
   if (!bitmapEntity) {
@@ -32,18 +55,48 @@ export const ExportDialog = ({ bitmapId, onClose }: ExportDialogProps): JSX.Elem
   }
   return (
     <Modal title="Export bitmap" onClose={onClose}>
-      <form onSubmit={handleSubmit(() => {})} className="mb-3">
-        <div className="alert alert-warning d-flex align-items-center gap-1">
-          <i className="bi bi-exclamation-triangle" />
-          <div>Exported bitmap is format SSD1306 OLED display</div>
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(() => {})} className="mb-3">
+          <Alert type="warning">
+            <div className="d-flex align-items-center gap-1">
+              <i className="bi bi-exclamation-triangle" />
+              <div>
+                Exported image as{' '}
+                <a href="https://en.wikipedia.org/wiki/X_BitMap" target="_blank">
+                  X BitMap format
+                </a>
+              </div>
+            </div>
+          </Alert>
+          <Input label="Name:" {...register('name', { required: true })} />
+          <div className="d-flex gap-3">
+            <div>Data format:</div>
+            <Radio label="Hex" value={DataFormat.Hex} {...register('dataFormat', { required: true })} />
+            <Radio label="Bin" value={DataFormat.Bin} {...register('dataFormat', { required: true })} />
+          </div>
+          <hr />
+          <div className="d-flex gap-3">
+            <div>Size format:</div>
+            <Radio label="Variables" value={SizeFormat.Variables} {...register('sizeFormat', { required: true })} />
+            <Radio label="Comments" value={SizeFormat.Comments} {...register('sizeFormat', { required: true })} />
+            <Radio label="Defines" value={SizeFormat.Defines} {...register('sizeFormat', { required: true })} />
+          </div>
+          <hr />
+          <div className="d-flex gap-3">
+            <div>Platform:</div>
+            <Radio label="Arduino" value={Platform.Arduino} {...register('platform', { required: true })} />
+            <Radio label="C language" value={Platform.Clang} {...register('platform', { required: true })} />
+          </div>
+          <hr />
+          <CheckBox label="Include PROGMEM (AVR)" className="mb-3" {...register('progmem', { required: true })} />
+          <textarea className="form-control" rows={10} value={exportCode} readOnly />
+        </form>
+        <div className="d-flex justify-content-center">
+          <button className="btn btn-primary" onClick={handleCopy}>
+            Copy to clipboard
+          </button>
         </div>
-        <textarea className="form-control" rows={10} id={textareaId} {...register('data')} />
-      </form>
-      <div className="d-flex justify-content-center">
-        <button className="btn btn-primary" onClick={handleCopy}>
-          Copy to clipboard
-        </button>
-      </div>
+      </FormProvider>
     </Modal>
   );
 };

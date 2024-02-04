@@ -1,28 +1,26 @@
 import { clearBit, isSetBit, setBit } from './bitwise';
 
-const BITS_PER_ELEMENT = 32;
-const SSD1306_COLUMN_BITS = 8;
+const UINT32_BITS_PER_ELEMENT = 32;
+const UINT8_BITS_PER_ELEMENT = 8;
 
 export class Bitmap {
   width: number;
   height: number;
   #data: Uint32Array;
 
-  static fromObject({ width, height, data }: { width: number; height: number; data: number[] }): Bitmap {
-    return new Bitmap(width, height, data && data.length > 0 ? Uint32Array.from(data) : undefined);
-  }
-
-  constructor(width: number, height: number, data?: Uint32Array) {
+  constructor(width: number, height: number, data?: Uint32Array | number[]) {
     this.width = width;
     this.height = height;
 
-    const arrLength = Math.ceil((width * height) / BITS_PER_ELEMENT);
+    const arrayLength = Math.ceil((width * height) / UINT32_BITS_PER_ELEMENT);
 
-    if (data && data.length !== arrLength) {
+    const isEmptyData = !data || data.length === 0;
+
+    if (!isEmptyData && data.length !== arrayLength) {
       throw new Error('Invalid bitmap data');
     }
 
-    this.#data = data ? new Uint32Array(data) : new Uint32Array(arrLength);
+    this.#data = isEmptyData ? new Uint32Array(arrayLength) : new Uint32Array(data);
   }
 
   get length(): number {
@@ -30,14 +28,14 @@ export class Bitmap {
   }
 
   getByIndex(index: number): boolean {
-    const pos = Math.floor(index / BITS_PER_ELEMENT);
-    const bit = index - BITS_PER_ELEMENT * pos;
+    const pos = Math.floor(index / UINT32_BITS_PER_ELEMENT);
+    const bit = index - UINT32_BITS_PER_ELEMENT * pos;
     return isSetBit(this.#data[pos], bit);
   }
 
   setByIndex(index: number, value: boolean): void {
-    const pos = Math.floor(index / BITS_PER_ELEMENT);
-    const bit = index - BITS_PER_ELEMENT * pos;
+    const pos = Math.floor(index / UINT32_BITS_PER_ELEMENT);
+    const bit = index - UINT32_BITS_PER_ELEMENT * pos;
     this.#data[pos] = value ? setBit(this.#data[pos], bit) : clearBit(this.#data[pos], bit);
   }
 
@@ -77,16 +75,13 @@ export class Bitmap {
     return new Bitmap(this.width, this.height, this.#data);
   }
 
-  toSSD1306(): Uint8Array {
-    const result = new Uint8Array((this.width * this.height) / SSD1306_COLUMN_BITS);
-    for (let page = 0; page < this.height / SSD1306_COLUMN_BITS; page++) {
-      for (let column = 0; column < this.width; column++) {
-        const dstIndex = column + page * this.width;
-        for (let bit = 0; bit < SSD1306_COLUMN_BITS; bit++) {
-          const srcIndex = bit * this.width + this.width * SSD1306_COLUMN_BITS * page + column;
-          if (this.getByIndex(srcIndex)) {
-            result[dstIndex] = setBit(result[dstIndex], bit);
-          }
+  toXBitMap(): Uint8Array {
+    const result = new Uint8Array((this.width * this.height) / UINT8_BITS_PER_ELEMENT);
+    for (let dstIndex = 0; dstIndex < result.length; dstIndex++) {
+      for (let bit = 0; bit < UINT8_BITS_PER_ELEMENT; bit++) {
+        const srcIndex = dstIndex * UINT8_BITS_PER_ELEMENT + bit;
+        if (this.getByIndex(srcIndex)) {
+          result[dstIndex] = setBit(result[dstIndex], bit);
         }
       }
     }

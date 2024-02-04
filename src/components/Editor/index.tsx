@@ -33,7 +33,7 @@ export const Editor = ({ bitmapId }: EditorProps): JSX.Element => {
   const refAutoSaveTimeout = useRef<NodeJS.Timeout | null>(null);
   const [eraser, setEraser] = useState(false);
   const [dialog, setDialog] = useState(Dialog.None);
-  const [bitmap, setBitmap] = useState(Bitmap.fromObject(bitmapEntity));
+  const [bitmap, setBitmap] = useState(new Bitmap(bitmapEntity.width, bitmapEntity.height, bitmapEntity.data));
   const [history, setHistory] = useState<Bitmap[]>([bitmap.clone()]);
   const [historyIndex, setHistoryIndex] = useState(0);
 

@@ -1,6 +1,6 @@
-import { forwardRef, useCallback, useImperativeHandle, useState } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { Modal as ModalBootstrap } from 'bootstrap';
+import { Modal as BSModal } from 'bootstrap';
 
 interface ModalProps {
   title: string;
@@ -14,14 +14,12 @@ export interface ModalRef {
 }
 
 export const Modal = forwardRef<ModalRef, ModalProps>(({ title, onAccept, onClose, children }, ref) => {
-  const [modal, setModal] = useState<ModalBootstrap | null>(null);
+  const bsModalRef = useRef<BSModal | null>(null);
 
   const handleClose = useCallback(() => {
-    if (modal) {
-      modal.hide();
-    }
+    bsModalRef.current?.hide();
     onClose();
-  }, [modal, onClose]);
+  }, [onClose]);
 
   const handleAccept = useCallback(() => {
     if (onAccept) {
@@ -32,19 +30,13 @@ export const Modal = forwardRef<ModalRef, ModalProps>(({ title, onAccept, onClos
 
   const setModalRef = useCallback(
     (elem: HTMLDivElement | null) => {
-      if (!elem) {
-        setModal(null);
-        return;
-      }
-      const modalInstance = ModalBootstrap.getOrCreateInstance(elem);
-      // Show modal on mount component
-      modalInstance.show();
-      // Subscribe on close modal
-      // https://github.com/twbs/bootstrap/blob/main/js/src/modal.js
-      if (elem && handleClose) {
+      if (elem) {
+        bsModalRef.current = new BSModal(elem); // init modal
+        bsModalRef.current.show();
         elem.addEventListener('hidden.bs.modal', handleClose);
+      } else {
+        bsModalRef.current?.dispose(); // destroy modal
       }
-      setModal(modalInstance);
     },
     [handleClose],
   );
