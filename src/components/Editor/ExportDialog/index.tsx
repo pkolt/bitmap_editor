@@ -7,6 +7,7 @@ import { CheckBox } from '@/components/CheckBox';
 import { Radio } from '@/components/Radio';
 import { Alert } from '@/components/Alert';
 import { Input } from '@/components/Input';
+import { BitOrder } from '@/utils/bitmap';
 
 interface ExportDialogProps {
   bitmapId: string;
@@ -15,6 +16,7 @@ interface ExportDialogProps {
 
 interface FormData {
   name: string;
+  bitOrder: BitOrder;
   sizeFormat: SizeFormat;
   dataFormat: DataFormat;
   platform: Platform;
@@ -23,6 +25,7 @@ interface FormData {
 
 const defaultValues: FormData = {
   name: '',
+  bitOrder: BitOrder.BigEndian,
   sizeFormat: SizeFormat.Variables,
   dataFormat: DataFormat.Hex,
   platform: Platform.Arduino,
@@ -69,6 +72,16 @@ export const ExportDialog = ({ bitmapId, onClose }: ExportDialogProps): JSX.Elem
             </div>
           </Alert>
           <Input label="Name:" {...register('name', { required: true })} />
+          <div className="d-flex gap-3">
+            <div>Bit order:</div>
+            <Radio label="Big-endian (U8g2)" value={BitOrder.BigEndian} {...register('bitOrder', { required: true })} />
+            <Radio
+              label="Little-endian (Adafruit)"
+              value={BitOrder.LittleEndian}
+              {...register('bitOrder', { required: true })}
+            />
+          </div>
+          <hr />
           <div className="d-flex gap-3">
             <div>Data format:</div>
             <Radio label="Hex" value={DataFormat.Hex} {...register('dataFormat', { required: true })} />

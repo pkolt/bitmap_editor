@@ -1,5 +1,5 @@
 import { BitmapEntity } from '@/types/bitmap';
-import { Bitmap } from '@/utils/bitmap';
+import { BitOrder, Bitmap } from '@/utils/bitmap';
 
 export enum SizeFormat {
   Comments = 'comments',
@@ -19,6 +19,7 @@ export enum Platform {
 
 interface ExportBitmapParams {
   name: string;
+  bitOrder: BitOrder;
   entity: BitmapEntity;
   dataFormat: DataFormat;
   platform: Platform;
@@ -28,6 +29,7 @@ interface ExportBitmapParams {
 
 export const exportBitmap = ({
   name,
+  bitOrder,
   entity,
   dataFormat,
   platform,
@@ -36,7 +38,7 @@ export const exportBitmap = ({
 }: ExportBitmapParams): string => {
   const { width, height, data } = entity;
   const bitmap = new Bitmap(width, height, data);
-  const xBitMap = bitmap.toXBitMap();
+  const xBitMap = bitmap.toXBitMap(bitOrder);
 
   const nameLower = name.replace(/[^\w]/gi, '_').toLowerCase();
   const nameUpper = nameLower.toUpperCase();

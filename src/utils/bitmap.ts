@@ -1,5 +1,10 @@
 import { clearBit, isSetBit, setBit } from './bitwise';
 
+export enum BitOrder {
+  BigEndian = 'big-endian', // MSB (Most Significant Byte) or BE (Big-Endian)
+  LittleEndian = 'little-endian', // LSB (Least Significant Byte) or LE (Little-Endian)
+}
+
 const UINT32_BITS_PER_ELEMENT = 32;
 const UINT8_BITS_PER_ELEMENT = 8;
 
@@ -75,13 +80,14 @@ export class Bitmap {
     return new Bitmap(this.width, this.height, this.#data);
   }
 
-  toXBitMap(): Uint8Array {
+  toXBitMap(bitOrder: BitOrder): Uint8Array {
     const result = new Uint8Array((this.width * this.height) / UINT8_BITS_PER_ELEMENT);
     for (let dstIndex = 0; dstIndex < result.length; dstIndex++) {
       for (let bit = 0; bit < UINT8_BITS_PER_ELEMENT; bit++) {
         const srcIndex = dstIndex * UINT8_BITS_PER_ELEMENT + bit;
         if (this.getByIndex(srcIndex)) {
-          result[dstIndex] = setBit(result[dstIndex], bit);
+          const resBit = bitOrder === BitOrder.BigEndian ? bit : Math.abs(bit - (UINT8_BITS_PER_ELEMENT - 1));
+          result[dstIndex] = setBit(result[dstIndex], resBit);
         }
       }
     }
