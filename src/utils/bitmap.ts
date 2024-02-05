@@ -86,7 +86,7 @@ export class Bitmap {
       for (let bit = 0; bit < UINT8_BITS_PER_ELEMENT; bit++) {
         const srcIndex = dstIndex * UINT8_BITS_PER_ELEMENT + bit;
         if (this.getByIndex(srcIndex)) {
-          const resBit = bitOrder === BitOrder.BigEndian ? bit : Math.abs(bit - (UINT8_BITS_PER_ELEMENT - 1));
+          const resBit = bitOrder === BitOrder.BigEndian ? bit : UINT8_BITS_PER_ELEMENT - 1 - bit;
           result[dstIndex] = setBit(result[dstIndex], resBit);
         }
       }
