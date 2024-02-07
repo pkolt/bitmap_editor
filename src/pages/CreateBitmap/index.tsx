@@ -31,7 +31,7 @@ const validatorSize = (value: string) => {
 
 const CreateBitmap = () => {
   const navigate = useNavigate();
-  const { addBitmap: addImage } = useBitmapStore();
+  const { addBitmap } = useBitmapStore();
 
   const methods = useForm<FormData>({
     mode: 'onChange',
@@ -58,9 +58,9 @@ const CreateBitmap = () => {
       updatedAt: timestamp,
     };
 
-    addImage(image);
+    addBitmap(image);
 
-    navigate(PageUrl.DrawBitmap.replace(':id', id), { replace: true });
+    navigate(PageUrl.EditBitmap.replace(':id', id), { replace: true });
   };
 
   return (
@@ -68,8 +68,8 @@ const CreateBitmap = () => {
       <main className="d-flex flex-column flex-grow-1 justify-content-center align-items-center">
         <h1>Create image</h1>
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)} className="w-50">
-            <Input label="Name:" autoFocus {...register('name', { required: true, minLength: 3 })} />
+          <form onSubmit={handleSubmit(onSubmit)} className="w-50 d-flex flex-column gap-3">
+            <Input label="Name:" autoFocus {...register('name', { required: true })} />
             <Input label="Width:" {...register('width', { required: true, validate: validatorSize })} />
             <Input label="Height:" {...register('height', { required: true, validate: validatorSize })} />
             <div className="text-center">

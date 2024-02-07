@@ -2,11 +2,11 @@ import cn from 'classnames';
 import { useId, forwardRef } from 'react';
 import { useFormState } from 'react-hook-form';
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface RangeProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
 }
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(({ label, className, ...props }, ref): JSX.Element => {
+export const Range = forwardRef<HTMLInputElement, RangeProps>(({ label, className, ...props }, ref): JSX.Element => {
   const id = useId();
   const name = props.name!;
   const { errors } = useFormState();
@@ -18,13 +18,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({ label, classNam
         {label}
       </label>
       <input
-        type="text"
-        className={cn('form-control', (error || errorMessage) && 'is-invalid')}
+        type="range"
+        className={cn('form-range', (error || errorMessage) && 'is-invalid')}
         id={id}
         ref={ref}
         {...props}
       />
-      {errorMessage && <div className="invalid-feedback">{errorMessage}</div>}
     </div>
   );
 });

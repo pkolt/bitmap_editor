@@ -42,7 +42,7 @@ export const RenameDialog = ({ bitmapId, onClose }: RenameDialogProps): JSX.Elem
   return (
     <Modal title="Rename bitmap" onClose={onClose} ref={refModal}>
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="mb-3">
+        <form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
           <Input label="Name:" autoFocus {...register('name', { required: true, minLength: 3 })} />
           <div className="text-center">
             <button type="submit" className="btn btn-primary" disabled={!isValid}>

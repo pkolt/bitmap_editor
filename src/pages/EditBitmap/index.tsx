@@ -4,7 +4,7 @@ import { PageUrl } from '@/constants/urls';
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { Navigate, useParams } from 'react-router-dom';
 
-const DrawBitmap = () => {
+const EditBitmap = () => {
   const { id } = useParams();
   const { findBitmap } = useBitmapStore();
   const image = findBitmap(id ?? '');
@@ -14,7 +14,7 @@ const DrawBitmap = () => {
   }
 
   return (
-    <Page title={`Bitmap Editor: ${image.name}`}>
+    <Page title={`Edit bitmap: ${image.name}`}>
       <main className="d-flex flex-column flex-grow-1 justify-content-center align-items-center">
         <Editor bitmapId={id} />
       </main>
@@ -22,4 +22,4 @@ const DrawBitmap = () => {
   );
 };
 
-export default DrawBitmap;
+export default EditBitmap;
