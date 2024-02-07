@@ -12,6 +12,7 @@ import { DateTime } from 'luxon';
 import { useNavigate } from 'react-router-dom';
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { PageUrl } from '@/constants/urls';
+import { CheckBox } from '@/components/CheckBox';
 
 enum Step {
   First,
@@ -26,9 +27,19 @@ interface FormData {
   width: number;
   height: number;
   threshold: number;
+  invertColor: boolean;
 }
 
-const defaultValues: FormData = { files: null, top: 0, left: 0, width: 128, height: 64, threshold: 100, name: '' };
+const defaultValues: FormData = {
+  files: null,
+  top: 0,
+  left: 0,
+  width: 128,
+  height: 64,
+  threshold: 100,
+  name: '',
+  invertColor: false,
+};
 
 const ImportBitmap = () => {
   const navigate = useNavigate();
@@ -66,7 +77,7 @@ const ImportBitmap = () => {
     navigate(PageUrl.EditBitmap.replace(':id', id), { replace: true });
   };
 
-  const { files, top, left, width, height, threshold } = watch();
+  const { files, top, left, width, height, threshold, invertColor } = watch();
 
   const [step, setStep] = useState(Step.First);
   const [bitmap, setBitmap] = useState(new Bitmap(1, 1));
@@ -170,11 +181,11 @@ const ImportBitmap = () => {
     }
     canvasCtx.clearRect(0, 0, width, height);
     canvasCtx.drawImage(image, left, top, scaledWidth, scaledHeight);
-    const bitmapFromImage = convertCanvasToBitmap(canvas, canvasCtx, threshold);
+    const bitmapFromImage = convertCanvasToBitmap(canvas, canvasCtx, threshold, invertColor);
     if (bitmapFromImage) {
       setBitmap(bitmapFromImage);
     }
-  }, [canvas, canvasCtx, height, image, left, scaledHeight, scaledWidth, threshold, top, width]);
+  }, [canvas, canvasCtx, height, image, invertColor, left, scaledHeight, scaledWidth, threshold, top, width]);
 
   return (
     <Page title="Import bitmap from image">
@@ -199,6 +210,7 @@ const ImportBitmap = () => {
                   step={1}
                   {...register('threshold', { required: true, valueAsNumber: true })}
                 />
+                <CheckBox label="Invert color" {...register('invertColor')} />
                 <div className="text-center">
                   <button
                     type="button"
