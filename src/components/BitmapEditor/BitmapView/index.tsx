@@ -101,13 +101,13 @@ const drawSeparators = (ctx: CanvasContext, sizes: Sizes, grid: GridSettings): v
   }
 };
 
-interface BitmapEditorProps {
+interface BitmapViewProps {
   bitmap: Bitmap;
-  onChangeBitmap: (bitmap: Bitmap) => void;
-  eraser: boolean;
+  onChangeBitmap?: (bitmap: Bitmap) => void;
+  eraser?: boolean;
 }
 
-export const BitmapEditor = ({ bitmap, onChangeBitmap, eraser }: BitmapEditorProps): JSX.Element => {
+export const BitmapView = ({ bitmap, onChangeBitmap, eraser }: BitmapViewProps): JSX.Element => {
   const { grid } = useSettingsStore();
   const [sizes, setSizes] = useState<Sizes | null>(null);
   const [ctx, setCtx] = useState<CanvasContext | null>(null);
@@ -136,7 +136,7 @@ export const BitmapEditor = ({ bitmap, onChangeBitmap, eraser }: BitmapEditorPro
 
   const handleClick = useCallback(
     (event: React.MouseEvent<HTMLCanvasElement>) => {
-      if (canvas && sizes) {
+      if (canvas && sizes && onChangeBitmap) {
         const { left, top } = canvas.getBoundingClientRect();
         const x = event.clientX - left;
         const y = event.clientY - top;

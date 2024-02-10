@@ -1,4 +1,4 @@
-import { Editor } from '@/components/Editor';
+import { BitmapEditor } from '@/components/BitmapEditor';
 import { Page } from '@/components/Page';
 import { PageUrl } from '@/constants/urls';
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
@@ -16,7 +16,7 @@ const EditBitmap = () => {
   return (
     <Page title={`Edit bitmap: ${image.name}`}>
       <main className="d-flex flex-column flex-grow-1 justify-content-center align-items-center">
-        <Editor bitmapId={id} />
+        <BitmapEditor bitmapId={id} />
       </main>
     </Page>
   );

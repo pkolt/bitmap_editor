@@ -4,7 +4,7 @@ import { ResetDialog } from './ResetDialog';
 import { ExportDialog } from './ExportDialog';
 import { Bitmap } from '@/utils/bitmap';
 import { RenameDialog } from './RenameDialog';
-import { BitmapEditor } from './BitmapEditor';
+import { BitmapView } from './BitmapView';
 
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { GridDialog } from './GridDialog';
@@ -20,11 +20,11 @@ enum Dialog {
   Grid,
 }
 
-interface EditorProps {
+interface BitmapEditorProps {
   bitmapId: string;
 }
 
-export const Editor = ({ bitmapId }: EditorProps): JSX.Element => {
+export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
   const { findBitmap, changeBitmap } = useBitmapStore();
   const bitmapEntity = findBitmap(bitmapId);
   if (!bitmapEntity) {
@@ -139,7 +139,7 @@ export const Editor = ({ bitmapId }: EditorProps): JSX.Element => {
             <i className="bi bi-border-all" /> Grid
           </button>
         </div>
-        <BitmapEditor bitmap={bitmap} onChangeBitmap={handleChangeBitmap} eraser={eraser} />
+        <BitmapView bitmap={bitmap} onChangeBitmap={handleChangeBitmap} eraser={eraser} />
       </div>
       {dialog === Dialog.Reset && <ResetDialog onClose={handleCloseDialog} onAccept={handleAcceptResetDialog} />}
       {dialog === Dialog.Export && <ExportDialog onClose={handleCloseDialog} bitmapId={bitmapId} />}

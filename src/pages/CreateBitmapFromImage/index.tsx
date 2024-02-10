@@ -5,7 +5,7 @@ import { Input } from '@/components/Input';
 import { Range } from '@/components/Range';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Bitmap } from '@/utils/bitmap';
-import { BitmapEditor } from '@/components/Editor/BitmapEditor';
+import { BitmapView } from '@/components/BitmapEditor/BitmapView';
 import { convertCanvasToBitmap, scaleImage } from './utils';
 import { BitmapEntity } from '@/types/bitmap';
 import { DateTime } from 'luxon';
@@ -282,7 +282,7 @@ const CreateBitmapFromImage = () => {
             )}
           </form>
         </FormProvider>
-        {image && <BitmapEditor bitmap={bitmap} onChangeBitmap={() => {}} eraser={false} />}
+        {image && <BitmapView bitmap={bitmap} />}
       </main>
     </Page>
   );
