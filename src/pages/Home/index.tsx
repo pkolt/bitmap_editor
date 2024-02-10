@@ -45,8 +45,8 @@ const Home = () => {
             <Link to={PageUrl.CreateBitmap} className="btn btn-primary btn-lg">
               Create new bitmap
             </Link>
-            <Link to={PageUrl.ImportBitmap} className="btn btn-primary btn-lg">
-              Import bitmap
+            <Link to={PageUrl.CreateBitmapFromImage} className="btn btn-primary btn-lg">
+              Create from image
             </Link>
           </div>
         </main>

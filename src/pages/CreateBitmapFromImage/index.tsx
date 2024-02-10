@@ -41,7 +41,7 @@ const defaultValues: FormData = {
   invertColor: false,
 };
 
-const ImportBitmap = () => {
+const CreateBitmapFromImage = () => {
   const navigate = useNavigate();
   const { addBitmap } = useBitmapStore();
 
@@ -188,9 +188,9 @@ const ImportBitmap = () => {
   }, [canvas, canvasCtx, height, image, invertColor, left, scaledHeight, scaledWidth, threshold, top, width]);
 
   return (
-    <Page title="Import bitmap from image">
+    <Page title="Create bitmap from image">
       <main className="d-flex flex-column flex-grow-1 justify-content-center align-items-center gap-3">
-        <h1>Import bitmap from image</h1>
+        <h1>Create bitmap from image</h1>
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className="w-50 d-flex flex-column gap-3">
             {step === Step.First && (
@@ -288,4 +288,4 @@ const ImportBitmap = () => {
   );
 };
 
-export default ImportBitmap;
+export default CreateBitmapFromImage;
