@@ -1,4 +1,5 @@
 import cn from 'classnames';
+import { useHotkeys } from 'react-hotkeys-hook';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { ResetDialog } from './ResetDialog';
 import { ExportDialog } from './ExportDialog';
@@ -96,10 +97,31 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
   );
 
   const disabledUndo = historyIndex <= 0;
-  const handleClickUndo = useCallback(() => setBitmapFromHistory(-1), [setBitmapFromHistory]);
+  const handleClickUndo = useCallback(() => {
+    if (!disabledUndo) {
+      setBitmapFromHistory(-1);
+    }
+  }, [disabledUndo, setBitmapFromHistory]);
 
   const disabledRedo = historyIndex >= history.length - 1;
-  const handleClickRedo = useCallback(() => setBitmapFromHistory(1), [setBitmapFromHistory]);
+  const handleClickRedo = useCallback(() => {
+    if (!disabledRedo) {
+      setBitmapFromHistory(1);
+    }
+  }, [disabledRedo, setBitmapFromHistory]);
+
+  const handleClickDraw = useCallback(() => {
+    setEraser(false);
+  }, []);
+
+  const handleClickEraser = useCallback(() => {
+    setEraser(true);
+  }, []);
+
+  useHotkeys('mod+z', handleClickUndo);
+  useHotkeys('mod+shift+z', handleClickRedo);
+  useHotkeys('mod+u', handleClickDraw);
+  useHotkeys('mod+i', handleClickEraser);
 
   return (
     <>
@@ -116,17 +138,31 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
         </div>
         <div className="mb-3 d-flex gap-2">
           <div className="btn-group">
-            <button className={cn('btn btn-outline-primary', !eraser && 'active')} onClick={() => setEraser(false)}>
+            <button
+              className={cn('btn btn-outline-primary', !eraser && 'active')}
+              onClick={handleClickDraw}
+              title="Ctr+U / Cmd+U">
               <i className="bi bi-brush" /> Draw
             </button>
-            <button className={cn('btn btn-outline-primary', eraser && 'active')} onClick={() => setEraser(true)}>
+            <button
+              className={cn('btn btn-outline-primary', eraser && 'active')}
+              onClick={handleClickEraser}
+              title="Ctr+I / Cmd+I">
               <i className="bi bi-eraser" /> Eraser
             </button>
           </div>
-          <button className="btn btn-outline-primary" onClick={handleClickUndo} disabled={disabledUndo}>
+          <button
+            className="btn btn-outline-primary"
+            onClick={handleClickUndo}
+            disabled={disabledUndo}
+            title="Ctr+Z / Cmd+Z">
             <i className="bi bi-arrow-counterclockwise" /> Undo
           </button>
-          <button className="btn btn-outline-primary" onClick={handleClickRedo} disabled={disabledRedo}>
+          <button
+            className="btn btn-outline-primary"
+            onClick={handleClickRedo}
+            disabled={disabledRedo}
+            title="Ctr+Shift+Z / Cmd+Shift+Z">
             <i className="bi bi-arrow-clockwise" /> Redo
           </button>
           <button className="btn btn-outline-primary" onClick={handleClickReset}>
