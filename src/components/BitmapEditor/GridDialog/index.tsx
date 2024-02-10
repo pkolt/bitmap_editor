@@ -43,13 +43,13 @@ export const GridDialog = ({ onClose }: RenameDialogProps): JSX.Element | null =
   return (
     <Modal title="Grid settings" onClose={onClose} ref={refModal}>
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="mb-3">
-          <CheckBox label="Visible rows" className="mb-3" {...register('visibleRows')} />
+        <form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
+          <CheckBox label="Visible rows" {...register('visibleRows')} />
           <Input
             label="Row size:"
             {...register('rowSize', { required: true, validate: validatorSize, valueAsNumber: true })}
           />
-          <CheckBox label="Visible columns" className="mb-3" {...register('visibleColumns')} />
+          <CheckBox label="Visible columns" {...register('visibleColumns')} />
           <Input
             label="Column size:"
             {...register('columnSize', { required: true, validate: validatorSize, valueAsNumber: true })}

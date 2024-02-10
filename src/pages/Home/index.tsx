@@ -18,7 +18,7 @@ const Home = () => {
               <h2 className="text-center">Open</h2>
               <ul className="list-group list-group-flush mb-3">
                 {orderedBitmaps.map((it) => {
-                  const url = PageUrl.DrawBitmap.replace(':id', it.id);
+                  const url = PageUrl.EditBitmap.replace(':id', it.id);
                   return (
                     <li key={it.id} className="list-group-item d-flex gap-1">
                       <Link to={url} className="btn-link">
@@ -41,9 +41,14 @@ const Home = () => {
               </h5>
             </div>
           )}
-          <Link to={PageUrl.CreateBitmap} className="btn btn-primary btn-lg">
-            Create new bitmap
-          </Link>
+          <div className="d-flex flex-column gap-3">
+            <Link to={PageUrl.CreateBitmap} className="btn btn-primary btn-lg">
+              Create new bitmap
+            </Link>
+            <Link to={PageUrl.CreateBitmapFromImage} className="btn btn-primary btn-lg">
+              Create from image
+            </Link>
+          </div>
         </main>
       </Page>
       {deleteBitmapId && <DeleteBitmapDialog bitmapId={deleteBitmapId} onClose={() => setDeleteBitmapId(null)} />}

@@ -59,7 +59,7 @@ export const ExportDialog = ({ bitmapId, onClose }: ExportDialogProps): JSX.Elem
   return (
     <Modal title="Export bitmap" onClose={onClose}>
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(() => {})} className="mb-3">
+        <form onSubmit={handleSubmit(() => {})} className="d-flex flex-column gap-3 mb-3">
           <Alert type="warning">
             <div className="d-flex align-items-center gap-1">
               <i className="bi bi-exclamation-triangle" />
@@ -81,27 +81,27 @@ export const ExportDialog = ({ bitmapId, onClose }: ExportDialogProps): JSX.Elem
               {...register('bitOrder', { required: true })}
             />
           </div>
-          <hr />
+          <hr className="m-0" />
           <div className="d-flex gap-3">
             <div>Data format:</div>
             <Radio label="Hex" value={DataFormat.Hex} {...register('dataFormat', { required: true })} />
             <Radio label="Bin" value={DataFormat.Bin} {...register('dataFormat', { required: true })} />
           </div>
-          <hr />
+          <hr className="m-0" />
           <div className="d-flex gap-3">
             <div>Size format:</div>
             <Radio label="Variables" value={SizeFormat.Variables} {...register('sizeFormat', { required: true })} />
             <Radio label="Comments" value={SizeFormat.Comments} {...register('sizeFormat', { required: true })} />
             <Radio label="Defines" value={SizeFormat.Defines} {...register('sizeFormat', { required: true })} />
           </div>
-          <hr />
+          <hr className="m-0" />
           <div className="d-flex gap-3">
             <div>Platform:</div>
             <Radio label="Arduino" value={Platform.Arduino} {...register('platform', { required: true })} />
             <Radio label="C language" value={Platform.Clang} {...register('platform', { required: true })} />
           </div>
-          <hr />
-          <CheckBox label="Include PROGMEM (AVR)" className="mb-3" {...register('progmem', { required: true })} />
+          <hr className="m-0" />
+          <CheckBox label="Include PROGMEM (AVR)" {...register('progmem', { required: true })} />
           <textarea className="form-control" rows={10} value={exportCode} readOnly />
         </form>
         <div className="d-flex justify-content-center">

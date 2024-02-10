@@ -21,7 +21,7 @@ export const Alert = ({ type, children, className }: AlertProps) => {
     }
   }, []);
   return (
-    <div className={cn('alert alert-dismissible fade show', `alert-${type}`, className)} role="alert" ref={setRef}>
+    <div className={cn('alert alert-dismissible fade show mb-0', `alert-${type}`, className)} role="alert" ref={setRef}>
       {children}
       <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" />
     </div>

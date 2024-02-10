@@ -5,7 +5,8 @@ import { PageUrl } from './constants/urls';
 
 const Home = lazy(() => import('./pages/Home'));
 const CreateBitmap = lazy(() => import('./pages/CreateBitmap'));
-const DrawBitmap = lazy(() => import('./pages/DrawBitmap'));
+const EditBitmap = lazy(() => import('./pages/EditBitmap'));
+const CreateBitmapFromImage = lazy(() => import('./pages/CreateBitmapFromImage'));
 
 export const router = createBrowserRouter([
   {
@@ -17,7 +18,11 @@ export const router = createBrowserRouter([
     element: <CreateBitmap />,
   },
   {
-    path: PageUrl.DrawBitmap,
-    element: <DrawBitmap />,
+    path: PageUrl.EditBitmap,
+    element: <EditBitmap />,
+  },
+  {
+    path: PageUrl.CreateBitmapFromImage,
+    element: <CreateBitmapFromImage />,
   },
 ]);
