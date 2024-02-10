@@ -8,15 +8,15 @@
 
 ## Usage
 
-### Draw an image
+### Create bitmap from image
 
 ![Draw image](./docs/draw_image.jpg)
 
-### Export an image
+### Export bitmap
 
 ![Export image](./docs/export_image.jpg)
 
-### Download the image to your device
+### Download bitmap to your device
 
 ![Download image](./docs/download_image.jpg)
 
