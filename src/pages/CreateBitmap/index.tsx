@@ -7,27 +7,14 @@ import { useNavigate } from 'react-router-dom';
 import { PageUrl } from '@/constants/urls';
 import { BitmapEntity } from '@/types/bitmap';
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
-import { PIXELS_PER_COLUMN } from '@/constants/image';
 
 interface FormData {
   name: string;
-  width: string;
-  height: string;
+  width: number;
+  height: number;
 }
 
-const defaultValues: FormData = { name: '', width: '128', height: '64' };
-
-const validatorSize = (value: string) => {
-  if (!/^[1-9]\d*$/.test(value)) {
-    return 'Value must be a number';
-  }
-
-  const num = parseInt(value, 10);
-  if (num % PIXELS_PER_COLUMN !== 0) {
-    const helpValue = Math.floor(num / PIXELS_PER_COLUMN) * PIXELS_PER_COLUMN;
-    return `The value must be a multiple of ${PIXELS_PER_COLUMN} (maybe ${helpValue} ?)`;
-  }
-};
+const defaultValues: FormData = { name: '', width: 128, height: 64 };
 
 const CreateBitmap = () => {
   const navigate = useNavigate();
@@ -51,8 +38,8 @@ const CreateBitmap = () => {
     const image: BitmapEntity = {
       id,
       name: data.name,
-      width: parseInt(data.width, 10),
-      height: parseInt(data.height, 10),
+      width: data.width,
+      height: data.height,
       data: [],
       createdAt: timestamp,
       updatedAt: timestamp,
@@ -70,8 +57,8 @@ const CreateBitmap = () => {
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className="w-50 d-flex flex-column gap-3">
             <Input label="Name:" autoFocus {...register('name', { required: true })} />
-            <Input label="Width:" {...register('width', { required: true, validate: validatorSize })} />
-            <Input label="Height:" {...register('height', { required: true, validate: validatorSize })} />
+            <Input label="Width:" {...register('width', { required: true, valueAsNumber: true, min: 1 })} />
+            <Input label="Height:" {...register('height', { required: true, valueAsNumber: true, min: 1 })} />
             <div className="text-center">
               <button type="submit" className="btn btn-primary" disabled={!isValid}>
                 Save
