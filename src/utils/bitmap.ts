@@ -76,6 +76,12 @@ export class Bitmap {
     this.#data.fill(0);
   }
 
+  invertColor() {
+    for (let i = 0; i < this.length; i++) {
+      this.invertByIndex(i);
+    }
+  }
+
   clone(): Bitmap {
     return new Bitmap(this.width, this.height, this.#data);
   }

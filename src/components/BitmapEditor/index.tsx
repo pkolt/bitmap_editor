@@ -118,6 +118,13 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
     setEraser(true);
   }, []);
 
+  const handleClickInvert = useCallback(() => {
+    bitmap.invertColor();
+    setBitmap(bitmap.clone());
+    saveHistory(bitmap.clone());
+    changeBitmap(bitmapId, { data: bitmap.toJSON() });
+  }, [bitmap, bitmapId, changeBitmap, saveHistory]);
+
   useHotkeys('mod+z', handleClickUndo);
   useHotkeys('mod+shift+z', handleClickRedo);
   useHotkeys('mod+u', handleClickDraw);
@@ -164,6 +171,9 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
             disabled={disabledRedo}
             title="Ctr+Shift+Z / Cmd+Shift+Z">
             <i className="bi bi-arrow-clockwise" /> Redo
+          </button>
+          <button className="btn btn-outline-primary" title="Invert color" onClick={handleClickInvert}>
+            <i className="bi bi-highlights" /> Invert
           </button>
           <button className="btn btn-outline-primary" onClick={handleClickReset}>
             Reset
