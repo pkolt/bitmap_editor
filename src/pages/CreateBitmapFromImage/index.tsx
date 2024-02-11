@@ -180,7 +180,8 @@ const CreateBitmapFromImage = () => {
     if (!canvasCtx || !image) {
       return;
     }
-    canvasCtx.clearRect(0, 0, width, height);
+    canvasCtx.fillStyle = 'white';
+    canvasCtx.fillRect(0, 0, width, height);
     canvasCtx.drawImage(image, left, top, scaledWidth, scaledHeight);
     const bitmapFromImage = convertCanvasToBitmap(canvas, canvasCtx, threshold, invertColor);
     if (bitmapFromImage) {
@@ -197,9 +198,9 @@ const CreateBitmapFromImage = () => {
             {step === Step.First && (
               <>
                 <Input
-                  label="Image (*.jpg, *.png)"
+                  label="Image (*.jpg, *.png, *.svg)"
                   type="file"
-                  accept="image/png, image/jpeg"
+                  accept="image/png, image/jpeg, image/svg+xml"
                   autoFocus
                   {...register('files', { required: true })}
                 />
