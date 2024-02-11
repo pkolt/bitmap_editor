@@ -41,9 +41,6 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 #define BITMAP_WIDTH 16
 #define BITMAP_HEIGHT 16
 
-#define BITMAP_WIDTH 16
-#define BITMAP_HEIGHT 16
-
 static const unsigned char PROGMEM bitmap[] = { 0b00000001, 0b00000000, 0b00000011, 0b10000000, 0b00101001, 0b00101000, 0b00010001, 0b00010000, 0b00101001, 0b00101000, 0b00000101, 0b01000000, 0b01000011, 0b10000100, 0b11111111, 0b11111110, 0b01000011, 0b10000100, 0b00000101, 0b01000000, 0b00101001, 0b00101000, 0b00010001, 0b00010000, 0b00101001, 0b00101000, 0b00000011, 0b10000000, 0b00000001, 0b00000000, 0b00000000, 0b00000000 };
 
 void setup() {
@@ -106,3 +103,13 @@ void loop(void) {}
 npm ci
 npm start
 ```
+
+## FAQ
+
+### Why is my image distorted?
+
+![Distorted image](./docs/distorted_image.jpg)
+
+For some LCD displays such as the SSD1306, the image width must be a multiple of 8. If this requirement is not met, you will see a distorted image when displayed.
+
+Just use an image width that is a multiple of 8.
