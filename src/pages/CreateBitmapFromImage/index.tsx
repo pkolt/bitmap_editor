@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { PageUrl } from '@/constants/urls';
 import { CheckBox } from '@/components/CheckBox';
+import { DistortedBitmapAlert } from '@/components/DistortedBitmapAlert';
 
 enum Step {
   First,
@@ -224,6 +225,7 @@ const CreateBitmapFromImage = () => {
             )}
             {step === Step.Second && (
               <>
+                <DistortedBitmapAlert bitmapWidth={width} className="mb-3" />
                 <Input label="Name" autoFocus {...register('name', { required: true })} />
                 <div className="d-flex gap-3">
                   <Input label="Top" {...register('top', { required: true, valueAsNumber: true })} />
@@ -272,7 +274,6 @@ const CreateBitmapFromImage = () => {
                     </div>
                   </div>
                 </div>
-                <div className="d-flex align-items-center gap-3"></div>
                 <div className="text-center">
                   <button type="submit" className="btn btn-primary" disabled={!isValid}>
                     Save

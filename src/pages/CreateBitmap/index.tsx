@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { PageUrl } from '@/constants/urls';
 import { BitmapEntity } from '@/types/bitmap';
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
+import { DistortedBitmapAlert } from '@/components/DistortedBitmapAlert';
 
 interface FormData {
   name: string;
@@ -28,8 +29,11 @@ const CreateBitmap = () => {
   const {
     handleSubmit,
     register,
+    watch,
     formState: { isValid },
   } = methods;
+
+  const bitmapWidth = watch('width');
 
   const onSubmit = (data: FormData) => {
     const id = uuidv4();
@@ -54,6 +58,7 @@ const CreateBitmap = () => {
     <Page title="Create new image">
       <main className="d-flex flex-column flex-grow-1 justify-content-center align-items-center">
         <h1>Create image</h1>
+        <DistortedBitmapAlert bitmapWidth={bitmapWidth} className="mb-3" />
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className="w-50 d-flex flex-column gap-3">
             <Input label="Name:" autoFocus {...register('name', { required: true })} />

@@ -2,7 +2,7 @@ import cn from 'classnames';
 import { Alert as BSAlert } from 'bootstrap';
 import { useCallback, useRef } from 'react';
 
-type AlertType = 'warning';
+type AlertType = 'danger' | 'warning';
 
 interface AlertProps {
   type: AlertType;

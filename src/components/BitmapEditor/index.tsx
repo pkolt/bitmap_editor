@@ -9,6 +9,7 @@ import { BitmapView } from './BitmapView';
 
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { GridDialog } from './GridDialog';
+import { DistortedBitmapAlert } from '../DistortedBitmapAlert';
 
 const AUTO_SAVE_TIMEOUT_MS = 500;
 const HISTORY_LENGTH = 50;
@@ -185,6 +186,7 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
             <i className="bi bi-border-all" /> Grid
           </button>
         </div>
+        <DistortedBitmapAlert bitmapWidth={bitmapEntity.width} className="mb-3" />
         <BitmapView bitmap={bitmap} onChangeBitmap={handleChangeBitmap} eraser={eraser} />
       </div>
       {dialog === Dialog.Reset && <ResetDialog onClose={handleCloseDialog} onAccept={handleAcceptResetDialog} />}
