@@ -1,8 +1,8 @@
 import { clearBit, isSetBit, setBit } from './bitwise';
 
 export enum BitOrder {
-  BigEndian, // MSB (Most Significant Byte) or BE (Big-Endian)
-  LittleEndian, // LSB (Least Significant Byte) or LE (Little-Endian)
+  BigEndian = 'BE', // MSB (Most Significant Byte) or BE (Big-Endian)
+  LittleEndian = 'LE', // LSB (Least Significant Byte) or LE (Little-Endian)
 }
 
 const UINT32_BITS_PER_ELEMENT = 32;
