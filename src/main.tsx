@@ -4,10 +4,11 @@ import App from './App.tsx';
 import './index.css';
 import '~bootstrap/dist/css/bootstrap.css';
 import '~bootstrap-icons/font/bootstrap-icons.css';
+import { SuspenseFallback } from './components/SuspenseFallback/index.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<SuspenseFallback />}>
       <App />
     </Suspense>
   </React.StrictMode>,
