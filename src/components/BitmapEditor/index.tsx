@@ -10,6 +10,7 @@ import { BitmapView } from './BitmapView';
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { GridDialog } from './GridDialog';
 import { DistortedBitmapAlert } from '../DistortedBitmapAlert';
+import { LayoutDialog } from './LayoutDialog';
 
 const AUTO_SAVE_TIMEOUT_MS = 500;
 const HISTORY_LENGTH = 50;
@@ -20,6 +21,7 @@ enum Dialog {
   Export,
   Rename,
   Grid,
+  Layout,
 }
 
 interface BitmapEditorProps {
@@ -80,6 +82,7 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
   const handleClickExport = () => setDialog(Dialog.Export);
   const handleClickRename = () => setDialog(Dialog.Rename);
   const handleClickGrid = () => setDialog(Dialog.Grid);
+  const handleClickLayout = () => setDialog(Dialog.Layout);
 
   const handleAcceptResetDialog = () => {
     resetBitmap();
@@ -185,6 +188,9 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
           <button className="btn btn-outline-primary" onClick={handleClickGrid}>
             <i className="bi bi-border-all" /> Grid
           </button>
+          <button className="btn btn-outline-primary" onClick={handleClickLayout}>
+            <i className="bi bi-layout-wtf" /> Layout
+          </button>
         </div>
         <DistortedBitmapAlert bitmapWidth={bitmapEntity.width} className="mb-3" />
         <BitmapView bitmap={bitmap} onChangeBitmap={handleChangeBitmap} eraser={eraser} />
@@ -193,6 +199,7 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
       {dialog === Dialog.Export && <ExportDialog onClose={handleCloseDialog} bitmapId={bitmapId} />}
       {dialog === Dialog.Rename && <RenameDialog onClose={handleCloseDialog} bitmapId={bitmapId} />}
       {dialog === Dialog.Grid && <GridDialog onClose={handleCloseDialog} />}
+      {dialog === Dialog.Layout && <LayoutDialog onClose={handleCloseDialog} />}
     </>
   );
 };
