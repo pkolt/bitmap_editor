@@ -5,27 +5,58 @@ export enum BitOrder {
   LittleEndian = 'LE', // LSB (Least Significant Byte) or LE (Little-Endian)
 }
 
-const UINT32_BITS_PER_ELEMENT = 32;
+interface BitmapObject {
+  width: number;
+  height: number;
+  data: number[];
+}
+
 export const UINT8_BITS_PER_ELEMENT = 8;
+export const UINT32_BITS_PER_ELEMENT = 32;
+
+const convertBoolArrayToUint32Array = (boolArray: boolean[]): number[] => {
+  const uint32ArrayLength = Math.ceil(boolArray.length / UINT32_BITS_PER_ELEMENT);
+  const uint32Array: number[] = new Array(uint32ArrayLength).fill(0);
+  for (let i = 0; i < boolArray.length; i++) {
+    const pos = Math.floor(i / UINT32_BITS_PER_ELEMENT);
+    const bit = i - UINT32_BITS_PER_ELEMENT * pos;
+    uint32Array[pos] = boolArray[i] ? setBit(uint32Array[pos], bit) : clearBit(uint32Array[pos], bit);
+  }
+  return [boolArray.length, ...uint32Array];
+};
+
+const convertUint32ArrayToBoolArray = (array: number[]): boolean[] => {
+  const [boolArrayLength, ...uint32Array] = array;
+  if (boolArrayLength > uint32Array.length * UINT32_BITS_PER_ELEMENT) {
+    throw new Error(`Invalid bool array length: ${boolArrayLength}`);
+  }
+  const boolArray: boolean[] = new Array(boolArrayLength).fill(false);
+  for (let i = 0; i < boolArray.length; i++) {
+    const pos = Math.floor(i / UINT32_BITS_PER_ELEMENT);
+    const bit = i - UINT32_BITS_PER_ELEMENT * pos;
+    boolArray[i] = isSetBit(uint32Array[pos], bit);
+  }
+  return boolArray;
+};
 
 export class Bitmap {
   width: number;
   height: number;
-  #data: Uint32Array;
+  #data: boolean[];
 
-  constructor(width: number, height: number, data?: Uint32Array | number[]) {
+  static fromJSON({ width, height, data }: BitmapObject): Bitmap {
+    return new Bitmap(width, height, convertUint32ArrayToBoolArray(data));
+  }
+
+  constructor(width: number, height: number, data?: boolean[]) {
     this.width = width;
     this.height = height;
 
-    const arrayLength = Math.ceil((width * height) / UINT32_BITS_PER_ELEMENT);
-
-    const isEmptyData = !data || data.length === 0;
-
-    if (!isEmptyData && data.length !== arrayLength) {
+    if (data && data.length !== this.length) {
       throw new Error('Invalid bitmap data');
     }
 
-    this.#data = isEmptyData ? new Uint32Array(arrayLength) : new Uint32Array(data);
+    this.#data = data ? [...data] : new Array(this.length).fill(false);
   }
 
   get length(): number {
@@ -33,19 +64,15 @@ export class Bitmap {
   }
 
   getByIndex(index: number): boolean {
-    const pos = Math.floor(index / UINT32_BITS_PER_ELEMENT);
-    const bit = index - UINT32_BITS_PER_ELEMENT * pos;
-    return isSetBit(this.#data[pos], bit);
+    return this.#data[index];
   }
 
   setByIndex(index: number, value: boolean): void {
-    const pos = Math.floor(index / UINT32_BITS_PER_ELEMENT);
-    const bit = index - UINT32_BITS_PER_ELEMENT * pos;
-    this.#data[pos] = value ? setBit(this.#data[pos], bit) : clearBit(this.#data[pos], bit);
+    this.#data[index] = value;
   }
 
   invertByIndex(index: number): void {
-    this.setByIndex(index, !this.getByIndex(index));
+    this.#data[index] = !this.#data[index];
   }
 
   #coordsToIndex(x: number, y: number): number {
@@ -57,29 +84,30 @@ export class Bitmap {
   }
 
   getByCoords(x: number, y: number): boolean {
-    return this.getByIndex(this.#coordsToIndex(x, y));
+    const index = this.#coordsToIndex(x, y);
+    return this.getByIndex(index);
   }
 
   setByCoords(x: number, y: number, value: boolean): void {
-    return this.setByIndex(this.#coordsToIndex(x, y), value);
+    const index = this.#coordsToIndex(x, y);
+    this.setByIndex(index, value);
   }
 
   invertByCoords(x: number, y: number): void {
-    this.invertByIndex(this.#coordsToIndex(x, y));
+    const index = this.#coordsToIndex(x, y);
+    this.invertByIndex(index);
   }
 
   isEmpty(): boolean {
-    return this.#data.every((v) => v === 0);
+    return this.#data.every((v) => !v);
   }
 
   reset() {
-    this.#data.fill(0);
+    this.#data.fill(false);
   }
 
   invertColor() {
-    for (let i = 0; i < this.length; i++) {
-      this.invertByIndex(i);
-    }
+    this.#data = this.#data.map((val) => !val);
   }
 
   clone(): Bitmap {
@@ -100,7 +128,16 @@ export class Bitmap {
     return result;
   }
 
-  toJSON(): number[] {
-    return Array.from(this.#data);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  resize(width: number, height: number) {}
+
+  toJSON(): BitmapObject {
+    return {
+      width: this.width,
+      height: this.height,
+      data: convertBoolArrayToUint32Array(this.#data),
+    };
   }
 }

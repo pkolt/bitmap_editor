@@ -30,11 +30,19 @@ export const useBitmapStore = create<BitmapsState>()(
     }),
     {
       name: 'bitmaps',
-      version: 1, // a migration will be triggered if the version in the storage mismatches this one
+      version: 2, // a migration will be triggered if the version in the storage mismatches this one
       migrate: (persistedState, version) => {
-        if (version === 0) {
+        if (version === 1) {
           // if the stored value is in version 0, we convert data
           // ...
+          const persistedStateV1 = persistedState as BitmapsState;
+          return {
+            ...persistedStateV1,
+            bitmaps: persistedStateV1.bitmaps.map((it) => ({
+              ...it,
+              data: it.data.length > 0 ? [it.width * it.height, ...it.data] : it.data,
+            })),
+          };
         }
         return persistedState as BitmapsState;
       },

@@ -36,8 +36,8 @@ export const exportBitmap = ({
   sizeFormat,
   progmem,
 }: ExportBitmapParams): string => {
-  const { width, height, data } = entity;
-  const bitmap = new Bitmap(width, height, data);
+  const { width, height } = entity;
+  const bitmap = Bitmap.fromJSON(entity);
   const xBitMap = bitmap.toXBitMap(bitOrder);
 
   const nameLower = name.replace(/[^\w]/gi, '_').toLowerCase();
