@@ -26,7 +26,7 @@ interface FormData {
 const defaultValues: FormData = {
   name: '',
   bitOrder: BitOrder.BigEndian,
-  sizeFormat: SizeFormat.Variables,
+  sizeFormat: SizeFormat.Defines,
   dataFormat: DataFormat.Hex,
   platform: Platform.Arduino,
   progmem: true,
