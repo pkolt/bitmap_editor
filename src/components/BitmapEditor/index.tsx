@@ -10,6 +10,7 @@ import { BitmapView } from './BitmapView';
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { GridDialog } from './GridDialog';
 import { DistortedBitmapAlert } from '../DistortedBitmapAlert';
+import { ResizeDialog } from './ResizeDialog';
 
 const AUTO_SAVE_TIMEOUT_MS = 500;
 const HISTORY_LENGTH = 50;
@@ -20,6 +21,7 @@ enum Dialog {
   Export,
   Rename,
   Grid,
+  Resize,
 }
 
 interface BitmapEditorProps {
@@ -35,7 +37,7 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
   const refAutoSaveTimeout = useRef<NodeJS.Timeout | null>(null);
   const [eraser, setEraser] = useState(false);
   const [dialog, setDialog] = useState(Dialog.None);
-  const [bitmap, setBitmap] = useState(new Bitmap(bitmapEntity.width, bitmapEntity.height, bitmapEntity.data));
+  const [bitmap, setBitmap] = useState(Bitmap.fromJSON(bitmapEntity));
   const [history, setHistory] = useState<Bitmap[]>([bitmap.clone()]);
   const [historyIndex, setHistoryIndex] = useState(0);
 
@@ -62,24 +64,32 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
 
       refAutoSaveTimeout.current = setTimeout(() => {
         saveHistory(copiedBitmap);
-        changeBitmap(bitmapId, { data: copiedBitmap.toJSON() });
+        changeBitmap(bitmapId, copiedBitmap.toJSON());
       }, AUTO_SAVE_TIMEOUT_MS);
     },
     [saveHistory, changeBitmap, bitmapId],
   );
 
+  const onChangeBitmap = useCallback(
+    (bitmap: Bitmap) => {
+      setBitmap(bitmap.clone());
+      saveHistory(bitmap.clone());
+      changeBitmap(bitmapId, bitmap.toJSON());
+    },
+    [bitmapId, changeBitmap, saveHistory],
+  );
+
   const resetBitmap = useCallback(() => {
     bitmap.reset();
-    setBitmap(bitmap.clone());
-    saveHistory(bitmap.clone());
-    changeBitmap(bitmapId, { data: bitmap.toJSON() });
-  }, [bitmap, bitmapId, changeBitmap, saveHistory]);
+    onChangeBitmap(bitmap);
+  }, [bitmap, onChangeBitmap]);
 
   const handleCloseDialog = () => setDialog(Dialog.None);
   const handleClickReset = () => setDialog(Dialog.Reset);
   const handleClickExport = () => setDialog(Dialog.Export);
   const handleClickRename = () => setDialog(Dialog.Rename);
   const handleClickGrid = () => setDialog(Dialog.Grid);
+  const handleClickLayout = () => setDialog(Dialog.Resize);
 
   const handleAcceptResetDialog = () => {
     resetBitmap();
@@ -92,7 +102,7 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
       const nextBitmap = history[index];
       setHistoryIndex(index);
       setBitmap(nextBitmap.clone());
-      changeBitmap(bitmapId, { data: nextBitmap.toJSON() });
+      changeBitmap(bitmapId, nextBitmap.toJSON());
     },
     [bitmapId, changeBitmap, history, historyIndex],
   );
@@ -121,15 +131,37 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
 
   const handleClickInvert = useCallback(() => {
     bitmap.invertColor();
-    setBitmap(bitmap.clone());
-    saveHistory(bitmap.clone());
-    changeBitmap(bitmapId, { data: bitmap.toJSON() });
-  }, [bitmap, bitmapId, changeBitmap, saveHistory]);
+    onChangeBitmap(bitmap);
+  }, [bitmap, onChangeBitmap]);
+
+  const handleClickUp = useCallback(() => {
+    bitmap.moveBitmap(0, -1);
+    onChangeBitmap(bitmap);
+  }, [bitmap, onChangeBitmap]);
+
+  const handleClickDown = useCallback(() => {
+    bitmap.moveBitmap(0, 1);
+    onChangeBitmap(bitmap);
+  }, [bitmap, onChangeBitmap]);
+
+  const handleClickLeft = useCallback(() => {
+    bitmap.moveBitmap(-1, 0);
+    onChangeBitmap(bitmap);
+  }, [bitmap, onChangeBitmap]);
+
+  const handleClickRight = useCallback(() => {
+    bitmap.moveBitmap(1, 0);
+    onChangeBitmap(bitmap);
+  }, [bitmap, onChangeBitmap]);
 
   useHotkeys('mod+z', handleClickUndo);
   useHotkeys('mod+shift+z', handleClickRedo);
   useHotkeys('mod+u', handleClickDraw);
   useHotkeys('mod+i', handleClickEraser);
+  useHotkeys('up', handleClickUp);
+  useHotkeys('down', handleClickDown);
+  useHotkeys('left', handleClickLeft);
+  useHotkeys('right', handleClickRight);
 
   return (
     <>
@@ -140,9 +172,15 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
             <i className="bi bi-pencil-square" /> Rename
           </button>
         </h3>
-        <div className="d-flex gap-2 mb-3 text-black-50">
-          <i className="bi bi-info-circle" />
-          Hold the Ctrl key to draw or click the mouse key
+        <div className="d-flex gap-3 mb-3 text-black-50">
+          <div className="d-flex gap-2">
+            <i className="bi bi-brush" />
+            Draw: Ctrl + Mouse key
+          </div>
+          <div className="d-flex gap-2">
+            <i className="bi bi-arrows-move" />
+            Move: Up / Down / Left / Right
+          </div>
         </div>
         <div className="mb-3 d-flex gap-2">
           <div className="btn-group">
@@ -185,6 +223,9 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
           <button className="btn btn-outline-primary" onClick={handleClickGrid}>
             <i className="bi bi-border-all" /> Grid
           </button>
+          <button className="btn btn-outline-primary" onClick={handleClickLayout}>
+            <i className="bi bi-arrows-fullscreen" /> Resize
+          </button>
         </div>
         <DistortedBitmapAlert bitmapWidth={bitmapEntity.width} className="mb-3" />
         <BitmapView bitmap={bitmap} onChangeBitmap={handleChangeBitmap} eraser={eraser} />
@@ -193,6 +234,9 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
       {dialog === Dialog.Export && <ExportDialog onClose={handleCloseDialog} bitmapId={bitmapId} />}
       {dialog === Dialog.Rename && <RenameDialog onClose={handleCloseDialog} bitmapId={bitmapId} />}
       {dialog === Dialog.Grid && <GridDialog onClose={handleCloseDialog} />}
+      {dialog === Dialog.Resize && (
+        <ResizeDialog bitmap={bitmap} onChangeBitmap={onChangeBitmap} onClose={handleCloseDialog} />
+      )}
     </>
   );
 };

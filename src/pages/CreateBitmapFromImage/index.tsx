@@ -66,11 +66,9 @@ const CreateBitmapFromImage = () => {
     const image: BitmapEntity = {
       id,
       name: data.name,
-      width: data.width,
-      height: data.height,
-      data: bitmap.toJSON(),
       createdAt: timestamp,
       updatedAt: timestamp,
+      ...bitmap.toJSON(),
     };
 
     addBitmap(image);

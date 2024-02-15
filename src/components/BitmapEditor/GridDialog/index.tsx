@@ -15,13 +15,13 @@ const validatorSize = (value: number) => {
   return undefined;
 };
 
-interface RenameDialogProps {
+interface GridDialogProps {
   onClose: () => void;
 }
 
 type FormData = GridSettings;
 
-export const GridDialog = ({ onClose }: RenameDialogProps): JSX.Element | null => {
+export const GridDialog = ({ onClose }: GridDialogProps): JSX.Element | null => {
   const refModal = useRef<ModalRef | null>(null);
   const { grid, setGrid } = useSettingsStore();
   const methods = useForm<FormData>({

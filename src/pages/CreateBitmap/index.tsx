@@ -8,6 +8,7 @@ import { PageUrl } from '@/constants/urls';
 import { BitmapEntity } from '@/types/bitmap';
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { DistortedBitmapAlert } from '@/components/DistortedBitmapAlert';
+import { Bitmap } from '@/utils/bitmap';
 
 interface FormData {
   name: string;
@@ -38,15 +39,14 @@ const CreateBitmap = () => {
   const onSubmit = (data: FormData) => {
     const id = uuidv4();
     const timestamp = DateTime.now().toMillis();
+    const bitmap = new Bitmap(data.width, data.height);
 
     const image: BitmapEntity = {
       id,
       name: data.name,
-      width: data.width,
-      height: data.height,
-      data: [],
       createdAt: timestamp,
       updatedAt: timestamp,
+      ...bitmap.toJSON(),
     };
 
     addBitmap(image);
