@@ -174,6 +174,15 @@ export class Bitmap {
     }
   }
 
+  moveBitmap(x: number, y: number) {
+    const coords = this.findBitmapCoords();
+    if (coords) {
+      const bitmap = this.getBitmap(coords.x, coords.y, coords.width, coords.height);
+      this.reset();
+      this.putBitmap(coords.x + x, coords.y + y, bitmap);
+    }
+  }
+
   isEmpty(): boolean {
     return this.#data.every((v) => !v);
   }

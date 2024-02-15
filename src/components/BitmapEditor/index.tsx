@@ -134,10 +134,34 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
     onChangeBitmap(bitmap);
   }, [bitmap, onChangeBitmap]);
 
+  const handleClickUp = useCallback(() => {
+    bitmap.moveBitmap(0, -1);
+    onChangeBitmap(bitmap);
+  }, [bitmap, onChangeBitmap]);
+
+  const handleClickDown = useCallback(() => {
+    bitmap.moveBitmap(0, 1);
+    onChangeBitmap(bitmap);
+  }, [bitmap, onChangeBitmap]);
+
+  const handleClickLeft = useCallback(() => {
+    bitmap.moveBitmap(-1, 0);
+    onChangeBitmap(bitmap);
+  }, [bitmap, onChangeBitmap]);
+
+  const handleClickRight = useCallback(() => {
+    bitmap.moveBitmap(1, 0);
+    onChangeBitmap(bitmap);
+  }, [bitmap, onChangeBitmap]);
+
   useHotkeys('mod+z', handleClickUndo);
   useHotkeys('mod+shift+z', handleClickRedo);
   useHotkeys('mod+u', handleClickDraw);
   useHotkeys('mod+i', handleClickEraser);
+  useHotkeys('up', handleClickUp);
+  useHotkeys('down', handleClickDown);
+  useHotkeys('left', handleClickLeft);
+  useHotkeys('right', handleClickRight);
 
   return (
     <>
@@ -148,9 +172,15 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
             <i className="bi bi-pencil-square" /> Rename
           </button>
         </h3>
-        <div className="d-flex gap-2 mb-3 text-black-50">
-          <i className="bi bi-info-circle" />
-          Hold the Ctrl key to draw or click the mouse key
+        <div className="d-flex gap-3 mb-3 text-black-50">
+          <div className="d-flex gap-2">
+            <i className="bi bi-brush" />
+            Draw: Ctrl + Mouse key
+          </div>
+          <div className="d-flex gap-2">
+            <i className="bi bi-arrows-move" />
+            Move: Up / Down / Left / Right
+          </div>
         </div>
         <div className="mb-3 d-flex gap-2">
           <div className="btn-group">
