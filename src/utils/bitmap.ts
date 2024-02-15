@@ -77,25 +77,101 @@ export class Bitmap {
 
   #coordsToIndex(x: number, y: number): number {
     const index = y * this.width + x;
-    if (index >= this.length) {
-      throw new Error(`Invalid coordinates: ${x}, ${y}.`);
-    }
-    return index;
+    return index < this.length ? index : -1;
   }
 
   getByCoords(x: number, y: number): boolean {
     const index = this.#coordsToIndex(x, y);
-    return this.getByIndex(index);
+    return index !== -1 ? this.getByIndex(index) : false;
   }
 
   setByCoords(x: number, y: number, value: boolean): void {
     const index = this.#coordsToIndex(x, y);
-    this.setByIndex(index, value);
+    if (index !== -1) {
+      this.setByIndex(index, value);
+    }
   }
 
   invertByCoords(x: number, y: number): void {
     const index = this.#coordsToIndex(x, y);
-    this.invertByIndex(index);
+    if (index !== -1) {
+      this.invertByIndex(index);
+    }
+  }
+
+  findBitmapCoords() {
+    const xArray: number[] = [];
+    const yArray: number[] = [];
+    for (let x = 0; x < this.width; x++) {
+      for (let y = 0; y < this.height; y++) {
+        const value = this.getByCoords(x, y);
+        if (value) {
+          xArray.push(x);
+          yArray.push(y);
+        }
+      }
+    }
+
+    if (xArray.length === 0 || yArray.length === 0) {
+      return null;
+    }
+
+    const xMin = Math.min(...xArray);
+    const xMax = Math.max(...xArray);
+    const yMin = Math.min(...yArray);
+    const yMax = Math.max(...yArray);
+
+    return {
+      x: xMin,
+      y: yMin,
+      width: xMax - xMin + 1,
+      height: yMax - yMin + 1,
+    };
+  }
+
+  getBitmap(x: number, y: number, width: number, height: number): Bitmap {
+    const bitmap = new Bitmap(width, height);
+    for (let posX = 0; posX < width; posX++) {
+      for (let posY = 0; posY < height; posY++) {
+        const value = this.getByCoords(x + posX, y + posY);
+        bitmap.setByCoords(posX, posY, value);
+      }
+    }
+    return bitmap;
+  }
+
+  putBitmap(x: number, y: number, bitmap: Bitmap) {
+    for (let posX = 0; posX < bitmap.width; posX++) {
+      for (let posY = 0; posY < bitmap.height; posY++) {
+        const value = bitmap.getByCoords(posX, posY);
+        this.setByCoords(x + posX, y + posY, value);
+      }
+    }
+  }
+
+  resize(width: number, height: number) {
+    let bitmap: Bitmap | null = null;
+    const coords = this.findBitmapCoords();
+    if (coords) {
+      bitmap = this.getBitmap(coords.x, coords.y, coords.width, coords.height);
+      // Crop bitmap
+      if (bitmap.width > width || bitmap.height > height) {
+        bitmap = bitmap.getBitmap(
+          0,
+          0,
+          bitmap.width > width ? width : bitmap.width,
+          bitmap.height > height ? height : bitmap.height,
+        );
+      }
+    }
+
+    this.width = width;
+    this.height = height;
+    this.#data = new Array(this.length).fill(false);
+
+    if (bitmap) {
+      this.putBitmap(0, 0, bitmap);
+    }
   }
 
   isEmpty(): boolean {
@@ -127,11 +203,6 @@ export class Bitmap {
     }
     return result;
   }
-
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  resize(width: number, height: number) {}
 
   toJSON(): BitmapObject {
     return {

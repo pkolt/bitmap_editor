@@ -1,3 +1,4 @@
+import { DistortedBitmapAlert } from '@/components/DistortedBitmapAlert';
 import { Input } from '@/components/Input';
 import { Modal, ModalRef } from '@/components/Modal';
 import { Bitmap } from '@/utils/bitmap';
@@ -26,8 +27,11 @@ export const ResizeDialog = ({ bitmap, onChangeBitmap, onClose }: ResizeDialogPr
     handleSubmit,
     register,
     reset,
+    watch,
     formState: { isValid, isDirty, defaultValues },
   } = methods;
+
+  const bitmapWidth = watch('width');
 
   const onReset = useCallback(() => reset(defaultValues), [defaultValues, reset]);
 
@@ -39,9 +43,10 @@ export const ResizeDialog = ({ bitmap, onChangeBitmap, onClose }: ResizeDialogPr
   };
 
   return (
-    <Modal title="Resize bitmap" onClose={onClose} ref={refModal}>
+    <Modal title="Resize layout" onClose={onClose} ref={refModal}>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
+          <DistortedBitmapAlert bitmapWidth={bitmapWidth} />
           <Input label="Width" {...register('width', { required: true, valueAsNumber: true, min: 1 })} />
           <Input label="Height" {...register('height', { required: true, valueAsNumber: true, min: 1 })} />
           <div className="d-flex justify-content-center gap-3">
