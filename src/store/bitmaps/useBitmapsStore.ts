@@ -1,4 +1,5 @@
 import { BitmapEntity } from '@/types/bitmap';
+import { DateTime } from 'luxon';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -20,7 +21,8 @@ export const useBitmapStore = create<BitmapsState>()(
         set(() => {
           const bitmaps = get().bitmaps.map((it) => {
             if (it.id === id) {
-              return { ...it, ...bitmap };
+              const updatedAt = DateTime.now().toMillis();
+              return { ...it, ...bitmap, updatedAt };
             }
             return it;
           });
