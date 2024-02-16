@@ -2,13 +2,29 @@ import { Link } from 'react-router-dom';
 import { PageUrl } from '@/constants/urls';
 import { Page } from '@/components/Page';
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { DeleteBitmapDialog } from './DeleteBitmapDialog';
+import { CopyBitmapDialog } from './CopyBitmapDialog';
+
+enum Dialog {
+  None,
+  DeleteBitmap,
+  CopyBitmap,
+}
 
 const Home = () => {
   const { bitmaps } = useBitmapStore();
   const orderedBitmaps = useMemo(() => bitmaps.sort((a, b) => b.updatedAt - a.updatedAt), [bitmaps]);
-  const [deleteBitmapId, setDeleteBitmapId] = useState<string | null>(null);
+  const [bitmapId, setBitmapId] = useState<string | null>(null);
+  const [dialog, setDialog] = useState(Dialog.None);
+  const openDialog = useCallback((dlg: Dialog, id: string) => {
+    setDialog(dlg);
+    setBitmapId(id);
+  }, []);
+  const closeDialog = useCallback(() => {
+    setDialog(Dialog.None);
+    setBitmapId(null);
+  }, []);
   return (
     <>
       <Page title="Bitmap Editor">
@@ -26,9 +42,16 @@ const Home = () => {
                       </Link>{' '}
                       ({it.width}x{it.height})
                       <i
+                        className="bi bi-copy"
+                        role="button"
+                        title="Create copy"
+                        onClick={() => openDialog(Dialog.CopyBitmap, it.id)}
+                      />
+                      <i
                         className="bi bi-trash-fill text-danger"
                         role="button"
-                        onClick={() => setDeleteBitmapId(it.id)}
+                        title="Delete bitmap"
+                        onClick={() => openDialog(Dialog.DeleteBitmap, it.id)}
                       />
                     </li>
                   );
@@ -51,7 +74,8 @@ const Home = () => {
           </div>
         </main>
       </Page>
-      {deleteBitmapId && <DeleteBitmapDialog bitmapId={deleteBitmapId} onClose={() => setDeleteBitmapId(null)} />}
+      {bitmapId && dialog === Dialog.DeleteBitmap && <DeleteBitmapDialog bitmapId={bitmapId} onClose={closeDialog} />}
+      {bitmapId && dialog === Dialog.CopyBitmap && <CopyBitmapDialog bitmapId={bitmapId} onClose={closeDialog} />}
     </>
   );
 };

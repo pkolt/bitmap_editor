@@ -7,7 +7,7 @@ interface DeleteBitmapDialogProps {
 }
 
 export const DeleteBitmapDialog = ({ bitmapId, onClose }: DeleteBitmapDialogProps): JSX.Element | null => {
-  const { deleteBitmap, findBitmap: findBitmap } = useBitmapStore();
+  const { deleteBitmap, findBitmap } = useBitmapStore();
   const bitmapEntity = findBitmap(bitmapId);
   if (!bitmapEntity) {
     return null;
