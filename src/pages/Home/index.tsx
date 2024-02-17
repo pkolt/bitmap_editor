@@ -6,12 +6,14 @@ import { useCallback, useMemo, useState } from 'react';
 import { DeleteBitmapDialog } from './DeleteBitmapDialog';
 import { CopyBitmapDialog } from './CopyBitmapDialog';
 import { ExportBitmapDialog } from './ExportBitmapDialog';
+import { ImportBitmapDialog } from './ImportBitmapDialog';
 
 enum Dialog {
   None,
   DeleteBitmap,
   CopyBitmap,
   ExportBitmap,
+  ImportBitmap,
 }
 
 const Home = () => {
@@ -19,9 +21,11 @@ const Home = () => {
   const orderedBitmaps = useMemo(() => bitmaps.sort((a, b) => b.updatedAt - a.updatedAt), [bitmaps]);
   const [bitmapId, setBitmapId] = useState<string | null>(null);
   const [dialog, setDialog] = useState(Dialog.None);
-  const openDialog = useCallback((dlg: Dialog, id: string) => {
+  const openDialog = useCallback((dlg: Dialog, id?: string) => {
     setDialog(dlg);
-    setBitmapId(id);
+    if (id) {
+      setBitmapId(id);
+    }
   }, []);
   const closeDialog = useCallback(() => {
     setDialog(Dialog.None);
@@ -81,15 +85,16 @@ const Home = () => {
             <Link to={PageUrl.CreateBitmapFromImage} className="btn btn-primary btn-lg">
               Create from image
             </Link>
-            <button type="button" className="btn btn-primary btn-lg">
+            <button type="button" className="btn btn-primary btn-lg" onClick={() => openDialog(Dialog.ImportBitmap)}>
               Import bitmap
             </button>
           </div>
         </main>
       </Page>
-      {bitmapId && dialog === Dialog.DeleteBitmap && <DeleteBitmapDialog bitmapId={bitmapId} onClose={closeDialog} />}
-      {bitmapId && dialog === Dialog.CopyBitmap && <CopyBitmapDialog bitmapId={bitmapId} onClose={closeDialog} />}
-      {bitmapId && dialog === Dialog.ExportBitmap && <ExportBitmapDialog bitmapId={bitmapId} onClose={closeDialog} />}
+      {dialog === Dialog.DeleteBitmap && bitmapId && <DeleteBitmapDialog bitmapId={bitmapId} onClose={closeDialog} />}
+      {dialog === Dialog.CopyBitmap && bitmapId && <CopyBitmapDialog bitmapId={bitmapId} onClose={closeDialog} />}
+      {dialog === Dialog.ExportBitmap && bitmapId && <ExportBitmapDialog bitmapId={bitmapId} onClose={closeDialog} />}
+      {dialog === Dialog.ImportBitmap && <ImportBitmapDialog onClose={closeDialog} />}
     </>
   );
 };

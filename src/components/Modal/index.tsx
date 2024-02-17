@@ -6,7 +6,7 @@ interface ModalProps {
   title: string;
   onAccept?: () => void;
   onClose: () => void;
-  children: JSX.Element | JSX.Element[];
+  children: JSX.Element | JSX.Element[] | null;
 }
 
 export interface ModalRef {
