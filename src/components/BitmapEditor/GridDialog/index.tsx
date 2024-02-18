@@ -1,8 +1,7 @@
 import { CheckBox } from '@/components/CheckBox';
 import { Input } from '@/components/Input';
-import { Modal, ModalRef } from '@/components/Modal';
+import { Modal } from '@/components/Modal';
 import { GridSettings, useSettingsStore } from '@/store/settings/useSettingsStore';
-import { useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 const validatorSize = (value: number) => {
@@ -22,7 +21,6 @@ interface GridDialogProps {
 type FormData = GridSettings;
 
 export const GridDialog = ({ onClose }: GridDialogProps): JSX.Element | null => {
-  const refModal = useRef<ModalRef | null>(null);
   const { grid, setGrid } = useSettingsStore();
   const methods = useForm<FormData>({
     mode: 'onChange',
@@ -37,11 +35,10 @@ export const GridDialog = ({ onClose }: GridDialogProps): JSX.Element | null => 
 
   const onSubmit = (data: FormData) => {
     setGrid(data);
-    refModal.current?.close();
   };
 
   return (
-    <Modal title="Grid settings" onClose={onClose} ref={refModal}>
+    <Modal title="Grid settings" onClose={onClose}>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
           <CheckBox label="Visible rows" {...register('visibleRows')} />

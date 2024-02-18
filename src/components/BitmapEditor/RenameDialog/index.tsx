@@ -1,7 +1,6 @@
 import { Input } from '@/components/Input';
-import { Modal, ModalRef } from '@/components/Modal';
+import { Modal } from '@/components/Modal';
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
-import { useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 interface RenameDialogProps {
@@ -14,7 +13,6 @@ interface FormData {
 }
 
 export const RenameDialog = ({ bitmapId, onClose }: RenameDialogProps): JSX.Element | null => {
-  const refModal = useRef<ModalRef | null>(null);
   const { findBitmap, changeBitmap } = useBitmapStore();
   const bitmapEntity = findBitmap(bitmapId);
   const methods = useForm<FormData>({
@@ -25,14 +23,14 @@ export const RenameDialog = ({ bitmapId, onClose }: RenameDialogProps): JSX.Elem
   const {
     handleSubmit,
     register,
-    formState: { isValid },
+    formState: { isValid, isDirty },
   } = methods;
 
   const onSubmit = (data: FormData) => {
     if (bitmapEntity) {
       changeBitmap(bitmapId, { name: data.name });
     }
-    refModal.current?.close();
+    onClose();
   };
 
   if (!bitmapEntity) {
@@ -40,12 +38,12 @@ export const RenameDialog = ({ bitmapId, onClose }: RenameDialogProps): JSX.Elem
   }
 
   return (
-    <Modal title="Rename bitmap" onClose={onClose} ref={refModal}>
+    <Modal title="Rename bitmap" onClose={onClose}>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
           <Input label="Name:" autoFocus {...register('name', { required: true, minLength: 3 })} />
           <div className="text-center">
-            <button type="submit" className="btn btn-primary" disabled={!isValid}>
+            <button type="submit" className="btn btn-primary" disabled={!isValid || !isDirty}>
               Save
             </button>
           </div>
