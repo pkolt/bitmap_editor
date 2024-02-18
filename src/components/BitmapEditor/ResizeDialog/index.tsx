@@ -1,8 +1,8 @@
 import { DistortedBitmapAlert } from '@/components/DistortedBitmapAlert';
 import { Input } from '@/components/Input';
-import { Modal, ModalRef } from '@/components/Modal';
+import { Modal } from '@/components/Modal';
 import { Bitmap } from '@/utils/bitmap';
-import { useCallback, useRef } from 'react';
+import { useCallback } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 interface FormData {
@@ -17,7 +17,6 @@ interface ResizeDialogProps {
 }
 
 export const ResizeDialog = ({ bitmap, onChangeBitmap, onClose }: ResizeDialogProps): JSX.Element | null => {
-  const refModal = useRef<ModalRef | null>(null);
   const methods = useForm<FormData>({
     mode: 'onChange',
     defaultValues: { width: bitmap.width, height: bitmap.height },
@@ -39,11 +38,10 @@ export const ResizeDialog = ({ bitmap, onChangeBitmap, onClose }: ResizeDialogPr
     const clonedBitmap = bitmap.clone();
     clonedBitmap.resize(width, height);
     onChangeBitmap(clonedBitmap);
-    refModal.current?.close();
   };
 
   return (
-    <Modal title="Resize layout" onClose={onClose} ref={refModal}>
+    <Modal title="Resize layout" onClose={onClose}>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
           <DistortedBitmapAlert bitmapWidth={bitmapWidth} />

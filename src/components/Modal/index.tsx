@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Modal as BSModal } from 'bootstrap';
 
@@ -13,44 +13,29 @@ export interface ModalRef {
   close: () => void;
 }
 
-export const Modal = forwardRef<ModalRef, ModalProps>(({ title, onAccept, onClose, children }, ref) => {
+export const Modal = ({ title, onAccept, onClose, children }: ModalProps) => {
   const bsModalRef = useRef<BSModal | null>(null);
-
-  const handleClose = useCallback(() => {
-    bsModalRef.current?.hide();
-    onClose();
-  }, [onClose]);
 
   const handleAccept = useCallback(() => {
     if (onAccept) {
       onAccept();
     }
-    handleClose();
-  }, [handleClose, onAccept]);
+    onClose();
+  }, [onClose, onAccept]);
 
   const setModalRef = useCallback(
     (elem: HTMLDivElement | null) => {
       if (elem) {
         bsModalRef.current = new BSModal(elem); // init modal
         bsModalRef.current.show();
-        elem.addEventListener('hidden.bs.modal', handleClose);
+        elem.addEventListener('hidden.bs.modal', onClose);
       } else {
+        bsModalRef.current?.hide(); // reset body css classes
         bsModalRef.current?.dispose(); // destroy modal
+        bsModalRef.current = null;
       }
     },
-    [handleClose],
-  );
-
-  useImperativeHandle(
-    ref,
-    () => {
-      return {
-        close() {
-          handleClose();
-        },
-      };
-    },
-    [handleClose],
+    [onClose],
   );
 
   const element = (
@@ -59,12 +44,12 @@ export const Modal = forwardRef<ModalRef, ModalProps>(({ title, onAccept, onClos
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">{title}</h5>
-            <button type="button" className="btn-close" aria-label="Close" onClick={handleClose} />
+            <button type="button" className="btn-close" aria-label="Close" onClick={onClose} />
           </div>
           <div className="modal-body">{children}</div>
           {onAccept && (
             <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" onClick={handleClose}>
+              <button type="button" className="btn btn-secondary" onClick={onClose}>
                 Cancel
               </button>
               <button type="button" className="btn btn-primary" onClick={handleAccept}>
@@ -78,4 +63,4 @@ export const Modal = forwardRef<ModalRef, ModalProps>(({ title, onAccept, onClos
   );
 
   return createPortal(element, document.body);
-});
+};
