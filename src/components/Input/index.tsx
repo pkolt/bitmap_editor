@@ -22,6 +22,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({ label, classNam
         className={cn('form-control', (error || errorMessage) && 'is-invalid')}
         id={id}
         ref={ref}
+        data-bs-autofocus={props.autoFocus ? true : undefined}
         {...props}
       />
       {errorMessage && <div className="invalid-feedback">{errorMessage}</div>}
