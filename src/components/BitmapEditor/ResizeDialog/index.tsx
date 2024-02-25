@@ -1,4 +1,4 @@
-import { DistortedBitmapAlert } from '@/components/DistortedBitmapAlert';
+import { BitmapSizeAlert } from '@/components/BitmapSizeAlert';
 import { Input } from '@/components/Input';
 import { Modal } from '@/components/Modal';
 import { Bitmap } from '@/utils/bitmap';
@@ -44,7 +44,7 @@ export const ResizeDialog = ({ bitmap, onChangeBitmap, onClose }: ResizeDialogPr
     <Modal title="Resize layout" onClose={onClose}>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
-          <DistortedBitmapAlert bitmapWidth={bitmapWidth} />
+          <BitmapSizeAlert bitmapWidth={bitmapWidth} />
           <Input label="Width" {...register('width', { required: true, valueAsNumber: true, min: 1 })} />
           <Input label="Height" {...register('height', { required: true, valueAsNumber: true, min: 1 })} />
           <div className="d-flex justify-content-center gap-3">

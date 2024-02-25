@@ -1,12 +1,12 @@
 import { UINT8_BITS_PER_ELEMENT } from '@/utils/bitmap';
 import { Alert } from '../Alert';
 
-interface DistortedBitmapAlertProps {
+interface BitmapSizeAlertProps {
   bitmapWidth: number;
   className?: string;
 }
 
-export const DistortedBitmapAlert = ({ bitmapWidth, className }: DistortedBitmapAlertProps) => {
+export const BitmapSizeAlert = ({ bitmapWidth, className }: BitmapSizeAlertProps) => {
   if (bitmapWidth % UINT8_BITS_PER_ELEMENT === 0) {
     return null;
   }

@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { PageUrl } from '@/constants/urls';
 import { CheckBox } from '@/components/CheckBox';
-import { DistortedBitmapAlert } from '@/components/DistortedBitmapAlert';
+import { BitmapSizeAlert } from '@/components/BitmapSizeAlert';
 
 enum Step {
   First,
@@ -42,7 +42,7 @@ const defaultValues: FormData = {
   invertColor: false,
 };
 
-const CreateBitmapFromImage = () => {
+const ImportFromImage = () => {
   const navigate = useNavigate();
   const { addBitmap } = useBitmapStore();
 
@@ -224,7 +224,7 @@ const CreateBitmapFromImage = () => {
             )}
             {step === Step.Second && (
               <>
-                <DistortedBitmapAlert bitmapWidth={width} className="mb-3" />
+                <BitmapSizeAlert bitmapWidth={width} className="mb-3" />
                 <Input label="Name" autoFocus {...register('name', { required: true })} />
                 <div className="d-flex gap-3">
                   <Input label="Top" {...register('top', { required: true, valueAsNumber: true })} />
@@ -288,4 +288,4 @@ const CreateBitmapFromImage = () => {
   );
 };
 
-export default CreateBitmapFromImage;
+export default ImportFromImage;

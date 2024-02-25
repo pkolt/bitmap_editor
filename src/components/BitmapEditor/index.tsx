@@ -9,7 +9,7 @@ import { BitmapView } from './BitmapView';
 
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { GridDialog } from './GridDialog';
-import { DistortedBitmapAlert } from '../DistortedBitmapAlert';
+import { BitmapSizeAlert } from '../BitmapSizeAlert';
 import { ResizeDialog } from './ResizeDialog';
 
 const AUTO_SAVE_TIMEOUT_MS = 500;
@@ -227,7 +227,7 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
             <i className="bi bi-arrows-fullscreen" /> Resize
           </button>
         </div>
-        <DistortedBitmapAlert bitmapWidth={bitmapEntity.width} className="mb-3" />
+        <BitmapSizeAlert bitmapWidth={bitmapEntity.width} className="mb-3" />
         <BitmapView bitmap={bitmap} onChangeBitmap={handleChangeBitmap} eraser={eraser} />
       </div>
       {dialog === Dialog.Reset && <ResetDialog onClose={handleCloseDialog} onAccept={handleAcceptResetDialog} />}

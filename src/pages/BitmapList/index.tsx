@@ -16,7 +16,7 @@ enum Dialog {
   ImportBitmap,
 }
 
-const Home = () => {
+const BitmapList = () => {
   const { bitmaps } = useBitmapStore();
   const orderedBitmaps = useMemo(() => bitmaps.sort((a, b) => b.updatedAt - a.updatedAt), [bitmaps]);
   const [bitmapId, setBitmapId] = useState<string | null>(null);
@@ -58,7 +58,7 @@ const Home = () => {
                       <i
                         className="bi bi-floppy"
                         role="button"
-                        title="Export bitmap"
+                        title="Export to file"
                         onClick={() => openDialog(Dialog.ExportBitmap, it.id)}
                       />
                       <i
@@ -82,11 +82,11 @@ const Home = () => {
             <Link to={PageUrl.CreateBitmap} className="btn btn-primary btn-lg">
               Create new bitmap
             </Link>
-            <Link to={PageUrl.CreateBitmapFromImage} className="btn btn-primary btn-lg">
-              Create from image
+            <Link to={PageUrl.ImportBitmapFromImage} className="btn btn-primary btn-lg">
+              Import from image
             </Link>
             <button type="button" className="btn btn-primary btn-lg" onClick={() => openDialog(Dialog.ImportBitmap)}>
-              Import bitmap
+              Import from JSON
             </button>
           </div>
         </main>
@@ -99,4 +99,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default BitmapList;
