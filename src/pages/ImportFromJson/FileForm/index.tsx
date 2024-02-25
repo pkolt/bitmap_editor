@@ -41,19 +41,17 @@ export const FileForm = ({ onNext }: FileFormProps) => {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
+      <form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column w-50">
         <Input
-          label="File"
+          label="File (*.json)"
           type="file"
           accept="application/json"
           autoFocus
           {...register('files', { required: true })}
         />
-        <div className="text-center">
-          <button type="submit" className="btn btn-primary" disabled={!isValid}>
-            Next
-          </button>
-        </div>
+        <button type="submit" className="btn btn-primary mt-5 ms-auto me-auto" disabled={!isValid}>
+          Next step
+        </button>
       </form>
     </FormProvider>
   );

@@ -6,14 +6,12 @@ import { useCallback, useMemo, useState } from 'react';
 import { DeleteBitmapDialog } from './DeleteBitmapDialog';
 import { CopyBitmapDialog } from './CopyBitmapDialog';
 import { ExportBitmapDialog } from './ExportBitmapDialog';
-import { ImportBitmapDialog } from './ImportBitmapDialog';
 
 enum Dialog {
   None,
   DeleteBitmap,
   CopyBitmap,
   ExportBitmap,
-  ImportBitmap,
 }
 
 const BitmapList = () => {
@@ -82,19 +80,18 @@ const BitmapList = () => {
             <Link to={PageUrl.CreateBitmap} className="btn btn-primary btn-lg">
               Create new bitmap
             </Link>
-            <Link to={PageUrl.ImportBitmapFromImage} className="btn btn-primary btn-lg">
+            <Link to={PageUrl.ImportFromImage} className="btn btn-primary btn-lg">
               Import from image
             </Link>
-            <button type="button" className="btn btn-primary btn-lg" onClick={() => openDialog(Dialog.ImportBitmap)}>
+            <Link to={PageUrl.ImportFromJson} className="btn btn-primary btn-lg">
               Import from JSON
-            </button>
+            </Link>
           </div>
         </main>
       </Page>
       {dialog === Dialog.DeleteBitmap && bitmapId && <DeleteBitmapDialog bitmapId={bitmapId} onClose={closeDialog} />}
       {dialog === Dialog.CopyBitmap && bitmapId && <CopyBitmapDialog bitmapId={bitmapId} onClose={closeDialog} />}
       {dialog === Dialog.ExportBitmap && bitmapId && <ExportBitmapDialog bitmapId={bitmapId} onClose={closeDialog} />}
-      {dialog === Dialog.ImportBitmap && <ImportBitmapDialog onClose={closeDialog} />}
     </>
   );
 };

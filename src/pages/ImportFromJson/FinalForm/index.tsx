@@ -9,10 +9,10 @@ interface FormData {
 
 interface FinalFormProps {
   entities: BitmapEntity[];
-  onClose: () => void;
+  onFinish: () => void;
 }
 
-export const FinalForm = ({ entities, onClose }: FinalFormProps) => {
+export const FinalForm = ({ entities, onFinish }: FinalFormProps) => {
   const { addBitmap } = useBitmapStore();
 
   const methods = useForm<FormData>({
@@ -34,12 +34,12 @@ export const FinalForm = ({ entities, onClose }: FinalFormProps) => {
         addBitmap(it);
       }
     });
-    onClose();
+    onFinish();
   };
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
+      <form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column">
         <div>
           {entities.map((it) => (
             <CheckBox
@@ -50,11 +50,9 @@ export const FinalForm = ({ entities, onClose }: FinalFormProps) => {
             />
           ))}
         </div>
-        <div className="text-center">
-          <button type="submit" className="btn btn-primary" disabled={!isValid}>
-            Finish
-          </button>
-        </div>
+        <button type="submit" className="btn btn-primary ms-auto me-auto mt-5" disabled={!isValid}>
+          Save bitmaps
+        </button>
       </form>
     </FormProvider>
   );
