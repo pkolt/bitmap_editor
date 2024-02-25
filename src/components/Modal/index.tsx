@@ -29,6 +29,8 @@ export const Modal = ({ title, onAccept, onClose, children }: ModalProps) => {
         bsModalRef.current = new BSModal(elem); // init modal
         bsModalRef.current.show();
         elem.addEventListener('hidden.bs.modal', onClose);
+        // https://github.com/facebook/react/issues/23301
+        (elem.querySelector('[data-bs-autofocus]') as HTMLInputElement | null)?.focus();
       } else {
         bsModalRef.current?.hide(); // reset body css classes
         bsModalRef.current?.dispose(); // destroy modal
