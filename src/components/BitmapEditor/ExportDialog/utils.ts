@@ -1,5 +1,6 @@
 import { BitmapEntity } from '@/types/bitmap';
-import { BitOrder, Bitmap } from '@/utils/bitmap';
+import { Bitmap } from '@/utils/bitmap/Bitmap';
+import { BitOrder } from '@/utils/bitmap/types';
 
 export enum SizeFormat {
   Comments = 'comments',

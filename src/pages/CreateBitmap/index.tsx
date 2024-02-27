@@ -8,7 +8,7 @@ import { PageUrl } from '@/constants/urls';
 import { BitmapEntity } from '@/types/bitmap';
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { BitmapSizeAlert } from '@/components/BitmapSizeAlert';
-import { Bitmap } from '@/utils/bitmap';
+import { Bitmap } from '@/utils/bitmap/Bitmap';
 
 interface FormData {
   name: string;

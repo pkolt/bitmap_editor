@@ -1,4 +1,4 @@
-import { UINT8_BITS_PER_ELEMENT } from '@/utils/bitmap';
+import { UINT8_BITS_PER_ELEMENT } from '@/utils/bitmap/constants';
 import { Alert } from '../Alert';
 
 interface BitmapSizeAlertProps {

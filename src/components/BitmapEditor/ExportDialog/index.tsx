@@ -7,7 +7,7 @@ import { CheckBox } from '@/components/CheckBox';
 import { Radio } from '@/components/Radio';
 import { Alert } from '@/components/Alert';
 import { Input } from '@/components/Input';
-import { BitOrder } from '@/utils/bitmap';
+import { BitOrder } from '@/utils/bitmap/types';
 
 interface ExportDialogProps {
   bitmapId: string;

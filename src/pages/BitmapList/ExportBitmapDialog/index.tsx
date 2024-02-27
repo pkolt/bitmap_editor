@@ -5,7 +5,7 @@ import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useMemo } from 'react';
 import { CheckBox } from '@/components/CheckBox';
-import { convertToBitmapFile } from '@/utils/bitmapFile';
+import { convertToBitmapFile } from '@/utils/bitmap/file';
 import { Input } from '@/components/Input';
 
 interface FormData {

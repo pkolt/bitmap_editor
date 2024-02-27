@@ -1,6 +1,6 @@
 import { Input } from '@/components/Input';
 import { BitmapEntity } from '@/types/bitmap';
-import { parseBitmapFile } from '@/utils/bitmapFile';
+import { parseBitmapFile } from '@/utils/bitmap/file';
 import { FormProvider, useForm } from 'react-hook-form';
 
 interface FormData {

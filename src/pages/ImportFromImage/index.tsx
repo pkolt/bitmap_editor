@@ -4,7 +4,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { Input } from '@/components/Input';
 import { Range } from '@/components/Range';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Bitmap } from '@/utils/bitmap';
+import { Bitmap } from '@/utils/bitmap/Bitmap';
 import { BitmapView } from '@/components/BitmapEditor/BitmapView';
 import { convertCanvasToBitmap, scaleImage } from './utils';
 import { BitmapEntity } from '@/types/bitmap';

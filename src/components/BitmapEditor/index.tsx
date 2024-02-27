@@ -3,7 +3,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { ResetDialog } from './ResetDialog';
 import { ExportDialog } from './ExportDialog';
-import { Bitmap } from '@/utils/bitmap';
+import { Bitmap } from '@/utils/bitmap/Bitmap';
 import { RenameDialog } from './RenameDialog';
 import { BitmapView } from './BitmapView';
 
@@ -83,7 +83,7 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
   );
 
   const resetBitmap = useCallback(() => {
-    bitmap.reset();
+    bitmap.clear();
     onChangeBitmap(bitmap);
   }, [bitmap, onChangeBitmap]);
 

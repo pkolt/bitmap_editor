@@ -1,7 +1,7 @@
 import { BitmapSizeAlert } from '@/components/BitmapSizeAlert';
 import { Input } from '@/components/Input';
 import { Modal } from '@/components/Modal';
-import { Bitmap } from '@/utils/bitmap';
+import { Bitmap } from '@/utils/bitmap/Bitmap';
 import { useCallback } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 

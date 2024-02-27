@@ -1,4 +1,4 @@
-import { Bitmap } from '@/utils/bitmap';
+import { Bitmap } from '@/utils/bitmap/Bitmap';
 import {
   AREA_OVERLAY_COLOR,
   AREA_POINT_COLOR,
@@ -58,7 +58,7 @@ export const drawBitmap = (ctx: CanvasRenderingContext2D, bitmap: Bitmap): void 
   let index = 0;
   for (let y = 0; y < bitmapHeight; y++) {
     for (let x = 0; x < bitmapWidth; x++) {
-      const isFill = bitmap.getByIndex(index);
+      const isFill = bitmap.getPixelByIndex(index);
       if (isFill) {
         const posX = x * STEP_SIZE + BORDER_SIZE;
         const posY = y * STEP_SIZE + BORDER_SIZE;

@@ -1,4 +1,4 @@
-import { Bitmap } from '@/utils/bitmap';
+import { Bitmap } from '@/utils/bitmap/Bitmap';
 
 export const rgbToBlackWhite = (red: number, green: number, blue: number, threshold: number): boolean => {
   const grayscaleValue = Math.round(0.299 * red + 0.587 * green + 0.114 * blue);
@@ -20,7 +20,7 @@ export const convertCanvasToBitmap = (
     const green = imageData.data[index + 1];
     const blue = imageData.data[index + 2];
     const value = rgbToBlackWhite(red, green, blue, threshold);
-    bitmap.setByIndex(i, invertColor ? !value : value);
+    bitmap.setPixelByIndex(i, invertColor ? !value : value);
   }
   return bitmap;
 };

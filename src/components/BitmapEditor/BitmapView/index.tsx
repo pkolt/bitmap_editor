@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styles from './index.module.css';
-import { Bitmap } from '@/utils/bitmap';
+import { Bitmap } from '@/utils/bitmap/Bitmap';
 import { useSettingsStore } from '@/store/settings/useSettingsStore';
 import { Coords, Sizes } from './types';
 import {
@@ -78,12 +78,12 @@ export const BitmapView = ({
               const isIntersect = intersectionWithArea([posX, posY], areaStart, areaEnd);
               if (isIntersect) {
                 const nextBitmap = bitmap.clone();
-                nextBitmap.setByCoords(posX, posY, !eraser);
+                nextBitmap.setPixelByCoords(posX, posY, !eraser);
                 onChangeBitmap(nextBitmap);
               }
             } else {
               const nextBitmap = bitmap.clone();
-              nextBitmap.setByCoords(posX, posY, !eraser);
+              nextBitmap.setPixelByCoords(posX, posY, !eraser);
               onChangeBitmap(nextBitmap);
             }
           }
