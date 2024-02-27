@@ -1,47 +1,43 @@
 import { Point } from './Point';
 
 export class Area {
-  public point1: Point;
-  public point2: Point;
+  public minX: number;
+  public maxX: number;
+  public minY: number;
+  public maxY: number;
 
   static fromRectangle(x: number, y: number, width: number, height: number) {
     return new Area(new Point(x, y), new Point(x + width, y + height));
   }
 
-  constructor(point1: Point, point2: Point) {
-    this.point1 = point1;
-    this.point2 = point2;
+  constructor(p1: Point, p2: Point) {
+    this.minX = Math.min(p1.x, p2.x);
+    this.maxX = Math.max(p1.x, p2.x);
+    this.minY = Math.min(p1.y, p2.y);
+    this.maxY = Math.max(p1.y, p2.y);
   }
 
-  get xMin() {
-    return Math.min(this.point1.x, this.point2.x);
+  get minPoint() {
+    return new Point(this.minX, this.minY);
   }
 
-  get xMax() {
-    return Math.max(this.point1.x, this.point2.x);
-  }
-
-  get yMin() {
-    return Math.min(this.point1.y, this.point2.y);
-  }
-
-  get yMax() {
-    return Math.max(this.point1.y, this.point2.y);
+  get maxPoint() {
+    return new Point(this.maxX, this.maxY);
   }
 
   get width() {
-    return this.xMax - this.xMin;
+    return this.maxX - this.minX;
   }
 
   get height() {
-    return this.yMax - this.yMin;
+    return this.maxY - this.minY;
   }
 
   intersection(point: Point): boolean {
-    return point.x >= this.xMin && point.x <= this.xMax && point.y >= this.yMin && point.y <= this.yMax;
+    return point.x >= this.minX && point.x <= this.maxX && point.y >= this.minY && point.y <= this.maxY;
   }
 
   equal(area: Area): boolean {
-    return area.xMin === this.xMin && area.xMax === this.xMax && area.yMin === this.yMin && area.yMax === this.yMax;
+    return area.minX === this.minX && area.maxX === this.maxX && area.minY === this.minY && area.maxY === this.maxY;
   }
 }

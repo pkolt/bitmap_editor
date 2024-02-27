@@ -87,16 +87,16 @@ export class Bitmap {
       return null;
     }
 
-    const xMin = Math.min(...xArray);
-    const xMax = Math.max(...xArray);
-    const yMin = Math.min(...yArray);
-    const yMax = Math.max(...yArray);
+    const minX = Math.min(...xArray);
+    const maxX = Math.max(...xArray);
+    const minY = Math.min(...yArray);
+    const maxY = Math.max(...yArray);
 
     return {
-      x: xMin,
-      y: yMin,
-      width: xMax - xMin + 1,
-      height: yMax - yMin + 1,
+      x: minX,
+      y: minY,
+      width: maxX - minX + 1,
+      height: maxY - minY + 1,
     };
   }
 
@@ -104,7 +104,7 @@ export class Bitmap {
     const bitmap = new Bitmap(area.width, area.height);
     for (let posX = 0; posX < area.width; posX++) {
       for (let posY = 0; posY < area.height; posY++) {
-        const pixelValue = this.getPixelByCoords(area.xMin + posX, area.yMin + posY);
+        const pixelValue = this.getPixelByCoords(area.minX + posX, area.minY + posY);
         bitmap.setPixelByCoords(posX, posY, pixelValue);
       }
     }
@@ -151,7 +151,7 @@ export class Bitmap {
     const moveArea = area ? area : this.getArea();
     const bitmap = this.copy(moveArea);
     this.clear(area);
-    this.paste(moveArea.xMin + x, moveArea.yMin + y, bitmap);
+    this.paste(moveArea.minX + x, moveArea.minY + y, bitmap);
   }
 
   //! bad method

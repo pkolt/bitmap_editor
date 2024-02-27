@@ -10,4 +10,8 @@ export class Point {
   equal(point: Point): boolean {
     return point.x === this.x && point.y === this.y;
   }
+
+  move(xOffset: number, yOffset: number) {
+    return new Point(this.x + xOffset, this.y + yOffset);
+  }
 }
