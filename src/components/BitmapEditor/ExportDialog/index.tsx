@@ -1,6 +1,6 @@
 import { Modal } from '@/components/Modal';
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
-import { DataFormat, Platform, SizeFormat, exportBitmap } from '../utils/exportBitmap';
+import { DataFormat, Platform, SizeFormat, exportBitmap } from './utils';
 import { useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { CheckBox } from '@/components/CheckBox';
