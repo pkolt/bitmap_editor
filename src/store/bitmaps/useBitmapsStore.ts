@@ -1,4 +1,4 @@
-import { BitmapEntity } from '@/types/bitmap';
+import { BitmapEntity } from '@/utils/bitmap/types';
 import { DateTime } from 'luxon';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';

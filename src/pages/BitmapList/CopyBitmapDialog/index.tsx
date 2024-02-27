@@ -6,7 +6,7 @@ import { DateTime } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { BitmapEntity } from '@/types/bitmap';
+import { BitmapEntity } from '@/utils/bitmap/types';
 
 interface FormData {
   name: string;

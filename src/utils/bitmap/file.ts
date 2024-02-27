@@ -1,4 +1,4 @@
-import { BitmapEntity } from '@/types/bitmap';
+import { BitmapEntity } from './types';
 
 interface BitmapFile {
   version: number;

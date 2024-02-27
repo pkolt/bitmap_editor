@@ -1,6 +1,6 @@
 import { CheckBox } from '@/components/CheckBox';
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
-import { BitmapEntity } from '@/types/bitmap';
+import { BitmapEntity } from '@/utils/bitmap/types';
 import { FormProvider, useForm } from 'react-hook-form';
 
 interface FormData {

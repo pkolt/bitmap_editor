@@ -5,7 +5,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { Input } from '@/components/Input';
 import { useNavigate } from 'react-router-dom';
 import { PageUrl } from '@/constants/urls';
-import { BitmapEntity } from '@/types/bitmap';
+import { BitmapEntity } from '@/utils/bitmap/types';
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { BitmapSizeAlert } from '@/components/BitmapSizeAlert';
 import { Bitmap } from '@/utils/bitmap/Bitmap';

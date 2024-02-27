@@ -1,6 +1,6 @@
 import { Page } from '@/components/Page';
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
-import { BitmapEntity } from '@/types/bitmap';
+import { BitmapEntity } from '@/utils/bitmap/types';
 import { useCallback, useState } from 'react';
 import { FinalForm } from './FinalForm';
 import { FileForm } from './FileForm';

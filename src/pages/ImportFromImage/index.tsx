@@ -7,7 +7,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
 import { BitmapView } from '@/components/BitmapEditor/BitmapView';
 import { convertCanvasToBitmap, scaleImage } from './utils';
-import { BitmapEntity } from '@/types/bitmap';
+import { BitmapEntity } from '@/utils/bitmap/types';
 import { DateTime } from 'luxon';
 import { useNavigate } from 'react-router-dom';
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
