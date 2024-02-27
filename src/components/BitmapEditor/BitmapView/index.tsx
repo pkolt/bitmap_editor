@@ -2,20 +2,42 @@ import React, { useCallback, useEffect, useState } from 'react';
 import styles from './index.module.css';
 import { Bitmap } from '@/utils/bitmap';
 import { useSettingsStore } from '@/store/settings/useSettingsStore';
-import { Sizes } from './types';
-import { clearDisplay, drawBitmap, drawPointsBorders, drawGrid, getCanvasSize } from './utils';
+import { Coords, Sizes } from './types';
+import {
+  clearDisplay,
+  drawBitmap,
+  drawPointsBorders,
+  drawGrid,
+  getCanvasSize,
+  drawArea,
+  intersectionWithArea,
+} from './utils';
+import { AreaCoords } from '../types';
 
 interface BitmapViewProps {
   bitmap: Bitmap;
   onChangeBitmap?: (bitmap: Bitmap) => void;
   eraser?: boolean;
+  area?: boolean;
+  selectedArea?: AreaCoords;
+  onChangeSelectedArea?: (areaCoords: AreaCoords) => void;
 }
 
-export const BitmapView = ({ bitmap, onChangeBitmap, eraser }: BitmapViewProps): JSX.Element => {
+export const BitmapView = ({
+  bitmap,
+  onChangeBitmap,
+  eraser,
+  area,
+  selectedArea,
+  onChangeSelectedArea,
+}: BitmapViewProps): JSX.Element => {
   const { grid } = useSettingsStore();
   const [sizes, setSizes] = useState<Sizes | null>(null);
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
+  const areaStart: Coords | null = selectedArea?.[0] ?? null;
+  const areaEnd: Coords | null = selectedArea?.[1] ?? null;
+  const isSelectingArea = area && (!areaStart || !areaEnd);
   const bitmapWidth = bitmap.width;
   const bitmapHeight = bitmap.height;
 
@@ -45,24 +67,39 @@ export const BitmapView = ({ bitmap, onChangeBitmap, eraser }: BitmapViewProps):
         const x = event.clientX - left;
         const y = event.clientY - top;
         if (x >= 0 && y >= 0) {
-          const bitmapX = Math.floor(x / (sizes.canvasWidth / sizes.bitmapWidth));
-          const bitmapY = Math.floor(y / (sizes.canvasHeight / sizes.bitmapHeight));
-          const nextBitmap = bitmap.clone();
-          nextBitmap.setByCoords(bitmapX, bitmapY, !eraser);
-          onChangeBitmap(nextBitmap);
+          const posX = Math.floor(x / (sizes.canvasWidth / sizes.bitmapWidth));
+          const posY = Math.floor(y / (sizes.canvasHeight / sizes.bitmapHeight));
+
+          if (area && (!areaStart || !areaEnd) && onChangeSelectedArea) {
+            const nextCoords: AreaCoords = !areaStart ? [[posX, posY], null] : [areaStart, [posX, posY]];
+            onChangeSelectedArea(nextCoords);
+          } else {
+            if (area && areaStart && areaEnd) {
+              const isIntersect = intersectionWithArea([posX, posY], areaStart, areaEnd);
+              if (isIntersect) {
+                const nextBitmap = bitmap.clone();
+                nextBitmap.setByCoords(posX, posY, !eraser);
+                onChangeBitmap(nextBitmap);
+              }
+            } else {
+              const nextBitmap = bitmap.clone();
+              nextBitmap.setByCoords(posX, posY, !eraser);
+              onChangeBitmap(nextBitmap);
+            }
+          }
         }
       }
     },
-    [bitmap, canvas, eraser, onChangeBitmap, sizes],
+    [canvas, sizes, onChangeBitmap, area, areaStart, areaEnd, bitmap, eraser, onChangeSelectedArea],
   );
 
   const handleMouseMove = useCallback(
     (event: React.MouseEvent<HTMLCanvasElement>) => {
-      if (event.buttons || event.ctrlKey) {
+      if (!isSelectingArea && (event.buttons || event.ctrlKey)) {
         handleClick(event);
       }
     },
-    [handleClick],
+    [handleClick, isSelectingArea],
   );
 
   useEffect(() => {
@@ -74,7 +111,8 @@ export const BitmapView = ({ bitmap, onChangeBitmap, eraser }: BitmapViewProps):
     drawBitmap(ctx, bitmap);
     drawPointsBorders(ctx, sizes);
     drawGrid(ctx, sizes, grid);
-  }, [bitmap, ctx, grid, sizes]);
+    drawArea(ctx, sizes, !!area, selectedArea);
+  }, [area, areaStart, areaEnd, bitmap, ctx, grid, sizes, selectedArea]);
 
   return <canvas ref={setCanvasRef} className={styles.container} onClick={handleClick} onMouseMove={handleMouseMove} />;
 };

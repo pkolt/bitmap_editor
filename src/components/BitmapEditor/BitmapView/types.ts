@@ -4,3 +4,5 @@ export interface Sizes {
   bitmapWidth: number;
   bitmapHeight: number;
 }
+
+export type Coords = [number, number];

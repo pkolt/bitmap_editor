@@ -11,6 +11,7 @@ import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { GridDialog } from './GridDialog';
 import { BitmapSizeAlert } from '../BitmapSizeAlert';
 import { ResizeDialog } from './ResizeDialog';
+import { AreaCoords } from './types';
 
 const AUTO_SAVE_TIMEOUT_MS = 500;
 const HISTORY_LENGTH = 50;
@@ -36,6 +37,8 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
   }
   const refAutoSaveTimeout = useRef<NodeJS.Timeout | null>(null);
   const [eraser, setEraser] = useState(false);
+  const [area, setArea] = useState(false);
+  const [selectedArea, setSelectedArea] = useState<AreaCoords>([null, null]);
   const [dialog, setDialog] = useState(Dialog.None);
   const [bitmap, setBitmap] = useState(Bitmap.fromJSON(bitmapEntity));
   const [history, setHistory] = useState<Bitmap[]>([bitmap.clone()]);
@@ -134,6 +137,16 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
     onChangeBitmap(bitmap);
   }, [bitmap, onChangeBitmap]);
 
+  const handleClickArea = useCallback(() => {
+    setArea((state) => {
+      // Reset area if off area
+      if (!state) {
+        setSelectedArea([null, null]);
+      }
+      return !state;
+    });
+  }, []);
+
   const handleClickUp = useCallback(() => {
     bitmap.moveBitmap(0, -1);
     onChangeBitmap(bitmap);
@@ -211,6 +224,9 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
             title="Ctr+Shift+Z / Cmd+Shift+Z">
             <i className="bi bi-arrow-clockwise" /> Redo
           </button>
+          <button className={cn('btn', area ? 'btn-primary' : 'btn-outline-primary')} onClick={handleClickArea}>
+            <i className="bi bi-bounding-box" /> Area
+          </button>
           <button className="btn btn-outline-primary" title="Invert color" onClick={handleClickInvert}>
             <i className="bi bi-highlights" /> Invert
           </button>
@@ -228,7 +244,14 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
           </button>
         </div>
         <BitmapSizeAlert bitmapWidth={bitmapEntity.width} className="mb-3" />
-        <BitmapView bitmap={bitmap} onChangeBitmap={handleChangeBitmap} eraser={eraser} />
+        <BitmapView
+          bitmap={bitmap}
+          onChangeBitmap={handleChangeBitmap}
+          eraser={eraser}
+          area={area}
+          selectedArea={selectedArea}
+          onChangeSelectedArea={setSelectedArea}
+        />
       </div>
       {dialog === Dialog.Reset && <ResetDialog onClose={handleCloseDialog} onAccept={handleAcceptResetDialog} />}
       {dialog === Dialog.Export && <ExportDialog onClose={handleCloseDialog} bitmapId={bitmapId} />}
