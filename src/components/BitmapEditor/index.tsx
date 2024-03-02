@@ -126,8 +126,7 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
 
   const handleClickArea = useCallback(() => {
     setIsArea((state) => {
-      // Reset area if off area
-      if (!state) {
+      if (state) {
         setArea(null);
       }
       return !state;

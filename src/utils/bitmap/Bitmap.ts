@@ -96,8 +96,9 @@ export class Bitmap {
   copy(area: Area): Bitmap {
     const bitmap = new Bitmap(area.width, area.height);
     area.forEach((p) => {
-      const pixelValue = this.getPixelValue(area.minPoint.plus(p));
-      bitmap.setPixelValue(p, pixelValue);
+      const pixelValue = this.getPixelValue(p);
+      const absPoint = p.minus(area.minPoint);
+      bitmap.setPixelValue(absPoint, pixelValue);
     });
     return bitmap;
   }

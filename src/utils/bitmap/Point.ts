@@ -22,4 +22,8 @@ export class Point {
   plus(p: Point): Point {
     return new Point(this.x + p.x, this.y + p.y);
   }
+
+  minus(p: Point): Point {
+    return new Point(this.x - p.x, this.y - p.y);
+  }
 }

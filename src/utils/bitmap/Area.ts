@@ -45,9 +45,9 @@ export class Area {
     return !this.isEqual(area);
   }
 
-  forEach(cb: (p: Point) => void) {
-    for (let x = 0; x < this.width; x++) {
-      for (let y = 0; y < this.height; y++) {
+  forEach(cb: (offsetPoint: Point) => void) {
+    for (let x = this.minX; x < this.width + this.minX; x++) {
+      for (let y = this.minY; y < this.height + this.minY; y++) {
         cb(new Point(x, y));
       }
     }
