@@ -149,22 +149,22 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
   }, []);
 
   const handleClickUp = useCallback(() => {
-    bitmap.moveBitmap(new Point(0, -1));
+    bitmap.move(new Point(0, -1));
     onChangeBitmap(bitmap);
   }, [bitmap, onChangeBitmap]);
 
   const handleClickDown = useCallback(() => {
-    bitmap.moveBitmap(new Point(0, 1));
+    bitmap.move(new Point(0, 1));
     onChangeBitmap(bitmap);
   }, [bitmap, onChangeBitmap]);
 
   const handleClickLeft = useCallback(() => {
-    bitmap.moveBitmap(new Point(-1, 0));
+    bitmap.move(new Point(-1, 0));
     onChangeBitmap(bitmap);
   }, [bitmap, onChangeBitmap]);
 
   const handleClickRight = useCallback(() => {
-    bitmap.moveBitmap(new Point(1, 0));
+    bitmap.move(new Point(1, 0));
     onChangeBitmap(bitmap);
   }, [bitmap, onChangeBitmap]);
 

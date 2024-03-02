@@ -22,7 +22,11 @@ export class Bitmap {
       throw new Error('Invalid bitmap data');
     }
 
-    this.#data = data ? [...data] : new Array(this.getPixelCount()).fill(false);
+    this.#data = data ? [...data] : this.#createData();
+  }
+
+  #createData() {
+    return new Array(this.getPixelCount()).fill(false);
   }
 
   #pointToIndex(p: Point): number {
@@ -127,7 +131,7 @@ export class Bitmap {
 
     this.width = width;
     this.height = height;
-    this.#data = new Array(this.getPixelCount()).fill(false);
+    this.#data = this.#createData();
 
     if (bitmap) {
       this.paste(new Point(0, 0), bitmap);
@@ -139,16 +143,6 @@ export class Bitmap {
     const bitmap = this.copy(moveArea);
     this.clear(area);
     this.paste(moveArea.minPoint.plus(offset), bitmap);
-  }
-
-  //! bad method
-  moveBitmap(offset: Point): void {
-    const area = this.findBitmapCoords();
-    if (area) {
-      const bitmap = this.copy(area);
-      this.clear();
-      this.paste(area.minPoint.plus(offset), bitmap);
-    }
   }
 
   isEmpty(area?: Area): boolean {
