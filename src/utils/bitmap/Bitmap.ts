@@ -70,29 +70,27 @@ export class Bitmap {
     }
   }
 
-  //! bad method
-  findBitmapCoords(): Area | null {
-    const xArray: number[] = [];
-    const yArray: number[] = [];
+  findFillPixelsArea(): Area | null {
+    let minX: number | null = null;
+    let maxX: number | null = null;
+    let minY: number | null = null;
+    let maxY: number | null = null;
 
     this.getArea().forEach((p) => {
-      const value = this.getPixelValue(p);
-      if (value) {
-        xArray.push(p.x);
-        yArray.push(p.y);
+      const isFill = this.getPixelValue(p);
+      if (!isFill) {
+        return;
       }
+      minX = minX === null || p.x < minX ? p.x : minX;
+      maxX = maxX === null || p.x > maxX ? p.x : maxX;
+      minY = minY === null || p.y < minY ? p.y : minY;
+      maxY = maxY === null || p.y > maxY ? p.y : maxY;
     });
 
-    if (xArray.length === 0 || yArray.length === 0) {
-      return null;
+    if (minX !== null && maxX !== null && minY !== null && maxY !== null) {
+      return new Area(new Point(minX, minY), new Point(maxX, maxY));
     }
-
-    const minX = Math.min(...xArray);
-    const maxX = Math.max(...xArray);
-    const minY = Math.min(...yArray);
-    const maxY = Math.max(...yArray);
-
-    return Area.fromRectangle(minX, minY, maxX - minX + 1, maxY - minY + 1);
+    return null;
   }
 
   copy(area: Area): Bitmap {
@@ -113,9 +111,9 @@ export class Bitmap {
 
   resize(width: number, height: number): void {
     let bitmap: Bitmap | null = null;
-    const area = this.findBitmapCoords();
-    if (area) {
-      bitmap = this.copy(area);
+    const fillPixelsArea = this.findFillPixelsArea();
+    if (fillPixelsArea) {
+      bitmap = this.copy(fillPixelsArea);
       // Crop bitmap
       if (bitmap.width > width || bitmap.height > height) {
         bitmap = bitmap.copy(

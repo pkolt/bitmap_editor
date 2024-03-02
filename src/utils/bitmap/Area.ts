@@ -7,7 +7,7 @@ export class Area {
   public maxY: number;
 
   static fromRectangle(x: number, y: number, width: number, height: number) {
-    return new Area(new Point(x, y), new Point(x + width, y + height));
+    return new Area(new Point(x, y), new Point(x + width - 1, y + height - 1));
   }
 
   constructor(p1: Point, p2: Point) {
@@ -26,11 +26,11 @@ export class Area {
   }
 
   get width() {
-    return this.maxX - this.minX;
+    return this.maxX - this.minX + 1;
   }
 
   get height() {
-    return this.maxY - this.minY;
+    return this.maxY - this.minY + 1;
   }
 
   isIntersect(point: Point): boolean {
