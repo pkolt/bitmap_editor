@@ -1,3 +1,4 @@
+import { Area } from '@/utils/bitmap/Area';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
 import { BitOrder, BitmapEntity } from '@/utils/bitmap/types';
 
@@ -25,6 +26,7 @@ interface ExportBitmapParams {
   platform: Platform;
   sizeFormat: SizeFormat;
   progmem: boolean;
+  area?: Area;
 }
 
 export const exportBitmap = ({
@@ -35,9 +37,11 @@ export const exportBitmap = ({
   platform,
   sizeFormat,
   progmem,
+  area,
 }: ExportBitmapParams): string => {
   const { width, height } = entity;
-  const bitmap = Bitmap.fromJSON(entity);
+  const srcBitmap = Bitmap.fromJSON(entity);
+  const bitmap = area ? srcBitmap.copy(area) : srcBitmap;
   const xBitMap = bitmap.toXBitMap(bitOrder);
 
   const nameLower = name.replace(/[^\w]/gi, '_').toLowerCase();

@@ -1,7 +1,6 @@
 import cn from 'classnames';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { ResetDialog } from './ResetDialog';
 import { ExportDialog } from './ExportDialog';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
 import { RenameDialog } from './RenameDialog';
@@ -11,20 +10,12 @@ import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { GridDialog } from './GridDialog';
 import { BitmapSizeAlert } from '../BitmapSizeAlert';
 import { ResizeDialog } from './ResizeDialog';
-import { SelectedArea } from './types';
+import { BitmapArea, Dialog } from './types';
 import { Point } from '@/utils/bitmap/Point';
+import { Area } from '@/utils/bitmap/Area';
 
 const AUTO_SAVE_TIMEOUT_MS = 500;
 const HISTORY_LENGTH = 50;
-
-enum Dialog {
-  None,
-  Reset,
-  Export,
-  Rename,
-  Grid,
-  Resize,
-}
 
 interface BitmapEditorProps {
   bitmapId: string;
@@ -37,13 +28,14 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
     throw Error(`Not found bitmap with id: ${bitmapId}`);
   }
   const refAutoSaveTimeout = useRef<NodeJS.Timeout | null>(null);
-  const [eraser, setEraser] = useState(false);
-  const [area, setArea] = useState(false);
-  const [selectedArea, setSelectedArea] = useState<SelectedArea>(null);
+  const [isClear, setIsClear] = useState(false);
+  const [isArea, setIsArea] = useState(false);
+  const [area, setArea] = useState<BitmapArea>(null);
   const [dialog, setDialog] = useState(Dialog.None);
   const [bitmap, setBitmap] = useState(Bitmap.fromJSON(bitmapEntity));
   const [history, setHistory] = useState<Bitmap[]>([bitmap.clone()]);
   const [historyIndex, setHistoryIndex] = useState(0);
+  const targetArea = area instanceof Area ? area : undefined;
 
   const saveHistory = useCallback((value: Bitmap) => {
     setHistory((state) => {
@@ -83,22 +75,16 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
     [bitmapId, changeBitmap, saveHistory],
   );
 
-  const resetBitmap = useCallback(() => {
-    bitmap.clear();
+  const handleClickReset = useCallback(() => {
+    bitmap.clear(targetArea);
     onChangeBitmap(bitmap);
-  }, [bitmap, onChangeBitmap]);
+  }, [bitmap, onChangeBitmap, targetArea]);
 
   const handleCloseDialog = () => setDialog(Dialog.None);
-  const handleClickReset = () => setDialog(Dialog.Reset);
   const handleClickExport = () => setDialog(Dialog.Export);
   const handleClickRename = () => setDialog(Dialog.Rename);
   const handleClickGrid = () => setDialog(Dialog.Grid);
   const handleClickLayout = () => setDialog(Dialog.Resize);
-
-  const handleAcceptResetDialog = () => {
-    resetBitmap();
-    handleCloseDialog();
-  };
 
   const setBitmapFromHistory = useCallback(
     (moveIndex: number) => {
@@ -126,23 +112,23 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
   }, [disabledRedo, setBitmapFromHistory]);
 
   const handleClickDraw = useCallback(() => {
-    setEraser(false);
+    setIsClear(false);
   }, []);
 
   const handleClickEraser = useCallback(() => {
-    setEraser(true);
+    setIsClear(true);
   }, []);
 
   const handleClickInvert = useCallback(() => {
-    bitmap.invertColor();
+    bitmap.invertColor(targetArea);
     onChangeBitmap(bitmap);
-  }, [bitmap, onChangeBitmap]);
+  }, [bitmap, onChangeBitmap, targetArea]);
 
   const handleClickArea = useCallback(() => {
-    setArea((state) => {
+    setIsArea((state) => {
       // Reset area if off area
       if (!state) {
-        setSelectedArea(null);
+        setArea(null);
       }
       return !state;
     });
@@ -199,16 +185,16 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
         <div className="mb-3 d-flex gap-2">
           <div className="btn-group">
             <button
-              className={cn('btn btn-outline-primary', !eraser && 'active')}
+              className={cn('btn btn-outline-primary', !isClear && 'active')}
               onClick={handleClickDraw}
               title="Ctr+U / Cmd+U">
               <i className="bi bi-brush" /> Draw
             </button>
             <button
-              className={cn('btn btn-outline-primary', eraser && 'active')}
+              className={cn('btn btn-outline-primary', isClear && 'active')}
               onClick={handleClickEraser}
               title="Ctr+I / Cmd+I">
-              <i className="bi bi-eraser" /> Eraser
+              <i className="bi bi-eraser" /> Clear
             </button>
           </div>
           <button
@@ -225,7 +211,7 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
             title="Ctr+Shift+Z / Cmd+Shift+Z">
             <i className="bi bi-arrow-clockwise" /> Redo
           </button>
-          <button className={cn('btn', area ? 'btn-primary' : 'btn-outline-primary')} onClick={handleClickArea}>
+          <button className={cn('btn', isArea ? 'btn-primary' : 'btn-outline-primary')} onClick={handleClickArea}>
             <i className="bi bi-bounding-box" /> Area
           </button>
           <button className="btn btn-outline-primary" title="Invert color" onClick={handleClickInvert}>
@@ -240,7 +226,7 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
           <button className="btn btn-outline-primary" onClick={handleClickGrid}>
             <i className="bi bi-border-all" /> Grid
           </button>
-          <button className="btn btn-outline-primary" onClick={handleClickLayout}>
+          <button className="btn btn-outline-primary" onClick={handleClickLayout} disabled={isArea}>
             <i className="bi bi-arrows-fullscreen" /> Resize
           </button>
         </div>
@@ -248,14 +234,13 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
         <BitmapView
           bitmap={bitmap}
           onChangeBitmap={handleChangeBitmap}
-          eraser={eraser}
+          isClear={isClear}
+          isArea={isArea}
           area={area}
-          selectedArea={selectedArea}
-          onChangeSelectedArea={setSelectedArea}
+          onChangeArea={setArea}
         />
       </div>
-      {dialog === Dialog.Reset && <ResetDialog onClose={handleCloseDialog} onAccept={handleAcceptResetDialog} />}
-      {dialog === Dialog.Export && <ExportDialog onClose={handleCloseDialog} bitmapId={bitmapId} />}
+      {dialog === Dialog.Export && <ExportDialog onClose={handleCloseDialog} bitmapId={bitmapId} area={targetArea} />}
       {dialog === Dialog.Rename && <RenameDialog onClose={handleCloseDialog} bitmapId={bitmapId} />}
       {dialog === Dialog.Grid && <GridDialog onClose={handleCloseDialog} />}
       {dialog === Dialog.Resize && (

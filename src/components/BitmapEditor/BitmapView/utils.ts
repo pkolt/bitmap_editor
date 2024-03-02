@@ -12,7 +12,7 @@ import {
 } from './constants';
 import { Sizes } from './types';
 import { GridSettings } from '@/store/settings/useSettingsStore';
-import { SelectedArea } from '../types';
+import { BitmapArea } from '../types';
 import { Area } from '@/utils/bitmap/Area';
 import { Point } from '@/utils/bitmap/Point';
 
@@ -100,7 +100,7 @@ export const drawArea = (
   ctx: CanvasRenderingContext2D,
   sizes: Sizes,
   area: boolean,
-  selectedArea?: SelectedArea,
+  selectedArea?: BitmapArea,
 ): void => {
   if (!area) {
     return;

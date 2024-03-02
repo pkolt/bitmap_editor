@@ -8,9 +8,11 @@ import { Radio } from '@/components/Radio';
 import { Alert } from '@/components/Alert';
 import { Input } from '@/components/Input';
 import { BitOrder } from '@/utils/bitmap/types';
+import { Area } from '@/utils/bitmap/Area';
 
 interface ExportDialogProps {
   bitmapId: string;
+  area?: Area;
   onClose: () => void;
 }
 
@@ -32,7 +34,7 @@ const defaultValues: FormData = {
   progmem: true,
 };
 
-export const ExportDialog = ({ bitmapId, onClose }: ExportDialogProps): JSX.Element | null => {
+export const ExportDialog = ({ bitmapId, area, onClose }: ExportDialogProps): JSX.Element | null => {
   const { findBitmap: findBitmap } = useBitmapStore();
   const bitmapEntity = findBitmap(bitmapId);
 
@@ -45,8 +47,8 @@ export const ExportDialog = ({ bitmapId, onClose }: ExportDialogProps): JSX.Elem
 
   const formData = watch();
   const exportCode = useMemo<string>(
-    () => (bitmapEntity ? exportBitmap({ entity: bitmapEntity, ...formData }) : ''),
-    [bitmapEntity, formData],
+    () => (bitmapEntity ? exportBitmap({ entity: bitmapEntity, area, ...formData }) : ''),
+    [area, bitmapEntity, formData],
   );
 
   const handleCopy = () => {
