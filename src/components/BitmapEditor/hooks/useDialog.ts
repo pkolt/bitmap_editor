@@ -9,23 +9,23 @@ export enum Dialog {
 }
 
 export const useDialog = () => {
-  const [name, setName] = useState(Dialog.None);
+  const [opened, setOpened] = useState(Dialog.None);
 
-  const close = () => setName(Dialog.None);
-  const openExportDialog = () => setName(Dialog.Export);
-  const openRenameDialog = () => setName(Dialog.Rename);
-  const openGridDialog = () => setName(Dialog.Grid);
-  const openLayoutDialog = () => setName(Dialog.Resize);
+  const close = () => setOpened(Dialog.None);
+  const openExportDialog = () => setOpened(Dialog.Export);
+  const openRenameDialog = () => setOpened(Dialog.Rename);
+  const openGridDialog = () => setOpened(Dialog.Grid);
+  const openLayoutDialog = () => setOpened(Dialog.Resize);
 
   return useMemo(
     () => ({
-      name,
+      opened,
       close,
       openExportDialog,
       openRenameDialog,
       openGridDialog,
       openLayoutDialog,
     }),
-    [name],
+    [opened],
   );
 };

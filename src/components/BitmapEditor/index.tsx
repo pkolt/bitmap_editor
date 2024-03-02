@@ -117,12 +117,12 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
           onSelectArea={onSelectArea}
         />
       </div>
-      {dialog.name === Dialog.Export && (
+      {dialog.opened === Dialog.Export && (
         <ExportDialog onClose={dialog.close} bitmapId={bitmapId} area={selectedAreaOnly} />
       )}
-      {dialog.name === Dialog.Rename && <RenameDialog onClose={dialog.close} bitmapId={bitmapId} />}
-      {dialog.name === Dialog.Grid && <GridDialog onClose={dialog.close} />}
-      {dialog.name === Dialog.Resize && (
+      {dialog.opened === Dialog.Rename && <RenameDialog onClose={dialog.close} bitmapId={bitmapId} />}
+      {dialog.opened === Dialog.Grid && <GridDialog onClose={dialog.close} />}
+      {dialog.opened === Dialog.Resize && (
         <ResizeDialog bitmap={bitmap} onChangeBitmap={onChangeBitmap} onClose={dialog.close} />
       )}
     </>
