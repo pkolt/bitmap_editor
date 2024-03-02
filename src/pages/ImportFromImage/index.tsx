@@ -5,7 +5,7 @@ import { Input } from '@/components/Input';
 import { Range } from '@/components/Range';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
-import { BitmapView } from '@/components/BitmapEditor/BitmapView';
+import { BitmapView } from '@/components/BitmapEditor/components/BitmapView';
 import { convertCanvasToBitmap, scaleImage } from './utils';
 import { BitmapEntity } from '@/utils/bitmap/types';
 import { DateTime } from 'luxon';

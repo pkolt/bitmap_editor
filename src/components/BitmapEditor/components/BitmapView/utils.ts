@@ -12,7 +12,7 @@ import {
 } from './constants';
 import { Sizes } from './types';
 import { GridSettings } from '@/store/settings/useSettingsStore';
-import { BitmapArea } from '../types';
+import { BitmapArea } from '../../types';
 import { Area } from '@/utils/bitmap/Area';
 import { Point } from '@/utils/bitmap/Point';
 

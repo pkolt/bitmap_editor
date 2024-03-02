@@ -38,6 +38,7 @@ export const ResizeDialog = ({ bitmap, onChangeBitmap, onClose }: ResizeDialogPr
     const clonedBitmap = bitmap.clone();
     clonedBitmap.resize(width, height);
     onChangeBitmap(clonedBitmap);
+    onClose();
   };
 
   return (

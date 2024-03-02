@@ -1,173 +1,36 @@
 import cn from 'classnames';
-import { useHotkeys } from 'react-hotkeys-hook';
-import { useCallback, useMemo, useRef, useState } from 'react';
-import { ExportDialog } from './ExportDialog';
-import { Bitmap } from '@/utils/bitmap/Bitmap';
-import { RenameDialog } from './RenameDialog';
-import { BitmapView } from './BitmapView';
-
-import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
-import { GridDialog } from './GridDialog';
+import { ExportDialog } from './components/ExportDialog';
+import { RenameDialog } from './components/RenameDialog';
+import { BitmapView } from './components/BitmapView';
+import { GridDialog } from './components/GridDialog';
 import { BitmapSizeAlert } from '../BitmapSizeAlert';
-import { ResizeDialog } from './ResizeDialog';
-import { BitmapArea, Dialog } from './types';
-import { Point } from '@/utils/bitmap/Point';
-import { Area } from '@/utils/bitmap/Area';
-
-const AUTO_SAVE_TIMEOUT_MS = 500;
-const HISTORY_LENGTH = 50;
+import { ResizeDialog } from './components/ResizeDialog';
+import { useToolbar } from './hooks/useToolbar';
+import { Dialog, useDialog } from './hooks/useDialog';
 
 interface BitmapEditorProps {
   bitmapId: string;
 }
 
 export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
-  const { findBitmap, changeBitmap } = useBitmapStore();
-  const bitmapEntity = findBitmap(bitmapId);
-  if (!bitmapEntity) {
-    throw Error(`Not found bitmap with id: ${bitmapId}`);
-  }
-  const refAutoSaveTimeout = useRef<NodeJS.Timeout | null>(null);
-  const [isClear, setIsClear] = useState(false);
-  const [isArea, setIsArea] = useState(false);
-  const [area, setArea] = useState<BitmapArea>(null);
-  const [dialog, setDialog] = useState(Dialog.None);
-  const [bitmap, setBitmap] = useState(Bitmap.fromJSON(bitmapEntity));
-  const [history, setHistory] = useState<Bitmap[]>([bitmap.clone()]);
-  const [historyIndex, setHistoryIndex] = useState(0);
-  const targetArea = area instanceof Area ? area : undefined;
-
-  const saveHistory = useCallback((value: Bitmap) => {
-    setHistory((state) => {
-      const list = [...state, value].slice(HISTORY_LENGTH * -1);
-      setHistoryIndex(list.length - 1);
-      return list;
-    });
-  }, []);
-
-  const isEmptyBitmap = useMemo(() => bitmap.isEmpty(), [bitmap]);
-
-  const handleChangeBitmap = useCallback(
-    (value: Bitmap) => {
-      const copiedBitmap = value.clone();
-      setBitmap(value);
-
-      // Reset previous timer
-      if (refAutoSaveTimeout.current) {
-        clearTimeout(refAutoSaveTimeout.current);
-        refAutoSaveTimeout.current = null;
-      }
-
-      refAutoSaveTimeout.current = setTimeout(() => {
-        saveHistory(copiedBitmap);
-        changeBitmap(bitmapId, copiedBitmap.toJSON());
-      }, AUTO_SAVE_TIMEOUT_MS);
-    },
-    [saveHistory, changeBitmap, bitmapId],
-  );
-
-  const onChangeBitmap = useCallback(
-    (bitmap: Bitmap) => {
-      setBitmap(bitmap.clone());
-      saveHistory(bitmap.clone());
-      changeBitmap(bitmapId, bitmap.toJSON());
-    },
-    [bitmapId, changeBitmap, saveHistory],
-  );
-
-  const handleClickReset = useCallback(() => {
-    bitmap.clear(targetArea);
-    onChangeBitmap(bitmap);
-  }, [bitmap, onChangeBitmap, targetArea]);
-
-  const handleCloseDialog = () => setDialog(Dialog.None);
-  const handleClickExport = () => setDialog(Dialog.Export);
-  const handleClickRename = () => setDialog(Dialog.Rename);
-  const handleClickGrid = () => setDialog(Dialog.Grid);
-  const handleClickLayout = () => setDialog(Dialog.Resize);
-
-  const setBitmapFromHistory = useCallback(
-    (moveIndex: number) => {
-      const index = historyIndex + moveIndex;
-      const nextBitmap = history[index];
-      setHistoryIndex(index);
-      setBitmap(nextBitmap.clone());
-      changeBitmap(bitmapId, nextBitmap.toJSON());
-    },
-    [bitmapId, changeBitmap, history, historyIndex],
-  );
-
-  const disabledUndo = historyIndex <= 0;
-  const handleClickUndo = useCallback(() => {
-    if (!disabledUndo) {
-      setBitmapFromHistory(-1);
-    }
-  }, [disabledUndo, setBitmapFromHistory]);
-
-  const disabledRedo = historyIndex >= history.length - 1;
-  const handleClickRedo = useCallback(() => {
-    if (!disabledRedo) {
-      setBitmapFromHistory(1);
-    }
-  }, [disabledRedo, setBitmapFromHistory]);
-
-  const handleClickDraw = useCallback(() => {
-    setIsClear(false);
-  }, []);
-
-  const handleClickEraser = useCallback(() => {
-    setIsClear(true);
-  }, []);
-
-  const handleClickInvert = useCallback(() => {
-    bitmap.invertColor(targetArea);
-    onChangeBitmap(bitmap);
-  }, [bitmap, onChangeBitmap, targetArea]);
-
-  const handleClickArea = useCallback(() => {
-    setIsArea((state) => {
-      if (state) {
-        setArea(null);
-      }
-      return !state;
-    });
-  }, []);
-
-  const handleClickUp = useCallback(() => {
-    bitmap.move(new Point(0, -1), targetArea);
-    onChangeBitmap(bitmap);
-  }, [bitmap, onChangeBitmap, targetArea]);
-
-  const handleClickDown = useCallback(() => {
-    bitmap.move(new Point(0, 1), targetArea);
-    onChangeBitmap(bitmap);
-  }, [bitmap, onChangeBitmap, targetArea]);
-
-  const handleClickLeft = useCallback(() => {
-    bitmap.move(new Point(-1, 0), targetArea);
-    onChangeBitmap(bitmap);
-  }, [bitmap, onChangeBitmap, targetArea]);
-
-  const handleClickRight = useCallback(() => {
-    bitmap.move(new Point(1, 0), targetArea);
-    onChangeBitmap(bitmap);
-  }, [bitmap, onChangeBitmap, targetArea]);
-
-  useHotkeys('mod+z', handleClickUndo);
-  useHotkeys('mod+shift+z', handleClickRedo);
-  useHotkeys('mod+u', handleClickDraw);
-  useHotkeys('mod+i', handleClickEraser);
-  useHotkeys('up', handleClickUp);
-  useHotkeys('down', handleClickDown);
-  useHotkeys('left', handleClickLeft);
-  useHotkeys('right', handleClickRight);
+  const {
+    bitmapEntity,
+    buttons,
+    bitmap,
+    selectedArea,
+    selectedAreaOnly,
+    onSelectArea,
+    onChangeBitmap,
+    onChangeBitmapTimeout,
+  } = useToolbar({ bitmapId });
+  const dialog = useDialog();
 
   return (
     <>
       <div className="d-flex flex-column align-items-center">
         <h3 className="mb-3 d-flex gap-2">
           {bitmapEntity.name} ({bitmapEntity.width}x{bitmapEntity.height})
-          <button className="btn btn-outline-primary" onClick={handleClickRename}>
+          <button className="btn btn-outline-primary" onClick={dialog.openRenameDialog}>
             <i className="bi bi-pencil-square" /> Rename
           </button>
         </h3>
@@ -184,66 +47,83 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
         <div className="mb-3 d-flex gap-2">
           <div className="btn-group">
             <button
-              className={cn('btn btn-outline-primary', !isClear && 'active')}
-              onClick={handleClickDraw}
+              className={cn('btn btn-outline-primary', buttons.draw.active && 'active')}
+              onClick={buttons.draw.onClick}
+              disabled={buttons.draw.disabled}
               title="Ctr+U / Cmd+U">
               <i className="bi bi-brush" /> Draw
             </button>
             <button
-              className={cn('btn btn-outline-primary', isClear && 'active')}
-              onClick={handleClickEraser}
+              className={cn('btn btn-outline-primary', buttons.clear.active && 'active')}
+              onClick={buttons.clear.onClick}
+              disabled={buttons.clear.disabled}
               title="Ctr+I / Cmd+I">
               <i className="bi bi-eraser" /> Clear
             </button>
           </div>
           <button
             className="btn btn-outline-primary"
-            onClick={handleClickUndo}
-            disabled={disabledUndo}
+            onClick={buttons.undo.onClick}
+            disabled={buttons.undo.disabled}
             title="Ctr+Z / Cmd+Z">
             <i className="bi bi-arrow-counterclockwise" /> Undo
           </button>
           <button
             className="btn btn-outline-primary"
-            onClick={handleClickRedo}
-            disabled={disabledRedo}
+            onClick={buttons.redo.onClick}
+            disabled={buttons.redo.disabled}
             title="Ctr+Shift+Z / Cmd+Shift+Z">
             <i className="bi bi-arrow-clockwise" /> Redo
           </button>
-          <button className={cn('btn', isArea ? 'btn-primary' : 'btn-outline-primary')} onClick={handleClickArea}>
+          <button
+            className={cn('btn', buttons.area.active ? 'btn-primary' : 'btn-outline-primary')}
+            onClick={buttons.area.onClick}
+            disabled={buttons.area.disabled}>
             <i className="bi bi-bounding-box" /> Area
           </button>
-          <button className="btn btn-outline-primary" title="Invert color" onClick={handleClickInvert}>
+          <button
+            className="btn btn-outline-primary"
+            title="Invert color"
+            onClick={buttons.invert.onClick}
+            disabled={buttons.invert.disabled}>
             <i className="bi bi-highlights" /> Invert
           </button>
-          <button className="btn btn-outline-primary" onClick={handleClickReset}>
+          <button className="btn btn-outline-primary" onClick={buttons.reset.onClick} disabled={buttons.reset.disabled}>
             Reset
           </button>
-          <button className="btn btn-outline-primary" onClick={handleClickExport} disabled={isEmptyBitmap}>
+          <button
+            className="btn btn-outline-primary"
+            onClick={dialog.openExportDialog}
+            disabled={buttons.export.disabled}>
             <i className="bi bi-code-slash" /> Export to C
           </button>
-          <button className="btn btn-outline-primary" onClick={handleClickGrid}>
+          <button className="btn btn-outline-primary" onClick={dialog.openGridDialog} disabled={buttons.grid.disabled}>
             <i className="bi bi-border-all" /> Grid
           </button>
-          <button className="btn btn-outline-primary" onClick={handleClickLayout} disabled={isArea}>
+          <button
+            className="btn btn-outline-primary"
+            onClick={dialog.openLayoutDialog}
+            disabled={buttons.resize.disabled}>
             <i className="bi bi-arrows-fullscreen" /> Resize
           </button>
         </div>
         <BitmapSizeAlert bitmapWidth={bitmapEntity.width} className="mb-3" />
         <BitmapView
           bitmap={bitmap}
-          onChangeBitmap={handleChangeBitmap}
-          isClear={isClear}
-          isArea={isArea}
-          area={area}
-          onChangeArea={setArea}
+          onChangeBitmap={onChangeBitmapTimeout}
+          clearMode={buttons.clear.active}
+          areaMode={buttons.area.active}
+          selectedArea={selectedArea}
+          onSelectArea={onSelectArea}
         />
       </div>
-      {dialog === Dialog.Export && <ExportDialog onClose={handleCloseDialog} bitmapId={bitmapId} area={targetArea} />}
-      {dialog === Dialog.Rename && <RenameDialog onClose={handleCloseDialog} bitmapId={bitmapId} />}
-      {dialog === Dialog.Grid && <GridDialog onClose={handleCloseDialog} />}
-      {dialog === Dialog.Resize && (
-        <ResizeDialog bitmap={bitmap} onChangeBitmap={onChangeBitmap} onClose={handleCloseDialog} />
+      {dialog.name === Dialog.Export && (
+        <ExportDialog onClose={dialog.close} bitmapId={bitmapId} area={selectedAreaOnly} />
+      )}
+      {dialog.name === Dialog.Rename && <RenameDialog onClose={dialog.close} bitmapId={bitmapId} />}
+      {dialog.name === Dialog.Grid && <GridDialog onClose={dialog.close} />}
+      {dialog.name === Dialog.Resize && (
+        <ResizeDialog bitmap={bitmap} onChangeBitmap={onChangeBitmap} onClose={dialog.close} />
       )}
     </>
   );
