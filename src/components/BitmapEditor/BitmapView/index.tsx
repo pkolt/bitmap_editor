@@ -2,25 +2,19 @@ import React, { useCallback, useEffect, useState } from 'react';
 import styles from './index.module.css';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
 import { useSettingsStore } from '@/store/settings/useSettingsStore';
-import { Coords, Sizes } from './types';
-import {
-  clearDisplay,
-  drawBitmap,
-  drawPointsBorders,
-  drawGrid,
-  getCanvasSize,
-  drawArea,
-  intersectionWithArea,
-} from './utils';
-import { AreaCoords } from '../types';
+import { Sizes } from './types';
+import { clearDisplay, drawBitmap, drawPointsBorders, drawGrid, getCanvasSize, drawArea } from './utils';
+import { SelectedArea } from '../types';
+import { Point } from '@/utils/bitmap/Point';
+import { Area } from '@/utils/bitmap/Area';
 
 interface BitmapViewProps {
   bitmap: Bitmap;
   onChangeBitmap?: (bitmap: Bitmap) => void;
   eraser?: boolean;
   area?: boolean;
-  selectedArea?: AreaCoords;
-  onChangeSelectedArea?: (areaCoords: AreaCoords) => void;
+  selectedArea?: SelectedArea;
+  onChangeSelectedArea?: (value: SelectedArea) => void;
 }
 
 export const BitmapView = ({
@@ -35,9 +29,7 @@ export const BitmapView = ({
   const [sizes, setSizes] = useState<Sizes | null>(null);
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
-  const areaStart: Coords | null = selectedArea?.[0] ?? null;
-  const areaEnd: Coords | null = selectedArea?.[1] ?? null;
-  const isSelectingArea = area && (!areaStart || !areaEnd);
+  const isSelectingArea = area && (!selectedArea || selectedArea instanceof Point);
   const bitmapWidth = bitmap.width;
   const bitmapHeight = bitmap.height;
 
@@ -70,27 +62,28 @@ export const BitmapView = ({
           const posX = Math.floor(x / (sizes.canvasWidth / sizes.bitmapWidth));
           const posY = Math.floor(y / (sizes.canvasHeight / sizes.bitmapHeight));
 
-          if (area && (!areaStart || !areaEnd) && onChangeSelectedArea) {
-            const nextCoords: AreaCoords = !areaStart ? [[posX, posY], null] : [areaStart, [posX, posY]];
-            onChangeSelectedArea(nextCoords);
+          if (onChangeSelectedArea && area && !(selectedArea instanceof Area)) {
+            const point = new Point(posX, posY);
+            const nextSelectedArea = selectedArea instanceof Point ? new Area(selectedArea, point) : point;
+            onChangeSelectedArea(nextSelectedArea);
           } else {
-            if (area && areaStart && areaEnd) {
-              const isIntersect = intersectionWithArea([posX, posY], areaStart, areaEnd);
-              if (isIntersect) {
+            if (area && selectedArea instanceof Area) {
+              const isIntersection = selectedArea.isIntersect(new Point(posX, posY));
+              if (isIntersection) {
                 const nextBitmap = bitmap.clone();
-                nextBitmap.setPixelByCoords(posX, posY, !eraser);
+                nextBitmap.setPixelValue(new Point(posX, posY), !eraser);
                 onChangeBitmap(nextBitmap);
               }
             } else {
               const nextBitmap = bitmap.clone();
-              nextBitmap.setPixelByCoords(posX, posY, !eraser);
+              nextBitmap.setPixelValue(new Point(posX, posY), !eraser);
               onChangeBitmap(nextBitmap);
             }
           }
         }
       }
     },
-    [canvas, sizes, onChangeBitmap, area, areaStart, areaEnd, bitmap, eraser, onChangeSelectedArea],
+    [canvas, sizes, onChangeBitmap, onChangeSelectedArea, area, selectedArea, bitmap, eraser],
   );
 
   const handleMouseMove = useCallback(
@@ -112,7 +105,7 @@ export const BitmapView = ({
     drawPointsBorders(ctx, sizes);
     drawGrid(ctx, sizes, grid);
     drawArea(ctx, sizes, !!area, selectedArea);
-  }, [area, areaStart, areaEnd, bitmap, ctx, grid, sizes, selectedArea]);
+  }, [area, bitmap, ctx, grid, sizes, selectedArea]);
 
   return <canvas ref={setCanvasRef} className={styles.container} onClick={handleClick} onMouseMove={handleMouseMove} />;
 };

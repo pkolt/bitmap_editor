@@ -20,7 +20,7 @@ export const convertCanvasToBitmap = (
     const green = imageData.data[index + 1];
     const blue = imageData.data[index + 2];
     const value = rgbToBlackWhite(red, green, blue, threshold);
-    bitmap.setPixelByIndex(i, invertColor ? !value : value);
+    bitmap.setPixelValue(i, invertColor ? !value : value);
   }
   return bitmap;
 };

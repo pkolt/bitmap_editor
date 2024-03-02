@@ -33,11 +33,23 @@ export class Area {
     return this.maxY - this.minY;
   }
 
-  intersection(point: Point): boolean {
+  isIntersect(point: Point): boolean {
     return point.x >= this.minX && point.x <= this.maxX && point.y >= this.minY && point.y <= this.maxY;
   }
 
-  equal(area: Area): boolean {
+  isEqual(area: Area): boolean {
     return area.minX === this.minX && area.maxX === this.maxX && area.minY === this.minY && area.maxY === this.maxY;
+  }
+
+  isNotEqual(area: Area): boolean {
+    return !this.isEqual(area);
+  }
+
+  forEach(cb: (p: Point) => void) {
+    for (let x = 0; x < this.width; x++) {
+      for (let y = 0; y < this.height; y++) {
+        cb(new Point(x, y));
+      }
+    }
   }
 }

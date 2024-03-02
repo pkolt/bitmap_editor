@@ -1,3 +1,4 @@
-import { Coords } from './BitmapView/types';
+import { Area } from '@/utils/bitmap/Area';
+import { Point } from '@/utils/bitmap/Point';
 
-export type AreaCoords = [Coords | null, Coords | null];
+export type SelectedArea = Area | Point | null;

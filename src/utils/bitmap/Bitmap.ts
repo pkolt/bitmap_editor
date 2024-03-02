@@ -3,6 +3,7 @@ import { setBit } from '../bitwise';
 import { convertBoolArrayToUint32Array, convertUint32ArrayToBoolArray } from './convert';
 import { BitOrder, BitmapJSON } from './types';
 import { Area } from './Area';
+import { Point } from './Point';
 
 export class Bitmap {
   width: number;
@@ -24,6 +25,20 @@ export class Bitmap {
     this.#data = data ? [...data] : new Array(this.getPixelCount()).fill(false);
   }
 
+  #pointToIndex(p: Point): number {
+    const index = p.y * this.width + p.x;
+    // Return -1 if invalid coords
+    return index < this.getPixelCount() ? index : -1;
+  }
+
+  #prepareCoords(coords: Point | number): number {
+    return coords instanceof Point ? this.#pointToIndex(coords) : coords;
+  }
+
+  #isValidIndex(index: number): boolean {
+    return index >= 0 && index < this.getPixelCount();
+  }
+
   getPixelCount(): number {
     return this.width * this.height;
   }
@@ -32,56 +47,37 @@ export class Bitmap {
     return Area.fromRectangle(0, 0, this.width, this.height);
   }
 
-  getPixelByIndex(index: number): boolean {
-    return this.#data[index];
+  getPixelValue(coords: Point | number): boolean {
+    const index = this.#prepareCoords(coords);
+    return this.#isValidIndex(index) ? this.#data[index] : false;
   }
 
-  setPixelByIndex(index: number, value: boolean): void {
-    this.#data[index] = value;
-  }
-
-  invertPixelByIndex(index: number): void {
-    this.#data[index] = !this.#data[index];
-  }
-
-  #coordsToIndex(x: number, y: number): number {
-    const index = y * this.width + x;
-    // Return -1 if invalid coords
-    return index < this.getPixelCount() ? index : -1;
-  }
-
-  getPixelByCoords(x: number, y: number): boolean {
-    const index = this.#coordsToIndex(x, y);
-    return index !== -1 ? this.getPixelByIndex(index) : false;
-  }
-
-  setPixelByCoords(x: number, y: number, value: boolean): void {
-    const index = this.#coordsToIndex(x, y);
-    if (index !== -1) {
-      this.setPixelByIndex(index, value);
+  setPixelValue(coords: Point | number, value: boolean): void {
+    const index = this.#prepareCoords(coords);
+    if (this.#isValidIndex(index)) {
+      this.#data[index] = value;
     }
   }
 
-  invertPixelByCoords(x: number, y: number): void {
-    const index = this.#coordsToIndex(x, y);
-    if (index !== -1) {
-      this.invertPixelByIndex(index);
+  invertPixelValue(coords: Point | number): void {
+    const index = this.#prepareCoords(coords);
+    if (this.#isValidIndex(index)) {
+      this.#data[index] = !this.#data[index];
     }
   }
 
   //! bad method
-  findBitmapCoords() {
+  findBitmapCoords(): Area | null {
     const xArray: number[] = [];
     const yArray: number[] = [];
-    for (let x = 0; x < this.width; x++) {
-      for (let y = 0; y < this.height; y++) {
-        const value = this.getPixelByCoords(x, y);
-        if (value) {
-          xArray.push(x);
-          yArray.push(y);
-        }
+
+    this.getArea().forEach((p) => {
+      const value = this.getPixelValue(p);
+      if (value) {
+        xArray.push(p.x);
+        yArray.push(p.y);
       }
-    }
+    });
 
     if (xArray.length === 0 || yArray.length === 0) {
       return null;
@@ -92,39 +88,30 @@ export class Bitmap {
     const minY = Math.min(...yArray);
     const maxY = Math.max(...yArray);
 
-    return {
-      x: minX,
-      y: minY,
-      width: maxX - minX + 1,
-      height: maxY - minY + 1,
-    };
+    return Area.fromRectangle(minX, minY, maxX - minX + 1, maxY - minY + 1);
   }
 
   copy(area: Area): Bitmap {
     const bitmap = new Bitmap(area.width, area.height);
-    for (let posX = 0; posX < area.width; posX++) {
-      for (let posY = 0; posY < area.height; posY++) {
-        const pixelValue = this.getPixelByCoords(area.minX + posX, area.minY + posY);
-        bitmap.setPixelByCoords(posX, posY, pixelValue);
-      }
-    }
+    area.forEach((p) => {
+      const pixelValue = this.getPixelValue(area.minPoint.plus(p));
+      bitmap.setPixelValue(p, pixelValue);
+    });
     return bitmap;
   }
 
-  paste(x: number, y: number, bitmap: Bitmap): void {
-    for (let posX = 0; posX < bitmap.width; posX++) {
-      for (let posY = 0; posY < bitmap.height; posY++) {
-        const value = bitmap.getPixelByCoords(posX, posY);
-        this.setPixelByCoords(x + posX, y + posY, value);
-      }
-    }
+  paste(offset: Point, bitmap: Bitmap): void {
+    bitmap.getArea().forEach((p) => {
+      const value = bitmap.getPixelValue(p);
+      this.setPixelValue(p.plus(offset), value);
+    });
   }
 
   resize(width: number, height: number): void {
     let bitmap: Bitmap | null = null;
-    const coords = this.findBitmapCoords();
-    if (coords) {
-      bitmap = this.copy(Area.fromRectangle(coords.x, coords.y, coords.width, coords.height));
+    const area = this.findBitmapCoords();
+    if (area) {
+      bitmap = this.copy(area);
       // Crop bitmap
       if (bitmap.width > width || bitmap.height > height) {
         bitmap = bitmap.copy(
@@ -143,24 +130,24 @@ export class Bitmap {
     this.#data = new Array(this.getPixelCount()).fill(false);
 
     if (bitmap) {
-      this.paste(0, 0, bitmap);
+      this.paste(new Point(0, 0), bitmap);
     }
   }
 
-  move(x: number, y: number, area?: Area) {
+  move(offset: Point, area?: Area) {
     const moveArea = area ? area : this.getArea();
     const bitmap = this.copy(moveArea);
     this.clear(area);
-    this.paste(moveArea.minX + x, moveArea.minY + y, bitmap);
+    this.paste(moveArea.minPoint.plus(offset), bitmap);
   }
 
   //! bad method
-  moveBitmap(x: number, y: number): void {
-    const coords = this.findBitmapCoords();
-    if (coords) {
-      const bitmap = this.copy(Area.fromRectangle(coords.x, coords.y, coords.width, coords.height));
+  moveBitmap(offset: Point): void {
+    const area = this.findBitmapCoords();
+    if (area) {
+      const bitmap = this.copy(area);
       this.clear();
-      this.paste(coords.x + x, coords.y + y, bitmap);
+      this.paste(area.minPoint.plus(offset), bitmap);
     }
   }
 
@@ -172,19 +159,23 @@ export class Bitmap {
   }
 
   clear(area?: Area): void {
-    if (area && !this.getArea().equal(area)) {
-      for (let posX = 0; posX < area.width; posX++) {
-        for (let posY = 0; posY < area.height; posY++) {
-          this.setPixelByCoords(posX, posY, false);
-        }
-      }
+    if (area && area.isNotEqual(this.getArea())) {
+      area.forEach((p) => {
+        this.setPixelValue(p, false);
+      });
     } else {
       this.#data.fill(false);
     }
   }
 
-  invertColor() {
-    this.#data = this.#data.map((val) => !val);
+  invertColor(area?: Area): void {
+    if (area && area.isNotEqual(this.getArea())) {
+      area.forEach((p) => {
+        this.invertPixelValue(p);
+      });
+    } else {
+      this.#data = this.#data.map((val) => !val);
+    }
   }
 
   clone(): Bitmap {
@@ -196,7 +187,7 @@ export class Bitmap {
     for (let dstIndex = 0; dstIndex < result.length; dstIndex++) {
       for (let bit = 0; bit < UINT8_BITS_PER_ELEMENT; bit++) {
         const srcIndex = dstIndex * UINT8_BITS_PER_ELEMENT + bit;
-        if (this.getPixelByIndex(srcIndex)) {
+        if (this.getPixelValue(srcIndex)) {
           const resBit = bitOrder === BitOrder.BigEndian ? bit : UINT8_BITS_PER_ELEMENT - 1 - bit;
           result[dstIndex] = setBit(result[dstIndex], resBit);
         }

@@ -82,7 +82,7 @@ const ImportFromImage = () => {
   const [bitmap, setBitmap] = useState(new Bitmap(1, 1));
   const [image, setImage] = useState<HTMLImageElement | null>(null);
   const [canvas] = useState(document.createElement('canvas'));
-  const [canvasCtx] = useState<CanvasRenderingContext2D | null>(canvas.getContext('2d'));
+  const [canvasCtx] = useState<CanvasRenderingContext2D | null>(canvas.getContext('2d', { willReadFrequently: true }));
 
   const { scaledWidth, scaledHeight } = useMemo(() => {
     if (image) {

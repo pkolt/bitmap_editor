@@ -11,7 +11,8 @@ import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { GridDialog } from './GridDialog';
 import { BitmapSizeAlert } from '../BitmapSizeAlert';
 import { ResizeDialog } from './ResizeDialog';
-import { AreaCoords } from './types';
+import { SelectedArea } from './types';
+import { Point } from '@/utils/bitmap/Point';
 
 const AUTO_SAVE_TIMEOUT_MS = 500;
 const HISTORY_LENGTH = 50;
@@ -38,7 +39,7 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
   const refAutoSaveTimeout = useRef<NodeJS.Timeout | null>(null);
   const [eraser, setEraser] = useState(false);
   const [area, setArea] = useState(false);
-  const [selectedArea, setSelectedArea] = useState<AreaCoords>([null, null]);
+  const [selectedArea, setSelectedArea] = useState<SelectedArea>(null);
   const [dialog, setDialog] = useState(Dialog.None);
   const [bitmap, setBitmap] = useState(Bitmap.fromJSON(bitmapEntity));
   const [history, setHistory] = useState<Bitmap[]>([bitmap.clone()]);
@@ -141,29 +142,29 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
     setArea((state) => {
       // Reset area if off area
       if (!state) {
-        setSelectedArea([null, null]);
+        setSelectedArea(null);
       }
       return !state;
     });
   }, []);
 
   const handleClickUp = useCallback(() => {
-    bitmap.moveBitmap(0, -1);
+    bitmap.moveBitmap(new Point(0, -1));
     onChangeBitmap(bitmap);
   }, [bitmap, onChangeBitmap]);
 
   const handleClickDown = useCallback(() => {
-    bitmap.moveBitmap(0, 1);
+    bitmap.moveBitmap(new Point(0, 1));
     onChangeBitmap(bitmap);
   }, [bitmap, onChangeBitmap]);
 
   const handleClickLeft = useCallback(() => {
-    bitmap.moveBitmap(-1, 0);
+    bitmap.moveBitmap(new Point(-1, 0));
     onChangeBitmap(bitmap);
   }, [bitmap, onChangeBitmap]);
 
   const handleClickRight = useCallback(() => {
-    bitmap.moveBitmap(1, 0);
+    bitmap.moveBitmap(new Point(1, 0));
     onChangeBitmap(bitmap);
   }, [bitmap, onChangeBitmap]);
 

@@ -10,15 +10,11 @@ import {
   SQUARE_SIZE,
   STEP_SIZE,
 } from './constants';
-import { Coords, Sizes } from './types';
+import { Sizes } from './types';
 import { GridSettings } from '@/store/settings/useSettingsStore';
-import { AreaCoords } from '../types';
-
-export const intersectionWithArea = (point: Coords, p1: Coords, p2: Coords) => {
-  const [xMin, xMax] = [Math.min(p1[0], p2[0]), Math.max(p1[0], p2[0])];
-  const [yMin, yMax] = [Math.min(p1[1], p2[1]), Math.max(p1[1], p2[1])];
-  return point[0] >= xMin && point[0] <= xMax && point[1] >= yMin && point[1] <= yMax;
-};
+import { SelectedArea } from '../types';
+import { Area } from '@/utils/bitmap/Area';
+import { Point } from '@/utils/bitmap/Point';
 
 export const getCanvasSize = (bitmapSize: number) => bitmapSize * SQUARE_SIZE + (bitmapSize + 1) * BORDER_SIZE;
 
@@ -58,7 +54,7 @@ export const drawBitmap = (ctx: CanvasRenderingContext2D, bitmap: Bitmap): void 
   let index = 0;
   for (let y = 0; y < bitmapHeight; y++) {
     for (let x = 0; x < bitmapWidth; x++) {
-      const isFill = bitmap.getPixelByIndex(index);
+      const isFill = bitmap.getPixelValue(index);
       if (isFill) {
         const posX = x * STEP_SIZE + BORDER_SIZE;
         const posY = y * STEP_SIZE + BORDER_SIZE;
@@ -104,7 +100,7 @@ export const drawArea = (
   ctx: CanvasRenderingContext2D,
   sizes: Sizes,
   area: boolean,
-  selectedArea?: AreaCoords,
+  selectedArea?: SelectedArea,
 ): void => {
   if (!area) {
     return;
@@ -112,24 +108,20 @@ export const drawArea = (
 
   const bitmapWidth = sizes.bitmapWidth;
   const bitmapHeight = sizes.bitmapHeight;
-  const point1 = selectedArea?.[0];
-  const point2 = selectedArea?.[1];
 
-  const isAreaSelected = point1 && point2;
-
-  ctx.fillStyle = isAreaSelected ? AREA_OVERLAY_COLOR : AREA_POINT_COLOR;
+  ctx.fillStyle = selectedArea instanceof Area ? AREA_OVERLAY_COLOR : AREA_POINT_COLOR;
 
   for (let y = 0; y < bitmapHeight; y++) {
     for (let x = 0; x < bitmapWidth; x++) {
       const x1 = x * STEP_SIZE + BORDER_SIZE;
       const y1 = y * STEP_SIZE + BORDER_SIZE;
-      if (isAreaSelected) {
-        const isFill = !intersectionWithArea([x, y], point1, point2);
+      if (selectedArea instanceof Area) {
+        const isFill = !selectedArea.isIntersect(new Point(x, y));
         if (isFill) {
           ctx.fillRect(x1, y1, SQUARE_SIZE, SQUARE_SIZE);
         }
-      } else {
-        const isFill = point1 && point1[0] === x && point1[1] === y;
+      } else if (selectedArea instanceof Point) {
+        const isFill = selectedArea.isEqual(new Point(x, y));
         if (isFill) {
           ctx.fillRect(x1, y1, SQUARE_SIZE, SQUARE_SIZE);
         }
