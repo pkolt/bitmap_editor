@@ -134,24 +134,24 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
   }, []);
 
   const handleClickUp = useCallback(() => {
-    bitmap.move(new Point(0, -1));
+    bitmap.move(new Point(0, -1), targetArea);
     onChangeBitmap(bitmap);
-  }, [bitmap, onChangeBitmap]);
+  }, [bitmap, onChangeBitmap, targetArea]);
 
   const handleClickDown = useCallback(() => {
-    bitmap.move(new Point(0, 1));
+    bitmap.move(new Point(0, 1), targetArea);
     onChangeBitmap(bitmap);
-  }, [bitmap, onChangeBitmap]);
+  }, [bitmap, onChangeBitmap, targetArea]);
 
   const handleClickLeft = useCallback(() => {
-    bitmap.move(new Point(-1, 0));
+    bitmap.move(new Point(-1, 0), targetArea);
     onChangeBitmap(bitmap);
-  }, [bitmap, onChangeBitmap]);
+  }, [bitmap, onChangeBitmap, targetArea]);
 
   const handleClickRight = useCallback(() => {
-    bitmap.move(new Point(1, 0));
+    bitmap.move(new Point(1, 0), targetArea);
     onChangeBitmap(bitmap);
-  }, [bitmap, onChangeBitmap]);
+  }, [bitmap, onChangeBitmap, targetArea]);
 
   useHotkeys('mod+z', handleClickUndo);
   useHotkeys('mod+shift+z', handleClickRedo);
