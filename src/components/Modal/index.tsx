@@ -9,10 +9,6 @@ interface ModalProps {
   children: JSX.Element | JSX.Element[] | null;
 }
 
-export interface ModalRef {
-  close: () => void;
-}
-
 export const Modal = ({ title, onAccept, onClose, children }: ModalProps) => {
   const bsModalRef = useRef<BSModal | null>(null);
 

@@ -1,6 +1,6 @@
 import { Bitmap } from '@/utils/bitmap/Bitmap';
 
-export const rgbToBlackWhite = (red: number, green: number, blue: number, threshold: number): boolean => {
+const rgbToBlackWhite = (red: number, green: number, blue: number, threshold: number): boolean => {
   const grayscaleValue = Math.round(0.299 * red + 0.587 * green + 0.114 * blue);
   return grayscaleValue >= threshold;
 };

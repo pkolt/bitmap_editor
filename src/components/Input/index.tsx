@@ -2,7 +2,7 @@ import cn from 'classnames';
 import { useId, forwardRef } from 'react';
 import { useFormState } from 'react-hook-form';
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
 }
 

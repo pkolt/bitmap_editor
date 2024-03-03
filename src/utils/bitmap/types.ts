@@ -9,14 +9,12 @@ export interface BitmapJSON {
   data: number[];
 }
 
-export type BitmapEntityData = number[];
-
 export interface BitmapEntity {
   id: string;
   name: string;
   width: number;
   height: number;
-  data: BitmapEntityData;
+  data: number[];
   createdAt: number;
   updatedAt: number;
 }
