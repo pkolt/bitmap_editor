@@ -1,6 +1,7 @@
 export enum PageUrl {
-  Home = '/bitmap_editor/',
+  BitmapList = '/bitmap_editor/',
   CreateBitmap = '/bitmap_editor/create_bitmap/',
-  CreateBitmapFromImage = '/bitmap_editor/create_bitmap_from_image/',
+  ImportFromImage = '/bitmap_editor/import_from_image/',
+  ImportFromJson = '/bitmap_editor/import_from_json/',
   EditBitmap = '/bitmap_editor/bitmap/:id/',
 }

@@ -12,14 +12,15 @@
     "eslint-fix": "npm run eslint -- --fix",
     "format": "prettier --check src",
     "format-fix": "prettier --write src",
-    "lint-all": "npm run check-ts && npm run eslint && npm run format",
+    "knip": "knip",
+    "lint-all": "npm run check-ts && npm run eslint && npm run format && npm run knip",
     "lint-all-fix": "npm run eslint-fix && npm run format-fix",
     "prepare": "husky",
     "pre-push": "npm run lint-all"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
-    "bootstrap": "^5.3.2",
+    "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "classnames": "^2.5.1",
     "file-saver": "^2.0.5",
@@ -28,27 +29,28 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.50.1",
     "react-hotkeys-hook": "^4.5.0",
-    "react-router-dom": "^6.22.0",
+    "react-router-dom": "^6.22.1",
     "uuid": "^9.0.1",
-    "zustand": "^4.5.0"
+    "zustand": "^4.5.1"
   },
   "devDependencies": {
     "@types/bootstrap": "^5.2.10",
     "@types/file-saver": "^2.0.7",
     "@types/luxon": "^3.4.2",
-    "@types/node": "^20.11.17",
-    "@types/react": "^18.2.55",
+    "@types/node": "^20.11.20",
+    "@types/react": "^18.2.58",
     "@types/react-dom": "^18.2.19",
     "@types/uuid": "^9.0.8",
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "@typescript-eslint/parser": "^6.21.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/parser": "^7.0.2",
     "@vitejs/plugin-react": "^4.2.1",
-    "eslint": "^8.56.0",
+    "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
-    "husky": "^9.0.10",
+    "husky": "^9.0.11",
+    "knip": "^5.0.2",
     "prettier": "^3.2.5",
     "typescript": "^5.3.3",
-    "vite": "^5.1.1"
+    "vite": "^5.1.4"
   }
 }
