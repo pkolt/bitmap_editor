@@ -47,7 +47,7 @@ export const ExportDialog = ({ bitmapId, area, onClose }: ExportDialogProps): JS
 
   const formData = watch();
   const exportCode = useMemo<string>(
-    () => (bitmapEntity ? exportBitmap({ entity: bitmapEntity, area, ...formData }) : ''),
+    () => (bitmapEntity ? exportBitmap({ bitmapEntity, area, ...formData }) : ''),
     [area, bitmapEntity, formData],
   );
 

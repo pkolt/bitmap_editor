@@ -21,7 +21,7 @@ export enum Platform {
 interface ExportBitmapParams {
   name: string;
   bitOrder: BitOrder;
-  entity: BitmapEntity;
+  bitmapEntity: BitmapEntity;
   dataFormat: DataFormat;
   platform: Platform;
   sizeFormat: SizeFormat;
@@ -32,17 +32,18 @@ interface ExportBitmapParams {
 export const exportBitmap = ({
   name,
   bitOrder,
-  entity,
+  bitmapEntity,
   dataFormat,
   platform,
   sizeFormat,
   progmem,
   area,
 }: ExportBitmapParams): string => {
-  const { width, height } = entity;
-  const srcBitmap = Bitmap.fromJSON(entity);
+  const srcBitmap = Bitmap.fromJSON(bitmapEntity);
   const bitmap = area ? srcBitmap.copy(area) : srcBitmap;
   const xBitMap = bitmap.toXBitMap(bitOrder);
+  const width = bitmap.width;
+  const height = bitmap.height;
 
   const nameLower = name.replace(/[^\w]/gi, '_').toLowerCase();
   const nameUpper = nameLower.toUpperCase();
