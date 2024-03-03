@@ -70,13 +70,13 @@ export class Bitmap {
     }
   }
 
-  findFillPixelsArea(): Area | null {
+  findFillPixelsArea(area?: Area): Area | null {
     let minX: number | null = null;
     let maxX: number | null = null;
     let minY: number | null = null;
     let maxY: number | null = null;
 
-    this.getArea().forEach((p) => {
+    (area ?? this.getArea()).forEach((p) => {
       const isFill = this.getPixelValue(p);
       if (!isFill) {
         return;
@@ -138,7 +138,7 @@ export class Bitmap {
   }
 
   move(offset: Point, area?: Area) {
-    const moveArea = area ? area : this.getArea();
+    const moveArea = this.findFillPixelsArea(area) ?? this.getArea();
     const bitmap = this.copy(moveArea);
     this.clear(area);
     this.paste(moveArea.minPoint.plus(offset), bitmap);
