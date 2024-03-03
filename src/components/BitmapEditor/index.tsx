@@ -7,23 +7,19 @@ import { BitmapSizeAlert } from '../BitmapSizeAlert';
 import { ResizeDialog } from './components/ResizeDialog';
 import { useToolbar } from './hooks/useToolbar';
 import { Dialog, useDialog } from './hooks/useDialog';
+import { useBitmap } from './hooks/useBitmap';
 
 interface BitmapEditorProps {
   bitmapId: string;
 }
 
 export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
-  const {
-    bitmapEntity,
-    buttons,
-    bitmap,
-    selectedArea,
-    selectedAreaOnly,
-    onSelectArea,
-    onChangeBitmap,
-    onChangeBitmapTimeout,
-  } = useToolbar({ bitmapId });
   const dialog = useDialog();
+  const { bitmapEntity, bitmap, updateBitmap } = useBitmap(bitmapId);
+  const { buttons, selectedArea, selectedAreaOnly, onSelectArea, onChangeBitmap, onChangeBitmapDebounce } = useToolbar({
+    bitmap,
+    updateBitmap,
+  });
 
   return (
     <>
@@ -110,7 +106,7 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
         <BitmapSizeAlert bitmapWidth={bitmapEntity.width} className="mb-3" />
         <BitmapView
           bitmap={bitmap}
-          onChangeBitmap={onChangeBitmapTimeout}
+          onChangeBitmap={onChangeBitmapDebounce}
           clearMode={buttons.clear.active}
           areaMode={buttons.area.active}
           selectedArea={selectedArea}

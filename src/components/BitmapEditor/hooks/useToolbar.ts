@@ -1,11 +1,12 @@
-import { useHotkeys } from 'react-hotkeys-hook';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
-import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { BitmapArea } from '../types';
 import { Point } from '@/utils/bitmap/Point';
 import { Area } from '@/utils/bitmap/Area';
-import { AUTO_SAVE_TIMEOUT_MS, HISTORY_LENGTH } from '../constants';
+import { useChangesHistory } from './useHistory';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { useDebounce } from './useDebounce';
+import { UpdateBitmapFn } from './useBitmap';
 
 enum ButtonName {
   Draw = 'draw',
@@ -29,90 +30,52 @@ interface ButtonOptions {
 type ButtonsConfig = Record<ButtonName, ButtonOptions>;
 
 interface ToolbarHookParams {
-  bitmapId: string;
+  bitmap: Bitmap;
+  updateBitmap: UpdateBitmapFn;
 }
 
-export const useToolbar = ({ bitmapId }: ToolbarHookParams) => {
-  const { findBitmap, changeBitmap } = useBitmapStore();
-  const bitmapEntity = findBitmap(bitmapId);
-  if (!bitmapEntity) {
-    throw Error(`Not found bitmap with id: ${bitmapId}`);
-  }
-  const refAutoSaveTimeout = useRef<NodeJS.Timeout | null>(null);
+export const useToolbar = ({ bitmap, updateBitmap }: ToolbarHookParams) => {
   const [clearMode, setClearMode] = useState(false);
   const [areaMode, setAreaMode] = useState(false);
   const [selectedArea, setArea] = useState<BitmapArea>(null);
-  const [bitmap, setBitmap] = useState(Bitmap.fromJSON(bitmapEntity));
-  const [history, setHistory] = useState<Bitmap[]>([bitmap.clone()]);
-  const [historyIndex, setHistoryIndex] = useState(0);
+
+  const { onClickRedo, onClickUndo, disabledRedo, disabledUndo, addToHistory } = useChangesHistory({
+    bitmap,
+    updateBitmap,
+    historyLimit: 50,
+  });
+
+  const updateBitmapDebounce = useDebounce({
+    fn: (value: Bitmap) => {
+      addToHistory(value);
+      updateBitmap(value);
+    },
+    delayMs: 500,
+  });
+
+  const onChangeBitmapDebounce = useCallback(
+    (value: Bitmap) => {
+      updateBitmap(value, true);
+      updateBitmapDebounce(value);
+    },
+    [updateBitmap, updateBitmapDebounce],
+  );
+
   const selectedAreaOnly = selectedArea instanceof Area ? selectedArea : undefined;
   const isEmptyBitmap = bitmap.isEmpty();
 
-  const saveHistory = useCallback((value: Bitmap) => {
-    setHistory((state) => {
-      const list = [...state, value].slice(HISTORY_LENGTH * -1);
-      setHistoryIndex(list.length - 1);
-      return list;
-    });
-  }, []);
-
-  const onChangeBitmapTimeout = useCallback(
-    (value: Bitmap) => {
-      const copiedBitmap = value.clone();
-      setBitmap(value);
-
-      // Reset previous timer
-      if (refAutoSaveTimeout.current) {
-        clearTimeout(refAutoSaveTimeout.current);
-        refAutoSaveTimeout.current = null;
-      }
-
-      refAutoSaveTimeout.current = setTimeout(() => {
-        saveHistory(copiedBitmap);
-        changeBitmap(bitmapId, copiedBitmap.toJSON());
-      }, AUTO_SAVE_TIMEOUT_MS);
-    },
-    [saveHistory, changeBitmap, bitmapId],
-  );
-
   const onChangeBitmap = useCallback(
     (bitmap: Bitmap) => {
-      setBitmap(bitmap.clone());
-      saveHistory(bitmap.clone());
-      changeBitmap(bitmapId, bitmap.toJSON());
+      addToHistory(bitmap);
+      updateBitmap(bitmap);
     },
-    [bitmapId, changeBitmap, saveHistory],
+    [addToHistory, updateBitmap],
   );
 
   const handleClickReset = useCallback(() => {
     bitmap.clear(selectedAreaOnly);
     onChangeBitmap(bitmap);
   }, [bitmap, onChangeBitmap, selectedAreaOnly]);
-
-  const setBitmapFromHistory = useCallback(
-    (moveIndex: number) => {
-      const index = historyIndex + moveIndex;
-      const nextBitmap = history[index];
-      setHistoryIndex(index);
-      setBitmap(nextBitmap.clone());
-      changeBitmap(bitmapId, nextBitmap.toJSON());
-    },
-    [bitmapId, changeBitmap, history, historyIndex],
-  );
-
-  const disabledUndo = historyIndex <= 0;
-  const handleClickUndo = useCallback(() => {
-    if (!disabledUndo) {
-      setBitmapFromHistory(-1);
-    }
-  }, [disabledUndo, setBitmapFromHistory]);
-
-  const disabledRedo = historyIndex >= history.length - 1;
-  const handleClickRedo = useCallback(() => {
-    if (!disabledRedo) {
-      setBitmapFromHistory(1);
-    }
-  }, [disabledRedo, setBitmapFromHistory]);
 
   const handleClickDraw = useCallback(() => {
     setClearMode(false);
@@ -172,11 +135,11 @@ export const useToolbar = ({ bitmapId }: ToolbarHookParams) => {
           active: clearMode,
         },
         [ButtonName.Undo]: {
-          onClick: handleClickUndo,
+          onClick: onClickUndo,
           disabled: disabledUndo,
         },
         [ButtonName.Redo]: {
-          onClick: handleClickRedo,
+          onClick: onClickRedo,
           disabled: disabledRedo,
         },
         [ButtonName.Area]: {
@@ -199,16 +162,16 @@ export const useToolbar = ({ bitmapId }: ToolbarHookParams) => {
           disabled: false,
         },
         [ButtonName.Resize]: {
-          disabled: false,
+          disabled: areaMode,
         },
       }) satisfies ButtonsConfig,
     [
       handleClickDraw,
       clearMode,
       handleClickClear,
-      handleClickUndo,
+      onClickUndo,
       disabledUndo,
-      handleClickRedo,
+      onClickRedo,
       disabledRedo,
       handleClickArea,
       areaMode,
@@ -218,23 +181,22 @@ export const useToolbar = ({ bitmapId }: ToolbarHookParams) => {
     ],
   );
 
-  useHotkeys('mod+z', handleClickUndo);
-  useHotkeys('mod+shift+z', handleClickRedo);
-  useHotkeys('mod+u', handleClickDraw);
-  useHotkeys('mod+i', handleClickArea);
+  useHotkeys('mod+z', onClickUndo);
+  useHotkeys('mod+shift+z', onClickRedo);
+  useHotkeys('mod+u', buttons.draw.onClick);
+  useHotkeys('mod+i', buttons.area.onClick);
   useHotkeys('up', handleClickUp);
   useHotkeys('down', handleClickDown);
   useHotkeys('left', handleClickLeft);
   useHotkeys('right', handleClickRight);
 
   return {
-    bitmapEntity,
     buttons,
     bitmap,
     selectedArea,
     selectedAreaOnly,
     onSelectArea,
     onChangeBitmap,
-    onChangeBitmapTimeout,
+    onChangeBitmapDebounce,
   };
 };
