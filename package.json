@@ -12,7 +12,8 @@
     "eslint-fix": "npm run eslint -- --fix",
     "format": "prettier --check src",
     "format-fix": "prettier --write src",
-    "lint-all": "npm run check-ts && npm run eslint && npm run format",
+    "knip": "knip",
+    "lint-all": "npm run check-ts && npm run eslint && npm run format && npm run knip",
     "lint-all-fix": "npm run eslint-fix && npm run format-fix",
     "prepare": "husky",
     "pre-push": "npm run lint-all"
@@ -47,6 +48,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "husky": "^9.0.11",
+    "knip": "^5.0.2",
     "prettier": "^3.2.5",
     "typescript": "^5.3.3",
     "vite": "^5.1.4"
