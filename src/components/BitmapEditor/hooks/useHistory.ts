@@ -39,12 +39,14 @@ export const useChangesHistory = ({ bitmap, updateBitmap, historyLimit }: Change
   const addToHistory = useCallback(
     (value: Bitmap) => {
       setHistory((state) => {
-        const list = [...state, value].slice(historyLimit * -1);
+        let list = state.slice(0, historyIndex + 1); // Delete end elements over index
+        list = list.concat(value); // Add new element
+        list = list.slice(historyLimit * -1); // Delete start elements over limit
         setHistoryIndex(list.length - 1);
         return list;
       });
     },
-    [historyLimit],
+    [historyIndex, historyLimit],
   );
 
   return useMemo(
