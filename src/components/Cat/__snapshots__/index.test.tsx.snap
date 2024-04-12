@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Alert > show component 1`] = `
+<div>
+  <div />
+</div>
+`;
