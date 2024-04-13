@@ -14,7 +14,7 @@
     "eslint-fix": "npm run eslint -- --fix",
     "format": "prettier --check src",
     "format-fix": "prettier --write src",
-    "knip": "knip",
+    "knip": "knip --production",
     "lint-all": "npm run check-ts && npm run eslint && npm run format && npm run knip",
     "lint-all-fix": "npm run eslint-fix && npm run format-fix",
     "prepare": "husky",
