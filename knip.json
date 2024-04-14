@@ -1,6 +1,7 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "entry": ["src/main.tsx!"],
+  "project": ["src/**/*.{ts,tsx}!", "!src/test-utils"],
   "ignoreDependencies": ["bootstrap-icons"],
   "ignoreBinaries": ["vite"]
 }
