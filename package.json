@@ -17,8 +17,7 @@
     "knip": "knip --production",
     "lint-all": "npm run check-ts && npm run eslint && npm run format && npm run knip",
     "lint-all-fix": "npm run eslint-fix && npm run format-fix",
-    "prepare": "husky",
-    "pre-push": "npm run lint-all && npm test"
+    "prepare": "git config core.hooksPath .git-hooks"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
@@ -53,7 +52,6 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
     "happy-dom": "^14.7.1",
-    "husky": "^9.0.11",
     "knip": "^5.9.4",
     "prettier": "^3.2.5",
     "typescript": "^5.4.5",
