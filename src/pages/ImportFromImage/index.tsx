@@ -144,13 +144,11 @@ const ImportFromImage = () => {
 
   useEffect(() => {
     setValue('left', 0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [width]);
+  }, [setValue, width]);
 
   useEffect(() => {
     setValue('top', 0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [height]);
+  }, [setValue, height]);
 
   useEffect(() => {
     if (!files || files.length === 0) {
@@ -161,9 +159,7 @@ const ImportFromImage = () => {
     reader.onload = () => {
       const image = new Image();
       image.src = reader.result as string;
-      image.onload = () => {
-        setImage(image);
-      };
+      image.onload = () => setImage(image);
     };
     reader.readAsDataURL(file);
   }, [files]);
