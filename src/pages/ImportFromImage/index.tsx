@@ -14,7 +14,6 @@ import { ImportForm } from './ImportForm';
 const ImportFromImage = () => {
   const navigate = useNavigate();
   const { addBitmap } = useBitmapStore();
-
   const [bitmap, setBitmap] = useState<Bitmap | null>(null);
 
   const onSubmit = useCallback(
@@ -22,7 +21,6 @@ const ImportFromImage = () => {
       if (!bitmap) {
         return;
       }
-
       const id = uuidv4();
       const timestamp = DateTime.now().toMillis();
       const image: BitmapEntity = {
@@ -42,7 +40,7 @@ const ImportFromImage = () => {
     <Page title="Create bitmap from image">
       <main className="d-flex flex-column flex-grow-1 justify-content-center align-items-center gap-3">
         <h1>Create bitmap from image</h1>
-        <ImportForm onChangeBitmap={setBitmap} onSubmit={onSubmit} />
+        <ImportForm setBitmap={setBitmap} onSubmit={onSubmit} />
         {bitmap && <BitmapView bitmap={bitmap} />}
       </main>
     </Page>
