@@ -39,7 +39,7 @@ export const ImportForm = ({ setBitmap, onSubmit }: ImportFormProps) => {
     onClickAlignBottom,
     onClickAlignVertical,
     onClickFitToImage,
-  } = useEditImage({ data, setBitmap: setBitmap, setFormValue: setValue });
+  } = useEditImage({ values: data, setBitmap: setBitmap, setValue: setValue });
 
   const handleReset = useCallback(() => {
     reset(defaultValues);
