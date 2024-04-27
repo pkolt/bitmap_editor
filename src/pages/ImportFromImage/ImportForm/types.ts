@@ -1,4 +1,4 @@
-export interface FormData {
+export interface ImportFormData {
   files: FileList | null;
   name: string;
   top: number;
