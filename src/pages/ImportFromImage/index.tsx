@@ -14,28 +14,8 @@ import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { PageUrl } from '@/constants/urls';
 import { CheckBox } from '@/components/CheckBox';
 import { BitmapSizeAlert } from '@/components/BitmapSizeAlert';
-
-interface FormData {
-  files: FileList | null;
-  name: string;
-  top: number;
-  left: number;
-  width: number;
-  height: number;
-  threshold: number;
-  invertColor: boolean;
-}
-
-const defaultValues: FormData = {
-  files: null,
-  top: 0,
-  left: 0,
-  width: 128,
-  height: 64,
-  threshold: 100,
-  name: '',
-  invertColor: false,
-};
+import { FormData } from './types';
+import { defaultValues } from './constants';
 
 const ImportFromImage = () => {
   const navigate = useNavigate();
@@ -58,7 +38,6 @@ const ImportFromImage = () => {
   const onSubmit = (data: FormData) => {
     const id = uuidv4();
     const timestamp = DateTime.now().toMillis();
-
     const image: BitmapEntity = {
       id,
       name: data.name,
@@ -66,9 +45,7 @@ const ImportFromImage = () => {
       updatedAt: timestamp,
       ...bitmap.toJSON(),
     };
-
     addBitmap(image);
-
     navigate(PageUrl.EditBitmap.replace(':id', id), { replace: true });
   };
 
