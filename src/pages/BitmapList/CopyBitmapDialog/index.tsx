@@ -8,7 +8,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { BitmapEntity } from '@/utils/bitmap/types';
 
-interface FormData {
+interface FormValues {
   name: string;
 }
 
@@ -22,7 +22,7 @@ export const CopyBitmapDialog = ({ bitmapId, onClose }: CopyBitmapDialogProps): 
   const { findBitmap, addBitmap } = useBitmapStore();
   const bitmapEntity = findBitmap(bitmapId);
 
-  const methods = useForm<FormData>({
+  const methods = useForm<FormValues>({
     mode: 'onChange',
     defaultValues: {
       name: bitmapEntity?.name,
@@ -35,7 +35,7 @@ export const CopyBitmapDialog = ({ bitmapId, onClose }: CopyBitmapDialogProps): 
     formState: { isValid, isDirty },
   } = methods;
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: FormValues) => {
     if (!bitmapEntity) {
       return;
     }

@@ -3,7 +3,7 @@ import { BitmapEntity } from '@/utils/bitmap/types';
 import { parseBitmapFile } from '@/utils/bitmap/file';
 import { FormProvider, useForm } from 'react-hook-form';
 
-interface FormData {
+interface FormValues {
   files: FileList | null;
 }
 
@@ -12,7 +12,7 @@ interface FileFormProps {
 }
 
 export const FileForm = ({ onNext }: FileFormProps) => {
-  const methods = useForm<FormData>({
+  const methods = useForm<FormValues>({
     mode: 'onChange',
     defaultValues: {},
   });
@@ -23,7 +23,7 @@ export const FileForm = ({ onNext }: FileFormProps) => {
     formState: { isValid },
   } = methods;
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: FormValues) => {
     const { files } = data;
     if (!files || files.length === 0) {
       return;

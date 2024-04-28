@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ImportFormData } from './types';
+import { FormValues } from './types';
 import { convertCanvasToBitmap, scaleImage } from './utils';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
 import { UseFormSetValue } from 'react-hook-form';
 
 interface EditImageHookParams {
-  values: ImportFormData;
-  setValue: UseFormSetValue<ImportFormData>;
+  values: FormValues;
+  setValue: UseFormSetValue<FormValues>;
   setBitmap: (value: Bitmap | null) => void;
 }
 

@@ -16,7 +16,7 @@ interface ExportDialogProps {
   onClose: () => void;
 }
 
-interface FormData {
+interface FormValues {
   name: string;
   bitOrder: BitOrder;
   sizeFormat: SizeFormat;
@@ -25,7 +25,7 @@ interface FormData {
   progmem: boolean;
 }
 
-const defaultValues: FormData = {
+const defaultValues: FormValues = {
   name: '',
   bitOrder: BitOrder.BigEndian,
   sizeFormat: SizeFormat.Defines,
@@ -38,17 +38,17 @@ export const ExportDialog = ({ bitmapId, area, onClose }: ExportDialogProps): JS
   const { findBitmap: findBitmap } = useBitmapStore();
   const bitmapEntity = findBitmap(bitmapId);
 
-  const methods = useForm<FormData>({
+  const methods = useForm<FormValues>({
     mode: 'onChange',
     defaultValues: { ...defaultValues, name: bitmapEntity?.name ?? '' },
   });
 
   const { register, handleSubmit, watch } = methods;
 
-  const formData = watch();
+  const formValues = watch();
   const exportCode = useMemo<string>(
-    () => (bitmapEntity ? exportBitmap({ bitmapEntity, area, ...formData }) : ''),
-    [area, bitmapEntity, formData],
+    () => (bitmapEntity ? exportBitmap({ bitmapEntity, area, ...formValues }) : ''),
+    [area, bitmapEntity, formValues],
   );
 
   const handleCopy = () => {

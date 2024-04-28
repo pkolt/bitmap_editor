@@ -5,7 +5,7 @@ import { Bitmap } from '@/utils/bitmap/Bitmap';
 import { useCallback } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
-interface FormData {
+interface FormValues {
   width: number;
   height: number;
 }
@@ -17,7 +17,7 @@ interface ResizeDialogProps {
 }
 
 export const ResizeDialog = ({ bitmap, onChangeBitmap, onClose }: ResizeDialogProps): JSX.Element | null => {
-  const methods = useForm<FormData>({
+  const methods = useForm<FormValues>({
     mode: 'onChange',
     defaultValues: { width: bitmap.width, height: bitmap.height },
   });
@@ -34,7 +34,7 @@ export const ResizeDialog = ({ bitmap, onChangeBitmap, onClose }: ResizeDialogPr
 
   const onReset = useCallback(() => reset(defaultValues), [defaultValues, reset]);
 
-  const onSubmit = ({ width, height }: FormData) => {
+  const onSubmit = ({ width, height }: FormValues) => {
     const clonedBitmap = bitmap.clone();
     clonedBitmap.resize(width, height);
     onChangeBitmap(clonedBitmap);
