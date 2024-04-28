@@ -4,18 +4,18 @@ import { Range } from '@/components/Range';
 import { CheckBox } from '@/components/CheckBox';
 import { BitmapSizeAlert } from '@/components/BitmapSizeAlert';
 import { defaultValues } from './constants';
-import { ImportFormData } from './types';
+import { FormValues } from './types';
 import { useCallback, useEffect } from 'react';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
 import { useEditImage } from './useEditImage';
 
 interface ImportFormProps {
   setBitmap: (value: Bitmap | null) => void;
-  onSubmit: (data: ImportFormData) => void;
+  onSubmit: (data: FormValues) => void;
 }
 
 export const ImportForm = ({ setBitmap, onSubmit }: ImportFormProps) => {
-  const methods = useForm<ImportFormData>({
+  const methods = useForm<FormValues>({
     mode: 'onChange',
     defaultValues,
   });
@@ -39,7 +39,7 @@ export const ImportForm = ({ setBitmap, onSubmit }: ImportFormProps) => {
     onClickAlignBottom,
     onClickAlignVertical,
     onClickFitToImage,
-  } = useEditImage({ data, setBitmap: setBitmap, setFormValue: setValue });
+  } = useEditImage({ values: data, setBitmap: setBitmap, setValue: setValue });
 
   const handleReset = useCallback(() => {
     reset(defaultValues);

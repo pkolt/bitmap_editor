@@ -8,7 +8,7 @@ import { DateTime } from 'luxon';
 import { useNavigate } from 'react-router-dom';
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { PageUrl } from '@/constants/urls';
-import { ImportFormData } from './ImportForm/types';
+import { FormValues } from './ImportForm/types';
 import { ImportForm } from './ImportForm';
 
 const ImportFromImage = () => {
@@ -17,7 +17,7 @@ const ImportFromImage = () => {
   const [bitmap, setBitmap] = useState<Bitmap | null>(null);
 
   const onSubmit = useCallback(
-    (data: ImportFormData) => {
+    (data: FormValues) => {
       if (!bitmap) {
         return;
       }

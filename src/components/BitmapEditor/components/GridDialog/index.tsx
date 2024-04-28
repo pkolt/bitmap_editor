@@ -18,11 +18,11 @@ interface GridDialogProps {
   onClose: () => void;
 }
 
-type FormData = GridSettings;
+type FormValues = GridSettings;
 
 export const GridDialog = ({ onClose }: GridDialogProps): JSX.Element | null => {
   const { grid, setGrid } = useSettingsStore();
-  const methods = useForm<FormData>({
+  const methods = useForm<FormValues>({
     mode: 'onChange',
     defaultValues: grid,
   });
@@ -33,7 +33,7 @@ export const GridDialog = ({ onClose }: GridDialogProps): JSX.Element | null => 
     formState: { isValid },
   } = methods;
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: FormValues) => {
     setGrid(data);
   };
 

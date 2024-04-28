@@ -1,6 +1,6 @@
-import { ImportFormData } from './types';
+import { FormValues } from './types';
 
-export const defaultValues: ImportFormData = {
+export const defaultValues: FormValues = {
   files: null,
   top: 0,
   left: 0,

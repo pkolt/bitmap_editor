@@ -8,14 +8,14 @@ interface RenameDialogProps {
   onClose: () => void;
 }
 
-interface FormData {
+interface FormValues {
   name: string;
 }
 
 export const RenameDialog = ({ bitmapId, onClose }: RenameDialogProps): JSX.Element | null => {
   const { findBitmap, changeBitmap } = useBitmapStore();
   const bitmapEntity = findBitmap(bitmapId);
-  const methods = useForm<FormData>({
+  const methods = useForm<FormValues>({
     mode: 'onChange',
     defaultValues: { name: bitmapEntity?.name },
   });
@@ -26,7 +26,7 @@ export const RenameDialog = ({ bitmapId, onClose }: RenameDialogProps): JSX.Elem
     formState: { isValid, isDirty },
   } = methods;
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: FormValues) => {
     if (bitmapEntity) {
       changeBitmap(bitmapId, { name: data.name });
     }

@@ -1,9 +1,9 @@
-import { CheckBox } from '@/components/CheckBox';
+import { SelectBitmap } from '@/components/SelectBitmap';
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { BitmapEntity } from '@/utils/bitmap/types';
 import { FormProvider, useForm } from 'react-hook-form';
 
-interface FormData {
+interface FormValues {
   ids: string[];
 }
 
@@ -15,7 +15,7 @@ interface FinalFormProps {
 export const FinalForm = ({ entities, onFinish }: FinalFormProps) => {
   const { addBitmap } = useBitmapStore();
 
-  const methods = useForm<FormData>({
+  const methods = useForm<FormValues>({
     mode: 'onChange',
     defaultValues: {
       ids: entities.map((it) => it.id),
@@ -24,11 +24,10 @@ export const FinalForm = ({ entities, onFinish }: FinalFormProps) => {
 
   const {
     handleSubmit,
-    register,
     formState: { isValid },
   } = methods;
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: FormValues) => {
     entities.forEach((it) => {
       if (data.ids.includes(it.id)) {
         addBitmap(it);
@@ -40,16 +39,7 @@ export const FinalForm = ({ entities, onFinish }: FinalFormProps) => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column">
-        <div>
-          {entities.map((it) => (
-            <CheckBox
-              key={it.id}
-              label={`${it.name} (${it.width}x${it.height})`}
-              value={it.id}
-              {...register('ids', { required: true })}
-            />
-          ))}
-        </div>
+        <SelectBitmap name={'ids' satisfies keyof FormValues} bitmaps={entities} />
         <button type="submit" className="btn btn-primary ms-auto me-auto mt-5" disabled={!isValid}>
           Save bitmaps
         </button>

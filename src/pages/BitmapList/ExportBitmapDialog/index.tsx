@@ -4,11 +4,11 @@ import { Modal } from '@/components/Modal';
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useMemo } from 'react';
-import { CheckBox } from '@/components/CheckBox';
 import { convertToBitmapFile } from '@/utils/bitmap/file';
 import { Input } from '@/components/Input';
+import { SelectBitmap } from '@/components/SelectBitmap';
 
-interface FormData {
+interface FormValues {
   name: string;
   ids: string[];
 }
@@ -22,12 +22,12 @@ export const ExportBitmapDialog = ({ bitmapId, onClose }: ExportBitmapDialogProp
   const { findBitmap, bitmaps } = useBitmapStore();
   const bitmapEntity = findBitmap(bitmapId);
 
-  const defaultValues = useMemo<FormData>(() => {
+  const defaultValues = useMemo<FormValues>(() => {
     const name = `bitmap_${DateTime.now().toFormat('yyyy_LL_dd_HH_mm')}`;
     return { name, ids: [bitmapId] };
   }, [bitmapId]);
 
-  const methods = useForm<FormData>({
+  const methods = useForm<FormValues>({
     mode: 'onChange',
     defaultValues,
   });
@@ -38,7 +38,7 @@ export const ExportBitmapDialog = ({ bitmapId, onClose }: ExportBitmapDialogProp
     formState: { isValid },
   } = methods;
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: FormValues) => {
     const entities = bitmaps.filter((it) => data.ids.includes(it.id));
     const blob = convertToBitmapFile(entities);
     const filename = `${data.name}.json`;
@@ -55,16 +55,7 @@ export const ExportBitmapDialog = ({ bitmapId, onClose }: ExportBitmapDialogProp
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
           <Input label="Filename" {...register('name', { required: true, minLength: 1 })} />
-          <div>
-            {bitmaps.map((it) => (
-              <CheckBox
-                key={it.id}
-                label={`${it.name} (${it.width}x${it.height})`}
-                value={it.id}
-                {...register('ids', { required: true })}
-              />
-            ))}
-          </div>
+          <SelectBitmap name={'ids' satisfies keyof FormValues} bitmaps={bitmaps} />
           <div className="text-center">
             <button type="submit" className="btn btn-primary" disabled={!isValid}>
               Save as file

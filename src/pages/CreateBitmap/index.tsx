@@ -10,19 +10,19 @@ import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { BitmapSizeAlert } from '@/components/BitmapSizeAlert';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
 
-interface FormData {
+interface FormValues {
   name: string;
   width: number;
   height: number;
 }
 
-const defaultValues: FormData = { name: '', width: 128, height: 64 };
+const defaultValues: FormValues = { name: '', width: 128, height: 64 };
 
 const CreateBitmap = () => {
   const navigate = useNavigate();
   const { addBitmap } = useBitmapStore();
 
-  const methods = useForm<FormData>({
+  const methods = useForm<FormValues>({
     mode: 'onChange',
     defaultValues,
   });
@@ -36,7 +36,7 @@ const CreateBitmap = () => {
 
   const bitmapWidth = watch('width');
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: FormValues) => {
     const id = uuidv4();
     const timestamp = DateTime.now().toMillis();
     const bitmap = new Bitmap(data.width, data.height);

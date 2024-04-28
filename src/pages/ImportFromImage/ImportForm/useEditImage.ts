@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ImportFormData } from './types';
+import { FormValues } from './types';
 import { convertCanvasToBitmap, scaleImage } from './utils';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
 import { UseFormSetValue } from 'react-hook-form';
 
 interface EditImageHookParams {
-  data: ImportFormData;
+  values: FormValues;
+  setValue: UseFormSetValue<FormValues>;
   setBitmap: (value: Bitmap | null) => void;
-  setFormValue: UseFormSetValue<ImportFormData>;
 }
 
 interface EditImageHookResult {
@@ -21,12 +21,12 @@ interface EditImageHookResult {
   onClickFitToImage: () => void;
 }
 
-export const useEditImage = ({ data, setBitmap, setFormValue }: EditImageHookParams): EditImageHookResult => {
+export const useEditImage = ({ values, setValue, setBitmap }: EditImageHookParams): EditImageHookResult => {
   const [canvas] = useState(document.createElement('canvas'));
   const [canvasCtx] = useState<CanvasRenderingContext2D | null>(canvas.getContext('2d', { willReadFrequently: true }));
   const [image, setImage] = useState<HTMLImageElement | null>(null);
 
-  const { files, top, left, width, height, threshold, invertColor } = data;
+  const { files, top, left, width, height, threshold, invertColor } = values;
 
   const { scaledWidth, scaledHeight } = useMemo(() => {
     if (image) {
@@ -36,15 +36,15 @@ export const useEditImage = ({ data, setBitmap, setFormValue }: EditImageHookPar
   }, [height, image, width]);
 
   const onClickAlignLeft = useCallback(() => {
-    setFormValue('left', 0);
-  }, [setFormValue]);
+    setValue('left', 0);
+  }, [setValue]);
 
   const onClickAlignRight = useCallback(() => {
     const freeSpace = width - scaledWidth;
     if (freeSpace > 0) {
-      setFormValue('left', freeSpace);
+      setValue('left', freeSpace);
     }
-  }, [scaledWidth, setFormValue, width]);
+  }, [scaledWidth, setValue, width]);
 
   const onClickAlignHorizontal = useCallback(() => {
     if (!image) {
@@ -52,13 +52,13 @@ export const useEditImage = ({ data, setBitmap, setFormValue }: EditImageHookPar
     }
     const freeSpace = width - scaledWidth;
     if (freeSpace > 0) {
-      setFormValue('left', Math.floor(freeSpace / 2));
+      setValue('left', Math.floor(freeSpace / 2));
     }
-  }, [image, scaledWidth, setFormValue, width]);
+  }, [image, scaledWidth, setValue, width]);
 
   const onClickAlignTop = useCallback(() => {
-    setFormValue('top', 0);
-  }, [setFormValue]);
+    setValue('top', 0);
+  }, [setValue]);
 
   const onClickAlignBottom = useCallback(() => {
     if (!image) {
@@ -66,9 +66,9 @@ export const useEditImage = ({ data, setBitmap, setFormValue }: EditImageHookPar
     }
     const freeSpace = height - scaledHeight;
     if (freeSpace > 0) {
-      setFormValue('top', freeSpace);
+      setValue('top', freeSpace);
     }
-  }, [height, image, scaledHeight, setFormValue]);
+  }, [height, image, scaledHeight, setValue]);
 
   const onClickAlignVertical = useCallback(() => {
     if (!image) {
@@ -76,14 +76,14 @@ export const useEditImage = ({ data, setBitmap, setFormValue }: EditImageHookPar
     }
     const freeSpace = height - scaledHeight;
     if (freeSpace > 0) {
-      setFormValue('top', Math.floor(freeSpace / 2));
+      setValue('top', Math.floor(freeSpace / 2));
     }
-  }, [height, image, scaledHeight, setFormValue]);
+  }, [height, image, scaledHeight, setValue]);
 
   const onClickFitToImage = useCallback(() => {
-    setFormValue('width', scaledWidth);
-    setFormValue('height', scaledHeight);
-  }, [scaledHeight, scaledWidth, setFormValue]);
+    setValue('width', scaledWidth);
+    setValue('height', scaledHeight);
+  }, [scaledHeight, scaledWidth, setValue]);
 
   const onReset = useCallback(() => {
     setBitmap(null);
