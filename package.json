@@ -17,7 +17,8 @@
     "knip": "knip --production",
     "lint-all": "npm run check-ts && npm run eslint && npm run format && npm run knip",
     "lint-all-fix": "npm run eslint-fix && npm run format-fix",
-    "prepare": "git config core.hooksPath .git-hooks"
+    "prepare": "git config core.hooksPath .git-hooks",
+    "pre-commit": "npm run lint-all && npm test"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",

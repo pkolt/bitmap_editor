@@ -1,2 +1,1 @@
- #!/bin/sh
-npm run lint-all && npm test
+npm run pre-commit
