@@ -3,10 +3,11 @@ import FileSaver from 'file-saver';
 import { Modal } from '@/components/Modal';
 import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { CheckBox } from '@/components/CheckBox';
 import { convertToBitmapFile } from '@/utils/bitmap/file';
 import { Input } from '@/components/Input';
+import { isEqualArrays } from './utils';
 
 interface FormData {
   name: string;
@@ -35,6 +36,8 @@ export const ExportBitmapDialog = ({ bitmapId, onClose }: ExportBitmapDialogProp
   const {
     handleSubmit,
     register,
+    watch,
+    setValue,
     formState: { isValid },
   } = methods;
 
@@ -46,6 +49,13 @@ export const ExportBitmapDialog = ({ bitmapId, onClose }: ExportBitmapDialogProp
     onClose();
   };
 
+  const selectedIds = watch('ids');
+  const allIds = useMemo(() => bitmaps.map((it) => it.id), [bitmaps]);
+  const isSelectedAll = isEqualArrays(selectedIds, allIds);
+  const toggleSelectAll = useCallback(() => {
+    setValue('ids', isSelectedAll ? [] : allIds);
+  }, [allIds, isSelectedAll, setValue]);
+
   if (!bitmapEntity) {
     return null;
   }
@@ -55,6 +65,7 @@ export const ExportBitmapDialog = ({ bitmapId, onClose }: ExportBitmapDialogProp
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
           <Input label="Filename" {...register('name', { required: true, minLength: 1 })} />
+          <CheckBox label="Select all" checked={isSelectedAll} onChange={toggleSelectAll} />
           <div>
             {bitmaps.map((it) => (
               <CheckBox
