@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "test": "TZ=UTC vitest",
     "test:info": "DEBUG=vite-node:* npm test -- --logHeapUsage",
+    "//! For debugging open URL - `chrome://inspect` ": "",
     "test:debug": "npm test -- --inspect-brk --no-file-parallelism",
     "test:update": "npm test -- -u",
     "coverage": "vitest run --coverage",
