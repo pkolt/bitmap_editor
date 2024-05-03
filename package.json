@@ -11,7 +11,7 @@
     "test:info": "DEBUG=vite-node:* npm test -- --logHeapUsage",
     "test:debug": "npm test -- --inspect-brk --no-file-parallelism",
     "test:update": "npm test -- -u",
-    "coverage": "vitest run --coverage --strict",
+    "coverage": "vitest run --coverage",
     "check-ts": "tsc --noEmit",
     "eslint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "eslint-fix": "npm run eslint -- --fix",
