@@ -17,6 +17,20 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'happy-dom',
+    setupFiles: ['./src/setupTests.ts'],
+    pool: 'threads',
+    poolOptions: {
+      threads: {
+        useAtomics: true,
+        isolate: true,
+      },
+    },
+    // clearMocks: true,
+    // restoreMocks: true,
+    // mockReset: true,
+    // cache: false,
     watch: false,
-  }
+    update: false,
+    css: false,
+  },
 });
