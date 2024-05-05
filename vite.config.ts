@@ -15,7 +15,7 @@ export default defineConfig({
     },
   },
   test: {
-    // globals: true,
+    // globals: true, // Remove `cleanup()` from `setupTests.ts` if `globals: true`
     environment: 'happy-dom',
     setupFiles: ['./src/setupTests.ts'],
     pool: 'threads',

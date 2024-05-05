@@ -1,6 +1,5 @@
 import cn from 'classnames';
-import { Alert as BSAlert } from 'bootstrap';
-import { useCallback, useRef } from 'react';
+import { useState } from 'react';
 
 type AlertType = 'danger' | 'warning';
 
@@ -10,20 +9,18 @@ interface AlertProps {
   className?: string;
 }
 
-export const Alert = ({ type, children, className }: AlertProps) => {
-  const bsAlertRef = useRef<BSAlert | null>(null);
-  const setRef = useCallback((elem: HTMLElement | null) => {
-    if (elem) {
-      bsAlertRef.current = new BSAlert(elem); // init component
-    } else {
-      bsAlertRef.current?.dispose(); // destroy component
-      bsAlertRef.current = null;
-    }
-  }, []);
+export const Alert = ({ type, children, className }: AlertProps): JSX.Element | null => {
+  const [isHidden, setIsHidden] = useState(false);
+  const handleClose = () => setIsHidden(true);
+
+  if (isHidden) {
+    return null;
+  }
+
   return (
-    <div className={cn('alert alert-dismissible fade show mb-0', `alert-${type}`, className)} role="alert" ref={setRef}>
+    <div className={cn('alert alert-dismissible mb-0', `alert-${type}`, className)} role="alert">
       {children}
-      <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" />
+      <button type="button" className="btn-close" aria-label="Close" onClick={handleClose} />
     </div>
   );
 };

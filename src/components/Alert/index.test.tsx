@@ -1,11 +1,22 @@
 import { Alert } from '.';
-import { render, expect, test } from '@/test-utils';
+import { expect, test, renderComponent, screen } from '@/test-utils';
 
 test('show component', () => {
-  const { container } = render(
+  renderComponent(
     <Alert type="warning">
       <div>Test</div>
     </Alert>,
   );
-  expect(container).matchSnapshot();
+  expect(screen.queryByText('Test')).not.toBeNull();
+});
+
+test('close alert', async () => {
+  const { user } = renderComponent(
+    <Alert type="danger">
+      <div>Test</div>
+    </Alert>,
+  );
+  const closeBtn = screen.getByRole('button');
+  await user.click(closeBtn);
+  expect(screen.queryByText('Test')).toBeNull();
 });
