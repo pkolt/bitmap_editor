@@ -12,7 +12,7 @@ export const Header = () => {
             <div className="h6 text-body-tertiary mb-0">Create bitmap image for OLED display</div>
           </div>
         </Link>
-        <a href="https://github.com/pkolt/bitmap_editor" target="_blank" className="h3 m-0">
+        <a href="https://github.com/pkolt/bitmap_editor" target="_blank" rel="noreferrer" className="h3 m-0">
           <i className="bi bi-github" />
         </a>
       </div>

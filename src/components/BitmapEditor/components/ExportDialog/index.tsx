@@ -67,7 +67,7 @@ export const ExportDialog = ({ bitmapId, area, onClose }: ExportDialogProps): JS
               <i className="bi bi-exclamation-triangle" />
               <div>
                 Exported image as{' '}
-                <a href="https://en.wikipedia.org/wiki/X_BitMap" target="_blank">
+                <a href="https://en.wikipedia.org/wiki/X_BitMap" target="_blank" rel="noreferrer">
                   X BitMap format
                 </a>
               </div>

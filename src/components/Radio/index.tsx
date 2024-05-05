@@ -5,7 +5,10 @@ interface RadioProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
 }
 
-export const Radio = forwardRef<HTMLInputElement, RadioProps>(({ label, className, ...props }: RadioProps, ref) => {
+export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
+  { label, className, ...props }: RadioProps,
+  ref,
+) {
   const id = useId();
   return (
     <div className={cn('form-check', className)}>

@@ -14,7 +14,7 @@ export const DeleteBitmapDialog = ({ bitmapId, onClose }: DeleteBitmapDialogProp
   }
   return (
     <Modal title="Delete bitmap" onClose={onClose} onAccept={() => deleteBitmap(bitmapId)}>
-      <p>Delete bitmap "{bitmapEntity.name}"?</p>
+      <p>Delete bitmap &quot;{bitmapEntity.name}&quot;?</p>
     </Modal>
   );
 };

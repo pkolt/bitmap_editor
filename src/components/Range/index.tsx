@@ -6,7 +6,10 @@ interface RangeProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
 }
 
-export const Range = forwardRef<HTMLInputElement, RangeProps>(({ label, className, ...props }, ref): JSX.Element => {
+export const Range = forwardRef<HTMLInputElement, RangeProps>(function Range(
+  { label, className, ...props },
+  ref,
+): JSX.Element {
   const id = useId();
   const name = props.name!;
   const { errors } = useFormState();
