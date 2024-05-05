@@ -32,5 +32,24 @@ export default defineConfig({
     watch: false,
     update: false,
     css: false,
+    coverage: {
+      clean: true,
+      include: ['src/**'],
+      extension: ['.ts', '.tsx'],
+      // exclude: ['src/**/*.stories.tsx'],
+      provider: 'v8',
+      thresholds: {
+        statements: 80,
+        branches: 80,
+        functions: 80,
+        lines: 80,
+      },
+      watermarks: {
+        statements: [80, 90],
+        branches: [80, 90],
+        functions: [80, 90],
+        lines: [80, 90],
+      },
+    },
   },
 });
