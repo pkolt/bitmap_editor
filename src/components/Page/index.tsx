@@ -4,7 +4,7 @@ import { Header } from '../Header';
 
 interface PageProps {
   title: string;
-  children: JSX.Element;
+  children: JSX.Element | JSX.Element[];
 }
 
 export const Page = ({ title, children }: PageProps) => {

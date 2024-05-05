@@ -10,7 +10,7 @@ const EditBitmap = () => {
   const image = findBitmap(id ?? '');
 
   if (!image || !id) {
-    return <Navigate to={PageUrl.BitmapList} replace />;
+    return <Navigate to={PageUrl.Home} replace />;
   }
 
   return (

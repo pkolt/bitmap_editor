@@ -13,7 +13,7 @@ const ImportFromJson = () => {
   const [entities, setEntities] = useState<BitmapEntity[] | null>(null);
 
   const handleFinish = useCallback(() => {
-    navigate(PageUrl.BitmapList);
+    navigate(PageUrl.Home);
   }, [navigate]);
 
   const handleNext = useCallback(
