@@ -1,7 +1,7 @@
 import { Input } from '@/components/Input';
 import { Modal } from '@/components/Modal';
 import { PageUrl } from '@/constants/urls';
-import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
+import { useBitmapStore } from '@/stores/bitmaps';
 import { DateTime } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 import { FormProvider, useForm } from 'react-hook-form';

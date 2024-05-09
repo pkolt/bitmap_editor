@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 import FileSaver from 'file-saver';
 import { Modal } from '@/components/Modal';
-import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
+import { useBitmapStore } from '@/stores/bitmaps';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useMemo } from 'react';
 import { convertToBitmapFile } from '@/utils/bitmap/file';

@@ -1,4 +1,4 @@
-import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
+import { useBitmapStore } from '@/stores/bitmaps';
 import { useMemo } from 'react';
 import { OpenDialogFn } from '../../types';
 import { BitmapItem } from '../BitmapItem';

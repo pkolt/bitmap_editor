@@ -6,7 +6,7 @@ import { BitmapView } from '@/components/BitmapEditor/components/BitmapView';
 import { BitmapEntity } from '@/utils/bitmap/types';
 import { DateTime } from 'luxon';
 import { useNavigate } from 'react-router-dom';
-import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
+import { useBitmapStore } from '@/stores/bitmaps';
 import { PageUrl } from '@/constants/urls';
 import { FormValues } from './ImportForm/types';
 import { ImportForm } from './ImportForm';

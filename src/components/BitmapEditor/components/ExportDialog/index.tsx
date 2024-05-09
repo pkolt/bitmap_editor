@@ -1,5 +1,5 @@
 import { Modal } from '@/components/Modal';
-import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
+import { useBitmapStore } from '@/stores/bitmaps';
 import { DataFormat, Platform, SizeFormat, exportBitmap } from './utils';
 import { useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';

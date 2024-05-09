@@ -1,7 +1,7 @@
 import { CheckBox } from '@/components/CheckBox';
 import { Input } from '@/components/Input';
 import { Modal } from '@/components/Modal';
-import { GridSettings, useSettingsStore } from '@/store/settings/useSettingsStore';
+import { GridSettings, useSettingsStore } from '@/stores/settings';
 import { FormProvider, useForm } from 'react-hook-form';
 
 const validatorSize = (value: number) => {

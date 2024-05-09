@@ -1,4 +1,4 @@
-import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
+import { useBitmapStore } from '@/stores/bitmaps';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
 import { useCallback, useState } from 'react';
 

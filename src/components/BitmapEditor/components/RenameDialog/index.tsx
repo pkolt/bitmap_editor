@@ -1,6 +1,6 @@
 import { Input } from '@/components/Input';
 import { Modal } from '@/components/Modal';
-import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
+import { useBitmapStore } from '@/stores/bitmaps';
 import { FormProvider, useForm } from 'react-hook-form';
 
 interface RenameDialogProps {

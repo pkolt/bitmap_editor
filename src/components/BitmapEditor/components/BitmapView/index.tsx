@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styles from './index.module.css';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
-import { useSettingsStore } from '@/store/settings/useSettingsStore';
+import { useSettingsStore } from '@/stores/settings';
 import { Sizes } from './types';
 import { clearDisplay, drawBitmap, drawPointsBorders, drawGrid, getCanvasSize, drawArea } from './utils';
 import { BitmapArea } from '../../types';

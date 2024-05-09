@@ -1,7 +1,7 @@
 import { BitmapEditor } from '@/components/BitmapEditor';
 import { Page } from '@/components/Page';
 import { PageUrl } from '@/constants/urls';
-import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
+import { useBitmapStore } from '@/stores/bitmaps';
 import { Navigate, useParams } from 'react-router-dom';
 
 const EditBitmap = () => {

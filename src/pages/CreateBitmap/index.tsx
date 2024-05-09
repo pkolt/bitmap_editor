@@ -6,7 +6,7 @@ import { Input } from '@/components/Input';
 import { useNavigate } from 'react-router-dom';
 import { PageUrl } from '@/constants/urls';
 import { BitmapEntity } from '@/utils/bitmap/types';
-import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
+import { useBitmapStore } from '@/stores/bitmaps';
 import { BitmapSizeAlert } from '@/components/BitmapSizeAlert';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
 

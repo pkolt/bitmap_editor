@@ -1,7 +1,7 @@
 import { PageUrl } from '@/constants/urls';
 import { Link, generatePath } from 'react-router-dom';
 import { Dialog, OpenDialogFn } from '../../types';
-import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
+import { useBitmapStore } from '@/stores/bitmaps';
 
 interface BitmapItemProps {
   bitmapId: string;

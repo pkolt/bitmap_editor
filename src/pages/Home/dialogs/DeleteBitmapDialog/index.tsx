@@ -1,5 +1,5 @@
 import { Modal } from '@/components/Modal';
-import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
+import { useBitmapStore } from '@/stores/bitmaps';
 
 interface DeleteBitmapDialogProps {
   bitmapId: string;
