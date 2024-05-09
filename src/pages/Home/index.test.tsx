@@ -11,22 +11,22 @@ test('show empty', async () => {
 });
 
 test('click create new bitmap', async () => {
-  const { location, user } = renderHomePage();
+  const { location, userEvent } = renderHomePage();
   const button = screen.getByText('Create new bitmap');
-  await user.click(button);
+  await userEvent.click(button);
   expect(location().pathname).toBe(PageUrl.CreateBitmap);
 });
 
 test('click import from image', async () => {
-  const { location, user } = renderHomePage();
+  const { location, userEvent } = renderHomePage();
   const button = screen.getByText('Import from image');
-  await user.click(button);
+  await userEvent.click(button);
   expect(location().pathname).toBe(PageUrl.ImportFromImage);
 });
 
 test('click import from json', async () => {
-  const { location, user } = renderHomePage();
+  const { location, userEvent } = renderHomePage();
   const button = screen.getByText('Import from JSON');
-  await user.click(button);
+  await userEvent.click(button);
   expect(location().pathname).toBe(PageUrl.ImportFromJson);
 });

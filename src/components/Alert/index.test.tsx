@@ -11,12 +11,12 @@ test('show component', () => {
 });
 
 test('close alert', async () => {
-  const { user } = renderComponent(
+  const { userEvent } = renderComponent(
     <Alert type="danger">
       <div>Test</div>
     </Alert>,
   );
   const closeBtn = screen.getByRole('button');
-  await user.click(closeBtn);
+  await userEvent.click(closeBtn);
   expect(screen.queryByText('Test')).toBeNull();
 });
