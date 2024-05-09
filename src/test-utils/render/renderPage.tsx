@@ -3,6 +3,8 @@ import { renderElement } from './renderElement';
 import { Providers } from './Providers';
 import { createMemoryRouter } from 'react-router-dom';
 import { PageUrl } from '@/constants/urls';
+import { useBitmapStore } from '@/stores/bitmaps';
+import { useSettingsStore } from '@/stores/settings';
 
 interface ProviderProps {
   route: {
@@ -27,9 +29,16 @@ export const renderPage = (elem: JSX.Element, props: ProviderProps, options?: Re
       initialIndex: 1,
     },
   );
+
+  const stores = {
+    bitmaps: useBitmapStore.getState(),
+    settings: useSettingsStore.getState(),
+  };
+
   const result = renderElement(elem, {
     ...options,
     wrapper: () => <Providers router={router} />,
   });
-  return { ...result, navigate: router.navigate, location: () => router.state.location };
+
+  return { ...result, navigate: router.navigate, location: () => router.state.location, stores };
 };
