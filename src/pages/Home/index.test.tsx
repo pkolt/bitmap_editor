@@ -4,29 +4,21 @@ import { PageUrl } from '@/constants/urls';
 
 const renderHomePage = () => renderPage(<Home />, { route: { path: PageUrl.Home } });
 
+const createTestRedirect = (buttonText: string, redirectUrl: PageUrl) => async () => {
+  const { location, userEvent } = renderHomePage();
+  const button = screen.getByText(buttonText);
+  await userEvent.click(button);
+  expect(location().pathname).toBe(redirectUrl);
+};
+
 test('show empty', async () => {
   const { location } = renderHomePage();
   expect(screen.queryAllByTestId('bitmap-item').length).toBe(0);
   expect(location().pathname).toBe(PageUrl.Home);
 });
 
-test('click create new bitmap', async () => {
-  const { location, userEvent } = renderHomePage();
-  const button = screen.getByText('Create new bitmap');
-  await userEvent.click(button);
-  expect(location().pathname).toBe(PageUrl.CreateBitmap);
-});
+test('click create new bitmap', createTestRedirect('Create new bitmap', PageUrl.CreateBitmap));
 
-test('click import from image', async () => {
-  const { location, userEvent } = renderHomePage();
-  const button = screen.getByText('Import from image');
-  await userEvent.click(button);
-  expect(location().pathname).toBe(PageUrl.ImportFromImage);
-});
+test('click import from image', createTestRedirect('Import from image', PageUrl.ImportFromImage));
 
-test('click import from json', async () => {
-  const { location, userEvent } = renderHomePage();
-  const button = screen.getByText('Import from JSON');
-  await userEvent.click(button);
-  expect(location().pathname).toBe(PageUrl.ImportFromJson);
-});
+test('click import from json', createTestRedirect('Import from JSON', PageUrl.ImportFromJson));
