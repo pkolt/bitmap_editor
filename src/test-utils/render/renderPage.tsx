@@ -31,8 +31,12 @@ export const renderPage = (elem: JSX.Element, props: ProviderProps, options?: Re
   );
 
   const stores = {
-    bitmaps: useBitmapStore.getState(),
-    settings: useSettingsStore.getState(),
+    get bitmaps() {
+      return useBitmapStore.getState();
+    },
+    get settings() {
+      return useSettingsStore.getState();
+    },
   };
 
   const result = renderElement(elem, {

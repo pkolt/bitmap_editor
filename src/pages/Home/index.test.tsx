@@ -1,5 +1,5 @@
-import { test, renderPage, expect, screen, act } from '@/test-utils';
 import Home from './';
+import { test, renderPage, expect, screen } from '@/test-utils';
 import { PageUrl } from '@/constants/urls';
 
 const renderHomePage = () => renderPage(<Home />, { route: { path: PageUrl.Home } });
@@ -26,9 +26,7 @@ test('click import from json', createTestRedirect('Import from JSON', PageUrl.Im
 test('show list', () => {
   const bitmapName = 'Test bitmap';
   const { stores } = renderHomePage();
-  act(() => {
-    stores.bitmaps.addBitmap({ id: '1', name: bitmapName, width: 8, height: 8, data: [], createdAt: 0, updatedAt: 0 });
-  });
+  stores.bitmaps.addBitmap({ id: '1', name: bitmapName, width: 8, height: 8, data: [], createdAt: 0, updatedAt: 0 });
   expect(screen.queryByText(bitmapName)).not.toBeNull();
   expect(screen.queryAllByTestId('bitmap-item').length).toBe(1);
 });

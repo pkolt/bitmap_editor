@@ -3,7 +3,6 @@
 import { cleanup } from '@testing-library/react';
 import { Settings } from 'luxon';
 import { afterEach, vi } from 'vitest';
-import { setupStores } from '@/test-utils/stores';
 
 // Fix timezone
 Settings.defaultZone = 'America/Los_Angeles';
@@ -13,7 +12,9 @@ Settings.defaultLocale = 'en-US';
 const date = new Date(2024, 5, 1);
 vi.setSystemTime(date);
 
-setupStores();
+// Apply mocks from __mocks__ folder
+vi.mock('zustand');
+vi.mock('zustand/middleware');
 
 // https://testing-library.com/docs/react-testing-library/api/#cleanup
 // https://github.com/vitest-dev/vitest/issues/1430

@@ -9,7 +9,6 @@ interface BitmapsState {
   addBitmap: (bitmap: BitmapEntity) => void;
   changeBitmap: (id: string, bitmap: Partial<BitmapEntity>) => void;
   deleteBitmap: (id: string) => void;
-  reset: () => void;
 }
 
 const defaultBitmaps: BitmapEntity[] = [];
@@ -32,7 +31,6 @@ export const useBitmapStore = create<BitmapsState>()(
           return { bitmaps };
         }),
       deleteBitmap: (id) => set(() => ({ bitmaps: get().bitmaps.filter((it) => it.id !== id) })),
-      reset: () => set(() => ({ bitmaps: defaultBitmaps })),
     }),
     {
       name: 'bitmaps',
