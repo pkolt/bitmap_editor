@@ -5,16 +5,16 @@ import { PageUrl } from '@/constants/urls';
 const renderHomePage = () => renderPage(<Home />, { route: { path: PageUrl.Home } });
 
 const createTestRedirect = (buttonText: string, redirectUrl: PageUrl) => async () => {
-  const { location, userEvent } = renderHomePage();
+  const { router, userEvent } = renderHomePage();
   const button = screen.getByText(buttonText);
   await userEvent.click(button);
-  expect(location().pathname).toBe(redirectUrl);
+  expect(router.location.pathname).toBe(redirectUrl);
 };
 
 test('show empty', async () => {
-  const { location } = renderHomePage();
+  const { router } = renderHomePage();
   expect(screen.queryAllByTestId('bitmap-item').length).toBe(0);
-  expect(location().pathname).toBe(PageUrl.Home);
+  expect(router.location.pathname).toBe(PageUrl.Home);
 });
 
 test('click create new bitmap', createTestRedirect('Create new bitmap', PageUrl.CreateBitmap));

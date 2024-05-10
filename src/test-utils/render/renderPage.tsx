@@ -13,7 +13,7 @@ interface ProviderProps {
 }
 
 export const renderPage = (elem: JSX.Element, props: ProviderProps, options?: RenderOptions) => {
-  const router = createMemoryRouter(
+  const memoryRouter = createMemoryRouter(
     [
       {
         path: props.route.path,
@@ -39,10 +39,19 @@ export const renderPage = (elem: JSX.Element, props: ProviderProps, options?: Re
     },
   };
 
+  const router = {
+    get location() {
+      return memoryRouter.state.location;
+    },
+    get navigate() {
+      return memoryRouter.navigate;
+    },
+  };
+
   const result = renderElement(elem, {
     ...options,
-    wrapper: () => <Providers router={router} />,
+    wrapper: () => <Providers router={memoryRouter} />,
   });
 
-  return { ...result, navigate: router.navigate, location: () => router.state.location, stores };
+  return { ...result, router, stores };
 };
