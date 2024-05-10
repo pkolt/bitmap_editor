@@ -2,9 +2,8 @@ import { useEffect } from 'react';
 import { Footer } from '../Footer';
 import { Header } from '../Header';
 
-interface PageProps {
+interface PageProps extends React.PropsWithChildren {
   title: string;
-  children: JSX.Element | JSX.Element[];
 }
 
 export const Page = ({ title, children }: PageProps) => {

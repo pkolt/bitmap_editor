@@ -9,6 +9,7 @@ import { Alert } from '@/components/Alert';
 import { Input } from '@/components/Input';
 import { BitOrder } from '@/utils/bitmap/types';
 import { Area } from '@/utils/bitmap/Area';
+import { requiredValue } from '@/utils/requiredValue';
 
 interface ExportDialogProps {
   bitmapId: string;
@@ -36,7 +37,7 @@ const defaultValues: FormValues = {
 
 export const ExportDialog = ({ bitmapId, area, onClose }: ExportDialogProps): JSX.Element | null => {
   const { findBitmap: findBitmap } = useBitmapsStore();
-  const bitmapEntity = findBitmap(bitmapId);
+  const bitmapEntity = requiredValue(findBitmap(bitmapId));
 
   const methods = useForm<FormValues>({
     mode: 'onChange',
@@ -55,9 +56,6 @@ export const ExportDialog = ({ bitmapId, area, onClose }: ExportDialogProps): JS
     navigator.clipboard.writeText(exportCode);
   };
 
-  if (!bitmapEntity) {
-    return null;
-  }
   return (
     <Modal title="Export bitmap" onClose={onClose}>
       <FormProvider {...methods}>

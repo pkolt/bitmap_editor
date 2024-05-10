@@ -5,7 +5,7 @@ import { Bitmap } from '@/utils/bitmap/Bitmap';
 import { BitmapView } from '@/components/BitmapEditor/components/BitmapView';
 import { BitmapEntity } from '@/utils/bitmap/types';
 import { DateTime } from 'luxon';
-import { useNavigate } from 'react-router-dom';
+import { generatePath, useNavigate } from 'react-router-dom';
 import { useBitmapsStore } from '@/stores/bitmaps';
 import { PageUrl } from '@/constants/urls';
 import { FormValues } from './ImportForm/types';
@@ -31,7 +31,8 @@ const ImportFromImage = () => {
         ...bitmap.toJSON(),
       };
       addBitmap(image);
-      navigate(PageUrl.EditBitmap.replace(':id', id), { replace: true });
+      const url = generatePath(PageUrl.EditBitmap, { id });
+      navigate(url, { replace: true });
     },
     [addBitmap, bitmap, navigate],
   );

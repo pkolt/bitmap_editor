@@ -1,8 +1,12 @@
-export enum Dialog {
-  None,
+export enum DialogType {
   DeleteBitmap,
   CopyBitmap,
   ExportBitmap,
 }
 
-export type OpenDialogFn = (dlg: Dialog, id?: string) => void;
+export interface Dialog {
+  type: DialogType;
+  bitmapId: string;
+}
+
+export type OpenDialogFn = (dialog: Dialog) => void;

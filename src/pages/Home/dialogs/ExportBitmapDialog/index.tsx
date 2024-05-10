@@ -19,11 +19,10 @@ interface ExportBitmapDialogProps {
 }
 
 export const ExportBitmapDialog = ({ bitmapId, onClose }: ExportBitmapDialogProps): JSX.Element | null => {
-  const { findBitmap, bitmaps } = useBitmapsStore();
-  const bitmapEntity = findBitmap(bitmapId);
+  const { bitmaps } = useBitmapsStore();
 
   const defaultValues = useMemo<FormValues>(() => {
-    const name = `bitmap_${DateTime.now().toFormat('yyyy_LL_dd_HH_mm')}`;
+    const name = `bitmap_${DateTime.local().toFormat('yyyy_LL_dd_HH_mm')}`;
     return { name, ids: [bitmapId] };
   }, [bitmapId]);
 
@@ -45,10 +44,6 @@ export const ExportBitmapDialog = ({ bitmapId, onClose }: ExportBitmapDialogProp
     FileSaver.saveAs(blob, filename);
     onClose();
   };
-
-  if (!bitmapEntity) {
-    return null;
-  }
 
   return (
     <Modal title="Export bitmap" onClose={onClose}>

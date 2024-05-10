@@ -1,5 +1,6 @@
 // They will be run before each test file.
 
+import { DateTime } from 'luxon';
 import { cleanup } from '@testing-library/react';
 import { Settings } from 'luxon';
 import { afterEach, vi } from 'vitest';
@@ -9,8 +10,8 @@ Settings.defaultZone = 'America/Los_Angeles';
 // Fix locale
 Settings.defaultLocale = 'en-US';
 
-const date = new Date(2024, 5, 1);
-vi.setSystemTime(date);
+const date = DateTime.fromObject({ year: 2024, month: 5, day: 1 });
+vi.setSystemTime(date.toMillis());
 
 // Apply mocks from __mocks__ folder
 vi.mock('zustand');
