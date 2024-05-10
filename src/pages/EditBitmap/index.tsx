@@ -1,12 +1,12 @@
 import { BitmapEditor } from '@/components/BitmapEditor';
 import { Page } from '@/components/Page';
 import { PageUrl } from '@/constants/urls';
-import { useBitmapStore } from '@/stores/bitmaps';
+import { useBitmapsStore } from '@/stores/bitmaps';
 import { Navigate, useParams } from 'react-router-dom';
 
 const EditBitmap = () => {
   const { id } = useParams();
-  const { findBitmap } = useBitmapStore();
+  const { findBitmap } = useBitmapsStore();
   const image = findBitmap(id ?? '');
 
   if (!image || !id) {

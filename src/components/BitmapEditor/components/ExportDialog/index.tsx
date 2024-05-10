@@ -1,5 +1,5 @@
 import { Modal } from '@/components/Modal';
-import { useBitmapStore } from '@/stores/bitmaps';
+import { useBitmapsStore } from '@/stores/bitmaps';
 import { DataFormat, Platform, SizeFormat, exportBitmap } from './utils';
 import { useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -35,7 +35,7 @@ const defaultValues: FormValues = {
 };
 
 export const ExportDialog = ({ bitmapId, area, onClose }: ExportDialogProps): JSX.Element | null => {
-  const { findBitmap: findBitmap } = useBitmapStore();
+  const { findBitmap: findBitmap } = useBitmapsStore();
   const bitmapEntity = findBitmap(bitmapId);
 
   const methods = useForm<FormValues>({

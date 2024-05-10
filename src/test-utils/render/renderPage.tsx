@@ -3,7 +3,7 @@ import { renderElement } from './renderElement';
 import { Providers } from './Providers';
 import { createMemoryRouter } from 'react-router-dom';
 import { PageUrl } from '@/constants/urls';
-import { useBitmapStore } from '@/stores/bitmaps';
+import { useBitmapsStore } from '@/stores/bitmaps';
 import { useSettingsStore } from '@/stores/settings';
 
 interface ProviderProps {
@@ -32,7 +32,7 @@ export const renderPage = (elem: JSX.Element, props: ProviderProps, options?: Re
 
   const stores = {
     get bitmaps() {
-      return useBitmapStore.getState();
+      return useBitmapsStore.getState();
     },
     get settings() {
       return useSettingsStore.getState();

@@ -1,11 +1,11 @@
-import { useBitmapStore } from '@/stores/bitmaps';
+import { useBitmapsStore } from '@/stores/bitmaps';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
 import { useCallback, useState } from 'react';
 
 export type UpdateBitmapFn = (bitmap: Bitmap, skipSaveInStore?: boolean) => void;
 
 export const useBitmap = (bitmapId: string) => {
-  const { findBitmap, changeBitmap } = useBitmapStore();
+  const { findBitmap, changeBitmap } = useBitmapsStore();
 
   const bitmapEntity = findBitmap(bitmapId);
   if (!bitmapEntity) {

@@ -1,5 +1,5 @@
 import { Modal } from '@/components/Modal';
-import { useBitmapStore } from '@/stores/bitmaps';
+import { useBitmapsStore } from '@/stores/bitmaps';
 
 interface DeleteBitmapDialogProps {
   bitmapId: string;
@@ -7,7 +7,7 @@ interface DeleteBitmapDialogProps {
 }
 
 export const DeleteBitmapDialog = ({ bitmapId, onClose }: DeleteBitmapDialogProps): JSX.Element | null => {
-  const { deleteBitmap, findBitmap } = useBitmapStore();
+  const { deleteBitmap, findBitmap } = useBitmapsStore();
   const bitmapEntity = findBitmap(bitmapId);
   if (!bitmapEntity) {
     return null;

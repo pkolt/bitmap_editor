@@ -6,14 +6,14 @@ import { BitmapView } from '@/components/BitmapEditor/components/BitmapView';
 import { BitmapEntity } from '@/utils/bitmap/types';
 import { DateTime } from 'luxon';
 import { useNavigate } from 'react-router-dom';
-import { useBitmapStore } from '@/stores/bitmaps';
+import { useBitmapsStore } from '@/stores/bitmaps';
 import { PageUrl } from '@/constants/urls';
 import { FormValues } from './ImportForm/types';
 import { ImportForm } from './ImportForm';
 
 const ImportFromImage = () => {
   const navigate = useNavigate();
-  const { addBitmap } = useBitmapStore();
+  const { addBitmap } = useBitmapsStore();
   const [bitmap, setBitmap] = useState<Bitmap | null>(null);
 
   const onSubmit = useCallback(

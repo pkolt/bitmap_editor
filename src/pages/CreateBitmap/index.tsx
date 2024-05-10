@@ -6,7 +6,7 @@ import { Input } from '@/components/Input';
 import { useNavigate } from 'react-router-dom';
 import { PageUrl } from '@/constants/urls';
 import { BitmapEntity } from '@/utils/bitmap/types';
-import { useBitmapStore } from '@/stores/bitmaps';
+import { useBitmapsStore } from '@/stores/bitmaps';
 import { BitmapSizeAlert } from '@/components/BitmapSizeAlert';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
 
@@ -20,7 +20,7 @@ const defaultValues: FormValues = { name: '', width: 128, height: 64 };
 
 const CreateBitmap = () => {
   const navigate = useNavigate();
-  const { addBitmap } = useBitmapStore();
+  const { addBitmap } = useBitmapsStore();
 
   const methods = useForm<FormValues>({
     mode: 'onChange',

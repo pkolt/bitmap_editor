@@ -1,7 +1,7 @@
 import { Input } from '@/components/Input';
 import { Modal } from '@/components/Modal';
 import { PageUrl } from '@/constants/urls';
-import { useBitmapStore } from '@/stores/bitmaps';
+import { useBitmapsStore } from '@/stores/bitmaps';
 import { DateTime } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -19,7 +19,7 @@ interface CopyBitmapDialogProps {
 
 export const CopyBitmapDialog = ({ bitmapId, onClose }: CopyBitmapDialogProps): JSX.Element | null => {
   const navigate = useNavigate();
-  const { findBitmap, addBitmap } = useBitmapStore();
+  const { findBitmap, addBitmap } = useBitmapsStore();
   const bitmapEntity = findBitmap(bitmapId);
 
   const methods = useForm<FormValues>({

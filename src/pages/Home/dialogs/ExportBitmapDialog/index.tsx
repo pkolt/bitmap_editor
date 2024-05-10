@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 import FileSaver from 'file-saver';
 import { Modal } from '@/components/Modal';
-import { useBitmapStore } from '@/stores/bitmaps';
+import { useBitmapsStore } from '@/stores/bitmaps';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useMemo } from 'react';
 import { convertToBitmapFile } from '@/utils/bitmap/file';
@@ -19,7 +19,7 @@ interface ExportBitmapDialogProps {
 }
 
 export const ExportBitmapDialog = ({ bitmapId, onClose }: ExportBitmapDialogProps): JSX.Element | null => {
-  const { findBitmap, bitmaps } = useBitmapStore();
+  const { findBitmap, bitmaps } = useBitmapsStore();
   const bitmapEntity = findBitmap(bitmapId);
 
   const defaultValues = useMemo<FormValues>(() => {

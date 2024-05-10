@@ -1,6 +1,6 @@
 import { Input } from '@/components/Input';
 import { Modal } from '@/components/Modal';
-import { useBitmapStore } from '@/stores/bitmaps';
+import { useBitmapsStore } from '@/stores/bitmaps';
 import { FormProvider, useForm } from 'react-hook-form';
 
 interface RenameDialogProps {
@@ -13,7 +13,7 @@ interface FormValues {
 }
 
 export const RenameDialog = ({ bitmapId, onClose }: RenameDialogProps): JSX.Element | null => {
-  const { findBitmap, changeBitmap } = useBitmapStore();
+  const { findBitmap, changeBitmap } = useBitmapsStore();
   const bitmapEntity = findBitmap(bitmapId);
   const methods = useForm<FormValues>({
     mode: 'onChange',

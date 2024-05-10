@@ -13,7 +13,7 @@ interface BitmapsState {
 
 const defaultBitmaps: BitmapEntity[] = [];
 
-export const useBitmapStore = create<BitmapsState>()(
+export const useBitmapsStore = create<BitmapsState>()(
   persist(
     (set, get) => ({
       bitmaps: defaultBitmaps,

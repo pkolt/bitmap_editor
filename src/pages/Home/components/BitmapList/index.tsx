@@ -1,4 +1,4 @@
-import { useBitmapStore } from '@/stores/bitmaps';
+import { useBitmapsStore } from '@/stores/bitmaps';
 import { useMemo } from 'react';
 import { OpenDialogFn } from '../../types';
 import { BitmapItem } from '../BitmapItem';
@@ -8,7 +8,7 @@ interface BitmapListProps {
 }
 
 export const BitmapList = ({ openDialog }: BitmapListProps): JSX.Element | null => {
-  const { bitmaps } = useBitmapStore();
+  const { bitmaps } = useBitmapsStore();
   const bitmapIds = useMemo(() => bitmaps.toSorted((a, b) => b.updatedAt - a.updatedAt).map((it) => it.id), [bitmaps]);
 
   if (bitmapIds.length === 0) {

@@ -1,7 +1,7 @@
 import { PageUrl } from '@/constants/urls';
 import { Link, generatePath } from 'react-router-dom';
 import { Dialog, OpenDialogFn } from '../../types';
-import { useBitmapStore } from '@/stores/bitmaps';
+import { useBitmapsStore } from '@/stores/bitmaps';
 
 interface BitmapItemProps {
   bitmapId: string;
@@ -9,7 +9,7 @@ interface BitmapItemProps {
 }
 
 export const BitmapItem = ({ bitmapId, openDialog }: BitmapItemProps): JSX.Element | null => {
-  const { findBitmap } = useBitmapStore();
+  const { findBitmap } = useBitmapsStore();
 
   const bitmapEntity = findBitmap(bitmapId);
 

@@ -1,5 +1,5 @@
 import { SelectBitmap } from '@/components/SelectBitmap';
-import { useBitmapStore } from '@/stores/bitmaps';
+import { useBitmapsStore } from '@/stores/bitmaps';
 import { BitmapEntity } from '@/utils/bitmap/types';
 import { FormProvider, useForm } from 'react-hook-form';
 
@@ -13,7 +13,7 @@ interface FinalFormProps {
 }
 
 export const FinalForm = ({ entities, onFinish }: FinalFormProps) => {
-  const { addBitmap } = useBitmapStore();
+  const { addBitmap } = useBitmapsStore();
 
   const methods = useForm<FormValues>({
     mode: 'onChange',
