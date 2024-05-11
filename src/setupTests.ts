@@ -4,6 +4,9 @@ import { DateTime } from 'luxon';
 import { cleanup } from '@testing-library/react';
 import { Settings } from 'luxon';
 import { afterEach, vi } from 'vitest';
+import { setupMatchers } from './test-utils/matchers';
+
+setupMatchers();
 
 // Fix timezone
 Settings.defaultZone = 'America/Los_Angeles';
