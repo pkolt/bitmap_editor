@@ -36,7 +36,7 @@ export default defineConfig({
       clean: true,
       include: ['src/**'],
       extension: ['.ts', '.tsx'],
-      // exclude: ['src/**/*.stories.tsx'],
+      exclude: ['src/test-utils'],
       provider: 'v8',
       thresholds: {
         statements: 80,
