@@ -36,7 +36,12 @@ export default defineConfig({
       clean: true,
       include: ['src/**'],
       extension: ['.ts', '.tsx'],
-      exclude: ['src/test-utils'],
+      exclude: [
+        'src/test-utils',
+        'src/pages/ImportFromImage/ImportForm/createCanvas.ts',
+        'src/components/BitmapEditor/components/BitmapView/getCanvas.ts',
+        'src/**/__mocks__'
+      ],
       provider: 'v8',
       thresholds: {
         statements: 80,

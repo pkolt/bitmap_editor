@@ -9,7 +9,7 @@ const renderImportFromJsonPage = () => renderPage(<ImportFromJson />, { route: {
 test('import bitmap from json', async () => {
   const { userEvent, router, stores } = renderImportFromJsonPage();
   const blob = convertToBitmapFile([bitmapEntity]);
-  const file = new File([blob], 'bitmap_list.json', { type: 'application/json', lastModified: new Date().getTime() });
+  const file = new File([blob], 'bitmap_list.json', { type: 'application/json' });
   const inputFile = screen.getByLabelText('File (*.json)');
   await userEvent.upload(inputFile, file);
   const nextButton = screen.getByText('Next step');

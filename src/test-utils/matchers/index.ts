@@ -8,20 +8,23 @@ const isDisable = (elem: unknown): boolean => {
   return isObject(elem) && 'disabled' in elem && !!elem.disabled;
 };
 
+const errorDisabled = 'Expected: "enabled", received: "disabled"';
+const errorEnabled = 'Expected: "disabled", received: "enabled"';
+
 export const setupMatchers = () => {
   expect.extend({
     toBeEnabled: function (received) {
       const { isNot } = this;
       return {
         pass: !isDisable(received),
-        message: () => `Control is${isNot ? '' : ' not'} enabled`,
+        message: () => (isNot ? errorEnabled : errorDisabled),
       };
     },
     toBeDisabled: function (received) {
       const { isNot } = this;
       return {
         pass: isDisable(received),
-        message: () => `Control is${isNot ? '' : ' not'} disabled`,
+        message: () => (isNot ? errorDisabled : errorEnabled),
       };
     },
   });

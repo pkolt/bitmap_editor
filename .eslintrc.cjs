@@ -18,5 +18,6 @@ module.exports = {
     'react-refresh/only-export-components': ['error', { allowConstantExport: true }],
     'no-console': ['error'],
     'react/react-in-jsx-scope': ['off'],
+    'object-shorthand': ['error', 'properties'],
   },
 };

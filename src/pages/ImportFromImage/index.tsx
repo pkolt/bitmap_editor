@@ -10,6 +10,7 @@ import { useBitmapsStore } from '@/stores/bitmaps';
 import { PageUrl } from '@/constants/urls';
 import { FormValues } from './ImportForm/types';
 import { ImportForm } from './ImportForm';
+import { requiredValue } from '@/utils/requiredValue';
 
 const ImportFromImage = () => {
   const navigate = useNavigate();
@@ -18,9 +19,7 @@ const ImportFromImage = () => {
 
   const onSubmit = useCallback(
     (data: FormValues) => {
-      if (!bitmap) {
-        return;
-      }
+      const newBitmap = requiredValue(bitmap);
       const id = uuidv4();
       const timestamp = DateTime.now().toMillis();
       const image: BitmapEntity = {
@@ -28,7 +27,7 @@ const ImportFromImage = () => {
         name: data.name,
         createdAt: timestamp,
         updatedAt: timestamp,
-        ...bitmap.toJSON(),
+        ...newBitmap.toJSON(),
       };
       addBitmap(image);
       const url = generatePath(PageUrl.EditBitmap, { id });
