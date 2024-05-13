@@ -1,4 +1,4 @@
-import { RenderOptions } from '@testing-library/react';
+import { RenderOptions, act } from '@testing-library/react';
 import { renderElement } from './renderElement';
 import { Providers } from './Providers';
 import { createMemoryRouter } from 'react-router-dom';
@@ -44,7 +44,8 @@ export const renderPage = (elem: JSX.Element, props: ProviderProps, options?: Re
       return memoryRouter.state.location;
     },
     get navigate() {
-      return memoryRouter.navigate;
+      // Wrapping act() for re rendering after navigation.
+      return (...args: Parameters<typeof memoryRouter.navigate>) => act(() => memoryRouter.navigate(...args));
     },
   };
 

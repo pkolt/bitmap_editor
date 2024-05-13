@@ -23,6 +23,4 @@ vi.mock('zustand/middleware');
 // https://testing-library.com/docs/react-testing-library/api/#cleanup
 // https://github.com/vitest-dev/vitest/issues/1430
 // Use cleanup if vitest config `globals: false`
-afterEach(() => {
-  cleanup();
-});
+afterEach(cleanup);
