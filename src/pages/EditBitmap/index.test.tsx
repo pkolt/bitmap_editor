@@ -32,6 +32,7 @@ test('rename bitmap', async () => {
   await userEvent.type(inputName, bitmapName);
   expect(saveButton).toBeEnabled();
   await userEvent.click(saveButton);
+  // Check renaming
   const bitmap = stores.bitmaps.bitmaps.find((it) => it.name === bitmapName);
   expect(bitmap).toMatchObject({ id: bitmapEntity.id, name: bitmapName });
 });
