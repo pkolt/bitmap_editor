@@ -56,3 +56,36 @@ test('invert bitmap', async () => {
   const bitmap = stores.bitmaps.bitmaps.find((it) => it.id === bitmapEntity.id);
   expect(bitmap?.data).toEqual([64, -252299728, 202116879]);
 });
+
+const exportCode = `\
+// sun.h
+#ifndef SUN_H
+#define SUN_H
+#include <stdint.h>
+
+const uint8_t sun_width = 8;
+const uint8_t sun_height = 8;
+
+const uint8_t sun[] = { 0b11110011, 0b10010011, 0b10010000, 0b11110000, 0b00001111, 0b00001111, 0b11001111, 0b11001111 };
+
+#endif // SUN_H`;
+
+test('export bitmap', async () => {
+  const { userEvent } = await setupTest();
+  const exportButton = screen.getByText('Export to C');
+  expect(exportButton).toBeEnabled();
+  await userEvent.click(exportButton);
+  // Show export dialog
+  const inputName = screen.getByLabelText('Name:');
+  await userEvent.clear(inputName);
+  await userEvent.type(inputName, 'Sun');
+  await userEvent.click(screen.getByLabelText('Little-endian (Adafruit)'));
+  await userEvent.click(screen.getByLabelText('Bin'));
+  await userEvent.click(screen.getByLabelText('Variables'));
+  await userEvent.click(screen.getByLabelText('C language'));
+  await userEvent.click(screen.getByLabelText('Include PROGMEM (AVR)'));
+  const copyButton = screen.getByText('Copy to clipboard');
+  const spy = vi.spyOn(navigator.clipboard, 'writeText');
+  await userEvent.click(copyButton);
+  expect(spy).toHaveBeenCalledWith(exportCode);
+});
