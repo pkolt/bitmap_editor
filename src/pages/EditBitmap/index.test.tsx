@@ -89,3 +89,23 @@ test('export bitmap', async () => {
   await userEvent.click(copyButton);
   expect(spy).toHaveBeenCalledWith(exportCode);
 });
+
+test('grid settings', async () => {
+  const { userEvent, stores } = await setupTest();
+  const gridButton = screen.getByText('Grid');
+  expect(gridButton).toBeEnabled();
+  await userEvent.click(gridButton);
+  // Show grid settings dialog
+  const rowSize = 10;
+  const columnSize = 16;
+  const inputRowSize = screen.getByLabelText('Row size:');
+  const inputColSize = screen.getByLabelText('Column size:');
+  await userEvent.clear(inputRowSize);
+  await userEvent.type(inputRowSize, `${rowSize}`);
+  await userEvent.clear(inputColSize);
+  await userEvent.type(inputColSize, `${columnSize}`);
+  const saveButton = screen.getByText('Save');
+  expect(saveButton).toBeEnabled();
+  await userEvent.click(saveButton);
+  expect(stores.settings.grid).toMatchObject({ rowSize, columnSize });
+});
