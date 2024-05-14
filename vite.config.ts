@@ -40,7 +40,10 @@ export default defineConfig({
         'src/test-utils',
         'src/pages/ImportFromImage/ImportForm/createCanvas.ts',
         'src/components/BitmapEditor/components/BitmapView/getCanvas.ts',
-        'src/**/__mocks__'
+        'src/**/__mocks__',
+        'src/App.tsx',
+        'src/main.tsx',
+        'src/router.tsx',
       ],
       provider: 'v8',
       thresholds: {
