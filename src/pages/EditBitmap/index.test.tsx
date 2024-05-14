@@ -46,3 +46,13 @@ test('reset bitmap', async () => {
   const bitmap = stores.bitmaps.bitmaps.find((it) => it.id === bitmapEntity.id);
   expect(bitmap?.data).toEqual([64, 0, 0]);
 });
+
+test('invert bitmap', async () => {
+  const { userEvent, stores } = await setupTest();
+  const invertButton = screen.getByText('Invert');
+  expect(invertButton).toBeEnabled();
+  await userEvent.click(invertButton);
+  // Check invert
+  const bitmap = stores.bitmaps.bitmaps.find((it) => it.id === bitmapEntity.id);
+  expect(bitmap?.data).toEqual([64, -252299728, 202116879]);
+});
