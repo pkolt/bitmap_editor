@@ -49,11 +49,15 @@ test('delete bitmap', async () => {
 test('export bitmap', async () => {
   const spy = vi.spyOn(FileSaver, 'saveAs');
   const { stores, userEvent } = renderHomePage();
-  stores.bitmaps.addBitmap(bitmapEntity);
-  const exportButton = screen.getByTitle('Export to file');
+  stores.bitmaps.addBitmap({ ...bitmapEntity, name: 'Test #1', id: '1' });
+  stores.bitmaps.addBitmap({ ...bitmapEntity, name: 'Test #2', id: '2' });
+  stores.bitmaps.addBitmap({ ...bitmapEntity, name: 'Test #3', id: '3' });
+  const [exportButton] = screen.getAllByTitle('Export to file');
   await userEvent.click(exportButton);
   // Show dialog
+  const selectAll = screen.getByLabelText('Select all');
   const acceptButton = screen.getByText('Save as file');
+  await userEvent.click(selectAll);
   await userEvent.click(acceptButton);
   expect(spy).toHaveBeenCalled();
   expect(spy.mock.calls[0][1]).toBe('bitmap_2024_05_01_00_00.json');
