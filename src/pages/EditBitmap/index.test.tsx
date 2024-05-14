@@ -36,3 +36,13 @@ test('rename bitmap', async () => {
   const bitmap = stores.bitmaps.bitmaps.find((it) => it.name === bitmapName);
   expect(bitmap).toMatchObject({ id: bitmapEntity.id, name: bitmapName });
 });
+
+test('reset bitmap', async () => {
+  const { userEvent, stores } = await setupTest();
+  const resetButton = screen.getByText('Reset');
+  expect(resetButton).toBeEnabled();
+  await userEvent.click(resetButton);
+  // Check reset
+  const bitmap = stores.bitmaps.bitmaps.find((it) => it.id === bitmapEntity.id);
+  expect(bitmap?.data).toEqual([64, 0, 0]);
+});
