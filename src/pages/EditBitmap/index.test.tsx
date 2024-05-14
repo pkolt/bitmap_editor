@@ -103,9 +103,19 @@ test('grid settings', async () => {
   const columnSize = 16;
   const inputRowSize = screen.getByLabelText('Row size:');
   const inputColSize = screen.getByLabelText('Column size:');
-  await userEvent.clear(inputRowSize);
+  const clearInput = async () => {
+    await userEvent.clear(inputRowSize);
+    await userEvent.clear(inputColSize);
+  };
+  await clearInput();
+  // Input invalid values
+  await userEvent.type(inputRowSize, 'foo');
+  await userEvent.type(inputColSize, '0');
+  expect(screen.queryByText('Value must be a number')).not.toBeNull();
+  expect(screen.queryByText('The value must be greater than zero')).not.toBeNull();
+  // Clear and input valid values
+  await clearInput();
   await userEvent.type(inputRowSize, `${rowSize}`);
-  await userEvent.clear(inputColSize);
   await userEvent.type(inputColSize, `${columnSize}`);
   const saveButton = screen.getByText('Save');
   expect(saveButton).toBeEnabled();
