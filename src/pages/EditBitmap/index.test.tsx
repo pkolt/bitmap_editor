@@ -7,6 +7,9 @@ import { vi } from 'vitest';
 
 vi.mock('@/components/BitmapEditor/components/BitmapView/getCanvas');
 
+const INVERT_BITMAP_DATA = [64, -252299728, 202116879];
+const EMPTY_BITMAP_DATA = [64, 0, 0];
+
 const url = generatePath(PageUrl.EditBitmap, { id: bitmapEntity.id });
 
 const renderEditBitmapPage = () => renderPage(<EditBitmap />, { route: { path: PageUrl.EditBitmap } });
@@ -44,7 +47,7 @@ test('reset bitmap', async () => {
   await userEvent.click(resetButton);
   // Check reset
   const bitmap = stores.bitmaps.bitmaps.find((it) => it.id === bitmapEntity.id);
-  expect(bitmap?.data).toEqual([64, 0, 0]);
+  expect(bitmap?.data).toEqual(EMPTY_BITMAP_DATA);
 });
 
 test('invert bitmap', async () => {
@@ -54,7 +57,7 @@ test('invert bitmap', async () => {
   await userEvent.click(invertButton);
   // Check invert
   const bitmap = stores.bitmaps.bitmaps.find((it) => it.id === bitmapEntity.id);
-  expect(bitmap?.data).toEqual([64, -252299728, 202116879]);
+  expect(bitmap?.data).toEqual(INVERT_BITMAP_DATA);
 });
 
 const exportCode = `\
@@ -128,4 +131,46 @@ test('resize bitmap', async () => {
   await userEvent.click(applyButton);
   const bitmap = stores.bitmaps.bitmaps.find((it) => it.id === bitmapEntity.id);
   expect(bitmap).toMatchObject({ width, height, data: [320, 13172943, 983049, 15728880, 15925491, 0, 0, 0, 0, 0, 0] });
+});
+
+test('history undo/redo', async () => {
+  const { userEvent, stores } = await setupTest();
+  const getBitmapData = () => stores.bitmaps.bitmaps.find((it) => it.id === bitmapEntity.id)?.data;
+  const invertButton = screen.getByText('Invert');
+  const resetButton = screen.getByText('Reset');
+  const undoButton = screen.getByText('Undo');
+  const redoButton = screen.getByText('Redo');
+  // Check default buttons state
+  expect(undoButton).toBeDisabled();
+  expect(redoButton).toBeDisabled();
+  // Invert bitmap
+  await userEvent.click(invertButton);
+  expect(getBitmapData()).toEqual(INVERT_BITMAP_DATA);
+  expect(undoButton).toBeEnabled();
+  expect(redoButton).toBeDisabled();
+  // Reset bitmap
+  await userEvent.click(resetButton);
+  expect(getBitmapData()).toEqual(EMPTY_BITMAP_DATA);
+  expect(undoButton).toBeEnabled();
+  expect(redoButton).toBeDisabled();
+  // Undo reset
+  await userEvent.click(undoButton);
+  expect(getBitmapData()).toEqual(INVERT_BITMAP_DATA);
+  expect(undoButton).toBeEnabled();
+  expect(redoButton).toBeEnabled();
+  // Undo invert
+  await userEvent.click(undoButton);
+  expect(getBitmapData()).toEqual(bitmapEntity.data);
+  expect(undoButton).toBeDisabled();
+  expect(redoButton).toBeEnabled();
+  // Redo invert
+  await userEvent.click(redoButton);
+  expect(getBitmapData()).toEqual(INVERT_BITMAP_DATA);
+  expect(undoButton).toBeEnabled();
+  expect(redoButton).toBeEnabled();
+  // Redo reset
+  await userEvent.click(redoButton);
+  expect(getBitmapData()).toEqual(EMPTY_BITMAP_DATA);
+  expect(undoButton).toBeEnabled();
+  expect(redoButton).toBeDisabled();
 });
