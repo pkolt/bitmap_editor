@@ -109,3 +109,23 @@ test('grid settings', async () => {
   await userEvent.click(saveButton);
   expect(stores.settings.grid).toMatchObject({ rowSize, columnSize });
 });
+
+test('resize bitmap', async () => {
+  const width = 16;
+  const height = 20;
+  const { userEvent, stores } = await setupTest();
+  const resizeButton = screen.getByText('Resize');
+  expect(resizeButton).toBeEnabled();
+  await userEvent.click(resizeButton);
+  // Show resize dialog
+  const inputWidth = screen.getByLabelText('Width');
+  const inputHeight = screen.getByLabelText('Height');
+  await userEvent.clear(inputWidth);
+  await userEvent.clear(inputHeight);
+  await userEvent.type(inputWidth, `${width}`);
+  await userEvent.type(inputHeight, `${height}`);
+  const applyButton = screen.getByText('Apply');
+  await userEvent.click(applyButton);
+  const bitmap = stores.bitmaps.bitmaps.find((it) => it.id === bitmapEntity.id);
+  expect(bitmap).toMatchObject({ width, height, data: [320, 13172943, 983049, 15728880, 15925491, 0, 0, 0, 0, 0, 0] });
+});
