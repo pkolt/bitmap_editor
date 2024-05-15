@@ -3,6 +3,7 @@ import { FormValues } from './types';
 import { convertCanvasToBitmap, scaleImage } from './utils';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
 import { UseFormSetValue } from 'react-hook-form';
+import { createCanvas } from './createCanvas';
 
 interface EditImageHookParams {
   values: FormValues;
@@ -11,6 +12,7 @@ interface EditImageHookParams {
 }
 
 interface EditImageHookResult {
+  isReady: boolean;
   onReset: () => void;
   onClickAlignLeft: () => void;
   onClickAlignRight: () => void;
@@ -22,9 +24,10 @@ interface EditImageHookResult {
 }
 
 export const useEditImage = ({ values, setValue, setBitmap }: EditImageHookParams): EditImageHookResult => {
-  const [canvas] = useState(document.createElement('canvas'));
-  const [canvasCtx] = useState<CanvasRenderingContext2D | null>(canvas.getContext('2d', { willReadFrequently: true }));
+  const [canvas] = useState(createCanvas());
+  const [canvasCtx] = useState(canvas.getContext('2d', { willReadFrequently: true }));
   const [image, setImage] = useState<HTMLImageElement | null>(null);
+  const isReady = !!image;
 
   const { files, top, left, width, height, threshold, invertColor } = values;
 
@@ -94,12 +97,15 @@ export const useEditImage = ({ values, setValue, setBitmap }: EditImageHookParam
     if (!files || files.length === 0) {
       return;
     }
+
     const file = files[0];
     const reader = new FileReader();
     reader.onload = () => {
       const image = new Image();
       image.src = reader.result as string;
-      image.onload = () => setImage(image);
+      image.onload = () => {
+        setImage(image);
+      };
     };
     reader.readAsDataURL(file);
   }, [files]);
@@ -136,6 +142,7 @@ export const useEditImage = ({ values, setValue, setBitmap }: EditImageHookParam
   ]);
 
   return {
+    isReady,
     onReset,
     onClickAlignLeft,
     onClickAlignRight,

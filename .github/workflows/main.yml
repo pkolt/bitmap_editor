@@ -83,6 +83,27 @@ jobs:
       - name: Check TypeScript 👷‍♂️
         run: npm run check-ts
 
+  test:
+    name: Run Tests
+    needs: [install]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ✅
+        uses: actions/checkout@v4
+      - name: Setup Node 🤖
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node_version }}
+          cache: npm
+      - name: Restore cache 🔮
+        id: cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ./node_modules
+          key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}
+      - name: Run Tests 🚦
+        run: npm test
+
   build:
     name: Build site
     needs: [install]

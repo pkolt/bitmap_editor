@@ -1,7 +1,9 @@
+const SITE_PREFIX = '/bitmap_editor';
+
 export enum PageUrl {
-  BitmapList = '/bitmap_editor/',
-  CreateBitmap = '/bitmap_editor/create_bitmap/',
-  ImportFromImage = '/bitmap_editor/import_from_image/',
-  ImportFromJson = '/bitmap_editor/import_from_json/',
-  EditBitmap = '/bitmap_editor/bitmap/:id/',
+  Home = `${SITE_PREFIX}/`,
+  CreateBitmap = `${SITE_PREFIX}/create_bitmap/`,
+  ImportFromImage = `${SITE_PREFIX}/import_from_image/`,
+  ImportFromJson = `${SITE_PREFIX}/import_from_json/`,
+  EditBitmap = `${SITE_PREFIX}/bitmap/:id/`,
 }

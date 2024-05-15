@@ -11,19 +11,19 @@ import {
   STEP_SIZE,
 } from './constants';
 import { Sizes } from './types';
-import { GridSettings } from '@/store/settings/useSettingsStore';
+import { GridSettings } from '@/stores/settings';
 import { BitmapArea } from '../../types';
 import { Area } from '@/utils/bitmap/Area';
 import { Point } from '@/utils/bitmap/Point';
 
-export const getCanvasSize = (bitmapSize: number) => bitmapSize * SQUARE_SIZE + (bitmapSize + 1) * BORDER_SIZE;
+export const getSizeByBitmap = (bitmapSize: number) => bitmapSize * SQUARE_SIZE + (bitmapSize + 1) * BORDER_SIZE;
 
 export const clearDisplay = (ctx: CanvasRenderingContext2D, sizes: Sizes): void => {
   ctx.clearRect(0, 0, sizes.canvasWidth, sizes.canvasHeight);
 };
 
 export const drawPointsBorders = (ctx: CanvasRenderingContext2D, sizes: Sizes): void => {
-  const { canvasWidth, canvasHeight, bitmapWidth, bitmapHeight } = sizes;
+  const { canvasWidth: canvasWidth, canvasHeight: canvasHeight, bitmapWidth, bitmapHeight } = sizes;
 
   ctx.strokeStyle = BORDER_COLOR;
   ctx.lineWidth = BORDER_SIZE;
@@ -66,7 +66,7 @@ export const drawBitmap = (ctx: CanvasRenderingContext2D, bitmap: Bitmap): void 
 };
 
 export const drawGrid = (ctx: CanvasRenderingContext2D, sizes: Sizes, grid: GridSettings): void => {
-  const { canvasWidth, canvasHeight, bitmapWidth, bitmapHeight } = sizes;
+  const { canvasWidth: canvasWidth, canvasHeight: canvasHeight, bitmapWidth, bitmapHeight } = sizes;
 
   ctx.strokeStyle = SEPARATOR_COLOR;
   ctx.lineWidth = SEPARATOR_SIZE;

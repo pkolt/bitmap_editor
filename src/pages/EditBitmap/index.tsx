@@ -1,16 +1,16 @@
 import { BitmapEditor } from '@/components/BitmapEditor';
 import { Page } from '@/components/Page';
 import { PageUrl } from '@/constants/urls';
-import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
+import { useBitmapsStore } from '@/stores/bitmaps';
 import { Navigate, useParams } from 'react-router-dom';
 
 const EditBitmap = () => {
   const { id } = useParams();
-  const { findBitmap } = useBitmapStore();
+  const { findBitmap } = useBitmapsStore();
   const image = findBitmap(id ?? '');
 
   if (!image || !id) {
-    return <Navigate to={PageUrl.BitmapList} replace />;
+    return <Navigate to={PageUrl.Home} replace />;
   }
 
   return (

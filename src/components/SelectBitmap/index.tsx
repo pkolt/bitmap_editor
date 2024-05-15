@@ -19,11 +19,16 @@ export const SelectBitmap = ({ name, bitmaps, className }: SelectBitmapProps) =>
   const toggleSelectAll = useCallback(() => {
     setValue(name, isSelectedAll ? [] : allIds);
   }, [allIds, isSelectedAll, name, setValue]);
+  const isShowSelectedAll = bitmaps.length > 2;
 
   return (
     <div className={className}>
-      <CheckBox label="Select all" checked={isSelectedAll} onChange={toggleSelectAll} />
-      <hr />
+      {isShowSelectedAll && (
+        <>
+          <CheckBox label="Select all" checked={isSelectedAll} onChange={toggleSelectAll} />
+          <hr />
+        </>
+      )}
       {bitmaps.map((it) => (
         <CheckBox
           key={it.id}

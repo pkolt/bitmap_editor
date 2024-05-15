@@ -15,8 +15,50 @@ export default defineConfig({
     },
   },
   test: {
-    globals: true,
+    // globals: true, // Remove `cleanup()` from `setupTests.ts` if `globals: true`
     environment: 'happy-dom',
+    setupFiles: ['./src/setupTests.ts'],
+    pool: 'threads',
+    poolOptions: {
+      threads: {
+        useAtomics: true,
+        isolate: true,
+      },
+    },
+    // clearMocks: true,
+    // restoreMocks: true,
+    // mockReset: true,
+    // cache: false,
     watch: false,
-  }
+    update: false,
+    css: false,
+    coverage: {
+      clean: true,
+      include: ['src/**'],
+      extension: ['.ts', '.tsx'],
+      exclude: [
+        'src/test-utils',
+        'src/pages/ImportFromImage/ImportForm/createCanvas.ts',
+        'src/components/BitmapEditor/components/BitmapView/getCanvas.ts',
+        'src/components/SuspenseFallback',
+        'src/**/__mocks__',
+        'src/App.tsx',
+        'src/main.tsx',
+        'src/router.tsx',
+      ],
+      provider: 'v8',
+      thresholds: {
+        statements: 90,
+        branches: 90,
+        functions: 90,
+        lines: 90,
+      },
+      watermarks: {
+        statements: [90, 95],
+        branches: [90, 95],
+        functions: [90, 95],
+        lines: [90, 95],
+      },
+    },
+  },
 });

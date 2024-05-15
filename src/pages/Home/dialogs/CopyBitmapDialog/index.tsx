@@ -1,12 +1,13 @@
 import { Input } from '@/components/Input';
 import { Modal } from '@/components/Modal';
 import { PageUrl } from '@/constants/urls';
-import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
+import { useBitmapsStore } from '@/stores/bitmaps';
 import { DateTime } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { generatePath, useNavigate } from 'react-router-dom';
 import { BitmapEntity } from '@/utils/bitmap/types';
+import { requiredValue } from '@/utils/requiredValue';
 
 interface FormValues {
   name: string;
@@ -19,8 +20,8 @@ interface CopyBitmapDialogProps {
 
 export const CopyBitmapDialog = ({ bitmapId, onClose }: CopyBitmapDialogProps): JSX.Element | null => {
   const navigate = useNavigate();
-  const { findBitmap, addBitmap } = useBitmapStore();
-  const bitmapEntity = findBitmap(bitmapId);
+  const { findBitmap, addBitmap } = useBitmapsStore();
+  const bitmapEntity = requiredValue(findBitmap(bitmapId));
 
   const methods = useForm<FormValues>({
     mode: 'onChange',
@@ -36,10 +37,6 @@ export const CopyBitmapDialog = ({ bitmapId, onClose }: CopyBitmapDialogProps): 
   } = methods;
 
   const onSubmit = (data: FormValues) => {
-    if (!bitmapEntity) {
-      return;
-    }
-
     const id = uuidv4();
     const timestamp = DateTime.now().toMillis();
 
@@ -55,12 +52,9 @@ export const CopyBitmapDialog = ({ bitmapId, onClose }: CopyBitmapDialogProps): 
 
     addBitmap(image);
 
-    navigate(PageUrl.EditBitmap.replace(':id', id), { replace: true });
+    const url = generatePath(PageUrl.EditBitmap, { id });
+    navigate(url, { replace: true });
   };
-
-  if (!bitmapEntity) {
-    return null;
-  }
 
   return (
     <Modal title="Create copy" onClose={onClose}>

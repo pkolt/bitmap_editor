@@ -8,7 +8,7 @@ import { Point } from './Point';
 export class Bitmap {
   width: number;
   height: number;
-  #data: boolean[];
+  _data: boolean[];
 
   static fromJSON({ width, height, data }: BitmapJSON): Bitmap {
     return new Bitmap(width, height, convertUint32ArrayToBoolArray(data));
@@ -22,7 +22,7 @@ export class Bitmap {
       throw new Error('Invalid bitmap data');
     }
 
-    this.#data = data ? [...data] : this.#createData();
+    this._data = data ? [...data] : this.#createData();
   }
 
   #createData() {
@@ -53,20 +53,20 @@ export class Bitmap {
 
   getPixelValue(coords: Point | number): boolean {
     const index = this.#prepareCoords(coords);
-    return this.#isValidIndex(index) ? this.#data[index] : false;
+    return this.#isValidIndex(index) ? this._data[index] : false;
   }
 
   setPixelValue(coords: Point | number, value: boolean): void {
     const index = this.#prepareCoords(coords);
     if (this.#isValidIndex(index)) {
-      this.#data[index] = value;
+      this._data[index] = value;
     }
   }
 
   invertPixelValue(coords: Point | number): void {
     const index = this.#prepareCoords(coords);
     if (this.#isValidIndex(index)) {
-      this.#data[index] = !this.#data[index];
+      this._data[index] = !this._data[index];
     }
   }
 
@@ -130,14 +130,14 @@ export class Bitmap {
 
     this.width = width;
     this.height = height;
-    this.#data = this.#createData();
+    this._data = this.#createData();
 
     if (bitmap) {
       this.paste(new Point(0, 0), bitmap);
     }
   }
 
-  move(offset: Point, area?: Area) {
+  move(offset: Point, area?: Area): void {
     const moveArea = this.findFillPixelsArea(area) ?? this.getArea();
     const bitmap = this.copy(moveArea);
     this.clear(area);
@@ -148,7 +148,7 @@ export class Bitmap {
     if (area) {
       return this.copy(area).isEmpty();
     }
-    return this.#data.every((v) => !v);
+    return this._data.every((v) => !v);
   }
 
   clear(area?: Area): void {
@@ -157,7 +157,7 @@ export class Bitmap {
         this.setPixelValue(p, false);
       });
     } else {
-      this.#data.fill(false);
+      this._data.fill(false);
     }
   }
 
@@ -167,12 +167,12 @@ export class Bitmap {
         this.invertPixelValue(p);
       });
     } else {
-      this.#data = this.#data.map((val) => !val);
+      this._data = this._data.map((val) => !val);
     }
   }
 
   clone(): Bitmap {
-    return new Bitmap(this.width, this.height, this.#data);
+    return new Bitmap(this.width, this.height, this._data);
   }
 
   toXBitMap(bitOrder: BitOrder): Uint8Array {
@@ -193,7 +193,7 @@ export class Bitmap {
     return {
       width: this.width,
       height: this.height,
-      data: convertBoolArrayToUint32Array(this.#data),
+      data: convertBoolArrayToUint32Array(this._data),
     };
   }
 }

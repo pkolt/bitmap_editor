@@ -5,22 +5,21 @@ import { Bitmap } from '@/utils/bitmap/Bitmap';
 import { BitmapView } from '@/components/BitmapEditor/components/BitmapView';
 import { BitmapEntity } from '@/utils/bitmap/types';
 import { DateTime } from 'luxon';
-import { useNavigate } from 'react-router-dom';
-import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
+import { generatePath, useNavigate } from 'react-router-dom';
+import { useBitmapsStore } from '@/stores/bitmaps';
 import { PageUrl } from '@/constants/urls';
 import { FormValues } from './ImportForm/types';
 import { ImportForm } from './ImportForm';
+import { requiredValue } from '@/utils/requiredValue';
 
 const ImportFromImage = () => {
   const navigate = useNavigate();
-  const { addBitmap } = useBitmapStore();
+  const { addBitmap } = useBitmapsStore();
   const [bitmap, setBitmap] = useState<Bitmap | null>(null);
 
   const onSubmit = useCallback(
     (data: FormValues) => {
-      if (!bitmap) {
-        return;
-      }
+      const newBitmap = requiredValue(bitmap);
       const id = uuidv4();
       const timestamp = DateTime.now().toMillis();
       const image: BitmapEntity = {
@@ -28,10 +27,11 @@ const ImportFromImage = () => {
         name: data.name,
         createdAt: timestamp,
         updatedAt: timestamp,
-        ...bitmap.toJSON(),
+        ...newBitmap.toJSON(),
       };
       addBitmap(image);
-      navigate(PageUrl.EditBitmap.replace(':id', id), { replace: true });
+      const url = generatePath(PageUrl.EditBitmap, { id });
+      navigate(url, { replace: true });
     },
     [addBitmap, bitmap, navigate],
   );

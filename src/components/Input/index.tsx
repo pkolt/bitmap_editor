@@ -6,7 +6,10 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
 }
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(({ label, className, ...props }, ref): JSX.Element => {
+export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
+  { label, className, ...props },
+  ref,
+): JSX.Element {
   const id = useId();
   const name = props.name!;
   const { errors } = useFormState();

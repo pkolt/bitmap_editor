@@ -3,10 +3,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { Page } from '@/components/Page';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Input } from '@/components/Input';
-import { useNavigate } from 'react-router-dom';
+import { generatePath, useNavigate } from 'react-router-dom';
 import { PageUrl } from '@/constants/urls';
 import { BitmapEntity } from '@/utils/bitmap/types';
-import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
+import { useBitmapsStore } from '@/stores/bitmaps';
 import { BitmapSizeAlert } from '@/components/BitmapSizeAlert';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
 
@@ -20,7 +20,7 @@ const defaultValues: FormValues = { name: '', width: 128, height: 64 };
 
 const CreateBitmap = () => {
   const navigate = useNavigate();
-  const { addBitmap } = useBitmapStore();
+  const { addBitmap } = useBitmapsStore();
 
   const methods = useForm<FormValues>({
     mode: 'onChange',
@@ -51,7 +51,8 @@ const CreateBitmap = () => {
 
     addBitmap(image);
 
-    navigate(PageUrl.EditBitmap.replace(':id', id), { replace: true });
+    const url = generatePath(PageUrl.EditBitmap, { id });
+    navigate(url, { replace: true });
   };
 
   return (

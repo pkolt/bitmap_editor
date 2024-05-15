@@ -11,10 +11,12 @@ interface BitmapsState {
   deleteBitmap: (id: string) => void;
 }
 
-export const useBitmapStore = create<BitmapsState>()(
+const defaultBitmaps: BitmapEntity[] = [];
+
+export const useBitmapsStore = create<BitmapsState>()(
   persist(
     (set, get) => ({
-      bitmaps: [],
+      bitmaps: defaultBitmaps,
       findBitmap: (id: string) => get().bitmaps.find((it) => it.id === id),
       addBitmap: (bitmap) => set(() => ({ bitmaps: [...get().bitmaps, bitmap] })),
       changeBitmap: (id, bitmap) =>

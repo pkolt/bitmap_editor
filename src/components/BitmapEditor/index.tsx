@@ -26,7 +26,7 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
       <div className="d-flex flex-column align-items-center">
         <h3 className="mb-3 d-flex gap-2">
           {bitmapEntity.name} ({bitmapEntity.width}x{bitmapEntity.height})
-          <button className="btn btn-outline-primary" onClick={dialog.openRenameDialog}>
+          <button className="btn btn-outline-primary" aria-label="Rename" onClick={dialog.openRenameDialog}>
             <i className="bi bi-pencil-square" /> Rename
           </button>
         </h3>

@@ -7,7 +7,7 @@ import { defaultValues } from './constants';
 import { FormValues } from './types';
 import { useCallback, useEffect } from 'react';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
-import { useEditImage } from './useEditImage';
+import { useEditImage } from './hooks';
 
 interface ImportFormProps {
   setBitmap: (value: Bitmap | null) => void;
@@ -31,6 +31,7 @@ export const ImportForm = ({ setBitmap, onSubmit }: ImportFormProps) => {
   const { width, height, threshold } = data;
 
   const {
+    isReady,
     onReset,
     onClickAlignLeft,
     onClickAlignRight,
@@ -39,7 +40,7 @@ export const ImportForm = ({ setBitmap, onSubmit }: ImportFormProps) => {
     onClickAlignBottom,
     onClickAlignVertical,
     onClickFitToImage,
-  } = useEditImage({ values: data, setBitmap: setBitmap, setValue: setValue });
+  } = useEditImage({ values: data, setBitmap, setValue });
 
   const handleReset = useCallback(() => {
     reset(defaultValues);
@@ -61,7 +62,7 @@ export const ImportForm = ({ setBitmap, onSubmit }: ImportFormProps) => {
           <Input
             label="Image (*.jpg, *.png, *.svg)"
             type="file"
-            accept="image/png, image/jpeg, image/svg+xml"
+            accept="image/png,image/jpeg,image/svg+xml"
             autoFocus
             {...register('files', { required: true })}
           />
@@ -117,7 +118,7 @@ export const ImportForm = ({ setBitmap, onSubmit }: ImportFormProps) => {
         </div>
         <div className="d-flex gap-3 align-items-end">
           <Input label="Name" {...register('name', { required: true })} className="flex-grow-1" />
-          <button type="submit" className="btn btn-primary" disabled={!isValid || !isDirty}>
+          <button type="submit" className="btn btn-primary" disabled={!isValid || !isDirty || !isReady}>
             Save
           </button>
           <button className="btn btn-secondary" onClick={handleReset} disabled={!isDirty}>

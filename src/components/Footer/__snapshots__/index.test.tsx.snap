@@ -1,0 +1,18 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`show component 1`] = `
+<div>
+  <footer
+    class="container-fluid p-3 bg-light text-center rounded-top-2"
+  >
+    Created by 
+    <a
+      href="https://github.com/pkolt"
+    >
+      Pavel Koltyshev
+    </a>
+     © 2023-
+    2024
+  </footer>
+</div>
+`;

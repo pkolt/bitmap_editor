@@ -1,5 +1,5 @@
 import { Modal } from '@/components/Modal';
-import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
+import { useBitmapsStore } from '@/stores/bitmaps';
 import { DataFormat, Platform, SizeFormat, exportBitmap } from './utils';
 import { useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -9,6 +9,7 @@ import { Alert } from '@/components/Alert';
 import { Input } from '@/components/Input';
 import { BitOrder } from '@/utils/bitmap/types';
 import { Area } from '@/utils/bitmap/Area';
+import { requiredValue } from '@/utils/requiredValue';
 
 interface ExportDialogProps {
   bitmapId: string;
@@ -35,8 +36,8 @@ const defaultValues: FormValues = {
 };
 
 export const ExportDialog = ({ bitmapId, area, onClose }: ExportDialogProps): JSX.Element | null => {
-  const { findBitmap: findBitmap } = useBitmapStore();
-  const bitmapEntity = findBitmap(bitmapId);
+  const { findBitmap: findBitmap } = useBitmapsStore();
+  const bitmapEntity = requiredValue(findBitmap(bitmapId));
 
   const methods = useForm<FormValues>({
     mode: 'onChange',
@@ -55,9 +56,6 @@ export const ExportDialog = ({ bitmapId, area, onClose }: ExportDialogProps): JS
     navigator.clipboard.writeText(exportCode);
   };
 
-  if (!bitmapEntity) {
-    return null;
-  }
   return (
     <Modal title="Export bitmap" onClose={onClose}>
       <FormProvider {...methods}>
@@ -67,7 +65,7 @@ export const ExportDialog = ({ bitmapId, area, onClose }: ExportDialogProps): JS
               <i className="bi bi-exclamation-triangle" />
               <div>
                 Exported image as{' '}
-                <a href="https://en.wikipedia.org/wiki/X_BitMap" target="_blank">
+                <a href="https://en.wikipedia.org/wiki/X_BitMap" target="_blank" rel="noreferrer">
                   X BitMap format
                 </a>
               </div>

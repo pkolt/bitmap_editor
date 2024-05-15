@@ -1,5 +1,5 @@
 import { Page } from '@/components/Page';
-import { useBitmapStore } from '@/store/bitmaps/useBitmapsStore';
+import { useBitmapsStore } from '@/stores/bitmaps';
 import { BitmapEntity } from '@/utils/bitmap/types';
 import { useCallback, useState } from 'react';
 import { FinalForm } from './FinalForm';
@@ -9,11 +9,11 @@ import { PageUrl } from '@/constants/urls';
 
 const ImportFromJson = () => {
   const navigate = useNavigate();
-  const { findBitmap } = useBitmapStore();
+  const { findBitmap } = useBitmapsStore();
   const [entities, setEntities] = useState<BitmapEntity[] | null>(null);
 
   const handleFinish = useCallback(() => {
-    navigate(PageUrl.BitmapList);
+    navigate(PageUrl.Home);
   }, [navigate]);
 
   const handleNext = useCallback(

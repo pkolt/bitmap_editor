@@ -13,10 +13,12 @@ interface SettingsState {
   setGrid: (grid: GridSettings) => void;
 }
 
+const defaultSettings: GridSettings = { rowSize: 8, columnSize: 8, visibleRows: false, visibleColumns: false };
+
 export const useSettingsStore = create<SettingsState>()(
   persist(
     (set) => ({
-      grid: { rowSize: 8, columnSize: 8, visibleRows: false, visibleColumns: false },
+      grid: defaultSettings,
       setGrid: (grid) => set(() => ({ grid })),
     }),
     {
