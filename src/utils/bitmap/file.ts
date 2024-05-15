@@ -5,7 +5,8 @@ interface BitmapFile {
   entities: BitmapEntity[];
 }
 
-const isBitmapFile = (value: unknown): value is BitmapFile => {
+/** @internal */
+export const isBitmapFile = (value: unknown): value is BitmapFile => {
   return (
     typeof value === 'object' &&
     value !== null &&
