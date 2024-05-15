@@ -1,3 +1,4 @@
+import { DEFAULT_FILE_VERSION } from './constants';
 import { BitmapEntity } from './types';
 
 interface BitmapFile {
@@ -18,7 +19,7 @@ export const isBitmapFile = (value: unknown): value is BitmapFile => {
 };
 
 export const convertToBitmapFile = (entities: BitmapEntity[]): Blob => {
-  const jsonData = JSON.stringify({ version: 1, entities } satisfies BitmapFile);
+  const jsonData = JSON.stringify({ version: DEFAULT_FILE_VERSION, entities } satisfies BitmapFile);
   return new Blob([jsonData], { type: 'application/json' });
 };
 
