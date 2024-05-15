@@ -11,7 +11,7 @@ const test3ArrayBool = [...Array(16).fill(true)];
 const test3ArrayUint32 = [16, 65535];
 
 const test4ArrayUint32 = [33, 65535]; // Wrong size (valid size 16-32)
-const test5ArrayUint32 = [32, 65535]; // Wrong size (valid size 16-32)
+const test5ArrayUint32 = [32, 65535];
 
 test('convertBoolArrayToUint32Array', () => {
   expect(convertBoolArrayToUint32Array(test1ArrayBool)).toEqual(test1ArrayUint32);
