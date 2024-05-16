@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Footer } from '../Footer';
 import { Header } from '../Header';
+import { UpdatePwaDialog } from '../UpdatePwaDialog';
 
 interface PageProps extends React.PropsWithChildren {
   title: string;
@@ -16,6 +17,7 @@ export const Page = ({ title, children }: PageProps) => {
       <Header />
       {children}
       <Footer />
+      <UpdatePwaDialog />
     </div>
   );
 };

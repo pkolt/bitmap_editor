@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["webworker"],
+    "module": "ESNext",
+    "rootDir": "./src",
+    "outDir": "./public",
+    "moduleResolution": "nodenext",
+    "verbatimModuleSyntax": true
+  },
+  "include": ["src/service-worker.ts", "src/service-worker-register.ts"],
+  "exclude": ["node_modules"]
+}

@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "start": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build && npm run build-sw",
     "preview": "vite preview",
+    "build-sw": "esbuild ./src/service-worker.ts --bundle --minify --tsconfig=tsconfig.sw.json --outdir=./dist --banner:js=//ver.`date +%s`",
     "test": "TZ=UTC vitest",
     "test-info": "DEBUG=vite-node:* npm test -- --logHeapUsage",
     "//! For debugging open URL - `chrome://inspect` ": "",
@@ -38,6 +39,11 @@
     "react-hotkeys-hook": "^4.5.0",
     "react-router-dom": "^6.23.1",
     "uuid": "^9.0.1",
+    "workbox-cacheable-response": "^7.1.0",
+    "workbox-core": "^7.1.0",
+    "workbox-routing": "^7.1.0",
+    "workbox-strategies": "^7.1.0",
+    "workbox-window": "^7.1.0",
     "zustand": "^4.5.2"
   },
   "devDependencies": {
@@ -54,6 +60,7 @@
     "@typescript-eslint/parser": "^7.9.0",
     "@vitejs/plugin-react": "^4.2.1",
     "@vitest/coverage-v8": "^1.6.0",
+    "esbuild": "^0.21.3",
     "eslint": "^8.57.0",
     "eslint-plugin-react": "^7.34.1",
     "eslint-plugin-react-hooks": "^4.6.2",
