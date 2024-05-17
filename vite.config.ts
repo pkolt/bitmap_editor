@@ -45,6 +45,8 @@ export default defineConfig({
         'src/App.tsx',
         'src/main.tsx',
         'src/router.tsx',
+        'src/service-worker-register.ts',
+        'src/service-worker.ts',
       ],
       provider: 'v8',
       thresholds: {

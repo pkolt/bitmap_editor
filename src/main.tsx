@@ -13,3 +13,7 @@ createRoot(document.getElementById('root')!).render(
     </Suspense>
   </React.StrictMode>,
 );
+
+if (import.meta.env.PROD) {
+  import('./service-worker-register.ts');
+}
