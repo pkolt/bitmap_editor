@@ -1,6 +1,6 @@
 import { UINT32_BITS_PER_ELEMENT } from './constants';
 
-export const convertBoolArrayToNumberArray = (boolArray: Uint8Array): number[] => {
+export const convertBoolArrayToNumberArrayV1 = (boolArray: Uint8Array): number[] => {
   const uint32ArrayLength = Math.ceil(boolArray.length / UINT32_BITS_PER_ELEMENT);
   const uint32Array: number[] = new Array(uint32ArrayLength).fill(0);
   for (let i = 0; i < boolArray.length; i++) {
@@ -15,7 +15,7 @@ export const convertBoolArrayToNumberArray = (boolArray: Uint8Array): number[] =
   return [boolArray.length, ...uint32Array];
 };
 
-export const convertNumberArrayToBoolArray = (array: number[]): Uint8Array => {
+export const convertNumberArrayToBoolArrayV1 = (array: number[]): Uint8Array => {
   const [boolArrayLength, ...uint32Array] = array;
   if (boolArrayLength > uint32Array.length * UINT32_BITS_PER_ELEMENT) {
     throw new Error(`Invalid bool array length: ${boolArrayLength}`);

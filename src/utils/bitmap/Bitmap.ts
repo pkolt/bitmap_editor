@@ -1,5 +1,5 @@
 import { UINT8_BITS_PER_ELEMENT } from './constants';
-import { convertBoolArrayToNumberArray, convertNumberArrayToBoolArray } from './convert';
+import { convertBoolArrayToNumberArrayV1, convertNumberArrayToBoolArrayV1 } from './convert_v1';
 import { BitOrder, BitmapJSON } from './types';
 import { Area } from './Area';
 import { Point } from './Point';
@@ -10,7 +10,7 @@ export class Bitmap {
   _data: Uint8Array;
 
   static fromJSON({ width, height, data }: BitmapJSON): Bitmap {
-    return new Bitmap(width, height, convertNumberArrayToBoolArray(data));
+    return new Bitmap(width, height, convertNumberArrayToBoolArrayV1(data));
   }
 
   constructor(width: number, height: number, data?: Uint8Array) {
@@ -192,7 +192,7 @@ export class Bitmap {
     return {
       width: this.width,
       height: this.height,
-      data: convertBoolArrayToNumberArray(this._data),
+      data: convertBoolArrayToNumberArrayV1(this._data),
     };
   }
 }
