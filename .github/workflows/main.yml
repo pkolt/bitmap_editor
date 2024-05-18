@@ -103,6 +103,8 @@ jobs:
           key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}
       - name: Run Tests 🚦
         run: node --run test
+      - name: Run Benchmark
+        run: node --run bench
 
   build:
     name: Build site

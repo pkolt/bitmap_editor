@@ -12,6 +12,7 @@
     "preview": "vite preview",
     "build-sw": "esbuild ./src/service-worker.ts --bundle --minify --tsconfig=tsconfig.sw.json --outdir=./dist --banner:js=//ver.`date +%s`",
     "test": "TZ=UTC vitest",
+    "bench": "TZ=UTC vitest bench",
     "test-info": "DEBUG=vite-node:* node --run test -- --logHeapUsage",
     "//! For debugging open URL - `chrome://inspect` ": "",
     "test-debug": "node --run test -- --inspect-brk --no-file-parallelism",
@@ -27,7 +28,7 @@
     "lint-all": "node --run check-ts && node --run eslint && node --run format && node --run knip",
     "lint-all-fix": "node --run eslint-fix && node --run format-fix",
     "prepare": "git config core.hooksPath .git-hooks",
-    "pre-commit": "node --run lint-all && node --run test"
+    "pre-commit": "node --run lint-all && node --run test && node --run bench"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",

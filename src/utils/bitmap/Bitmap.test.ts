@@ -5,72 +5,10 @@ import { Point } from './Point';
 import { Area } from './Area';
 import { BitOrder } from './types';
 
-const bitmapData8x8 = [
-  true,
-  true,
-  true,
-  true,
-  false,
-  false,
-  true,
-  true,
-  true,
-  false,
-  false,
-  true,
-  false,
-  false,
-  true,
-  true,
-  true,
-  false,
-  false,
-  true,
-  false,
-  false,
-  false,
-  false,
-  true,
-  true,
-  true,
-  true,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  true,
-  true,
-  true,
-  true,
-  false,
-  false,
-  false,
-  false,
-  true,
-  true,
-  true,
-  true,
-  true,
-  true,
-  false,
-  false,
-  true,
-  true,
-  true,
-  true,
-  true,
-  true,
-  false,
-  false,
-  true,
-  true,
-  true,
-  true,
-];
+const bitmapData8x8 = new Uint8Array([
+  1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1,
+  1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1,
+]);
 
 let bitmap: Bitmap;
 
@@ -92,10 +30,6 @@ test('constructor', () => {
 
 test('constructor (invalid data)', () => {
   expect(() => new Bitmap(8, 10, bitmapData8x8)).toThrowError();
-});
-
-test.skip('constructor (big size)', () => {
-  bitmap = new Bitmap(10000, 10000); // Test run long time (~40 seconds)
 });
 
 test('getPixelCount', () => {
