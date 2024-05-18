@@ -9,6 +9,9 @@ export const binaryToNumber = (arrayOfBool: Uint8Array): number => {
     throw new Error('Invalid bool array size.');
   }
   const bigResult = arrayOfBool.toReversed().reduce((accum, value, index) => {
+    // Uint32 problem in JS. Use big numbers (BigInt).
+    // BAD: (1 << 31) // -2147483648
+    // GOOD: (1n << 31n) // 2147483648n
     const bigValue = BigInt(value);
     const bitIndex = BigInt(index);
     return bigValue ? accum | (1n << bitIndex) : accum & ~(1n << bitIndex);
@@ -18,12 +21,7 @@ export const binaryToNumber = (arrayOfBool: Uint8Array): number => {
 
 export const numberToBinary = (value: number, size: number): Uint8Array => {
   return Uint8Array.from({ length: size })
-    .map((_, index) => {
-      const bigIndex = BigInt(index);
-      const bigValue = BigInt(value);
-      const bigResult = bigValue & (1n << bigIndex);
-      return Number(!!parseInt(bigResult.toString(), 10));
-    })
+    .map((_, index) => Number(!!(value & (1 << index))))
     .toReversed();
 };
 
@@ -45,12 +43,12 @@ export const toArrayOfBool = (arrayOfNumber: Uint32Array): Uint8Array => {
   if (arrayOfNumber.length !== validArrayLength) {
     throw new Error(`Invalid array length: ${arrayOfNumber.length} !== ${validArrayLength}`);
   }
-  let array = new Uint8Array(0);
+  const array = new Uint8Array(length);
   const tail = length % BITS_PER_NUMBER;
   for (let i = 1; i < arrayOfNumber.length; i++) {
     const size = i === arrayOfNumber.length - 1 && tail > 0 ? tail : BITS_PER_NUMBER;
     const value = numberToBinary(arrayOfNumber[i], size);
-    array = Uint8Array.from([...array, ...value]);
+    array.set(value, (i - 1) * BITS_PER_NUMBER);
   }
   return array;
 };
