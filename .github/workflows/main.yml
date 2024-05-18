@@ -60,7 +60,7 @@ jobs:
           path: ./node_modules
           key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}
       - name: Check Linters 🕵️‍♂️
-        run: npm run lint-all
+        run: node --run lint-all
 
   typescript:
     name: Check TypeScript
@@ -81,7 +81,7 @@ jobs:
           path: ./node_modules
           key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}
       - name: Check TypeScript 👷‍♂️
-        run: npm run check-ts
+        run: node --run check-ts
 
   test:
     name: Run Tests
@@ -102,7 +102,7 @@ jobs:
           path: ./node_modules
           key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}
       - name: Run Tests 🚦
-        run: npm test
+        run: node --run test
 
   build:
     name: Build site
@@ -124,7 +124,7 @@ jobs:
           path: ./node_modules
           key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}
       - name: Build site 🔥
-        run: npm run build
+        run: node --run build
       - name: Upload artifact 📀
         uses: actions/upload-pages-artifact@v3
         with:
