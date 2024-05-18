@@ -1,5 +1,5 @@
 import { test, expect } from '@/test-utils';
-import { convertBoolArrayToUint32Array, convertUint32ArrayToBoolArray } from './convert';
+import { convertBoolArrayToNumberArray, convertNumberArrayToBoolArray } from './convert';
 
 const test1ArrayBool = new Uint8Array([1, 1, 0, 1]);
 const test1ArrayUint32 = [4, 11]; // [size, elem1, elem2, ..., elemN]
@@ -14,15 +14,15 @@ const test4ArrayUint32 = [33, 65535]; // Wrong size (valid size 16-32)
 const test5ArrayUint32 = [32, 65535];
 
 test('convertBoolArrayToUint32Array', () => {
-  expect(convertBoolArrayToUint32Array(test1ArrayBool)).toEqual(test1ArrayUint32);
-  expect(convertBoolArrayToUint32Array(test2ArrayBool)).toEqual(test2ArrayUint32);
-  expect(convertBoolArrayToUint32Array(test3ArrayBool)).toEqual(test3ArrayUint32);
+  expect(convertBoolArrayToNumberArray(test1ArrayBool)).toEqual(test1ArrayUint32);
+  expect(convertBoolArrayToNumberArray(test2ArrayBool)).toEqual(test2ArrayUint32);
+  expect(convertBoolArrayToNumberArray(test3ArrayBool)).toEqual(test3ArrayUint32);
 });
 
 test('convertUint32ArrayToBoolArray', () => {
-  expect(convertUint32ArrayToBoolArray(test1ArrayUint32)).toEqual(test1ArrayBool);
-  expect(convertUint32ArrayToBoolArray(test2ArrayUint32)).toEqual(test2ArrayBool);
-  expect(convertUint32ArrayToBoolArray(test3ArrayUint32)).toEqual(test3ArrayBool);
-  expect(() => convertUint32ArrayToBoolArray(test4ArrayUint32)).toThrowError();
-  expect(() => convertUint32ArrayToBoolArray(test5ArrayUint32)).not.toThrowError();
+  expect(convertNumberArrayToBoolArray(test1ArrayUint32)).toEqual(test1ArrayBool);
+  expect(convertNumberArrayToBoolArray(test2ArrayUint32)).toEqual(test2ArrayBool);
+  expect(convertNumberArrayToBoolArray(test3ArrayUint32)).toEqual(test3ArrayBool);
+  expect(() => convertNumberArrayToBoolArray(test4ArrayUint32)).toThrowError();
+  expect(() => convertNumberArrayToBoolArray(test5ArrayUint32)).not.toThrowError();
 });

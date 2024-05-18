@@ -1,6 +1,5 @@
 import { UINT8_BITS_PER_ELEMENT } from './constants';
-import { setBit } from '../bitwise';
-import { convertBoolArrayToUint32Array, convertUint32ArrayToBoolArray } from './convert';
+import { convertBoolArrayToNumberArray, convertNumberArrayToBoolArray } from './convert';
 import { BitOrder, BitmapJSON } from './types';
 import { Area } from './Area';
 import { Point } from './Point';
@@ -11,7 +10,7 @@ export class Bitmap {
   _data: Uint8Array;
 
   static fromJSON({ width, height, data }: BitmapJSON): Bitmap {
-    return new Bitmap(width, height, convertUint32ArrayToBoolArray(data));
+    return new Bitmap(width, height, convertNumberArrayToBoolArray(data));
   }
 
   constructor(width: number, height: number, data?: Uint8Array) {
@@ -182,7 +181,7 @@ export class Bitmap {
         const srcIndex = dstIndex * UINT8_BITS_PER_ELEMENT + bit;
         if (this.getPixelValue(srcIndex)) {
           const resBit = bitOrder === BitOrder.BigEndian ? bit : UINT8_BITS_PER_ELEMENT - 1 - bit;
-          result[dstIndex] = setBit(result[dstIndex], resBit);
+          result[dstIndex] |= 1 << resBit;
         }
       }
     }
@@ -193,7 +192,7 @@ export class Bitmap {
     return {
       width: this.width,
       height: this.height,
-      data: convertBoolArrayToUint32Array(this._data),
+      data: convertBoolArrayToNumberArray(this._data),
     };
   }
 }
