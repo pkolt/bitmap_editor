@@ -1,4 +1,6 @@
 import { DEFAULT_FILE_VERSION } from './constants';
+import { toArrayOfNumber } from './convert';
+import { toArrayOfBoolLegacy } from './convert_legacy';
 import { BitmapEntity } from './types';
 
 interface BitmapFile {
@@ -29,6 +31,12 @@ export const parseBitmapFile = (data: string): BitmapEntity[] => {
     const obj = JSON.parse(data);
     if (isBitmapFile(obj)) {
       entities = obj.entities;
+      if (obj.version === 1) {
+        entities = entities.map((it) => ({
+          ...it,
+          data: toArrayOfNumber(toArrayOfBoolLegacy(it.data)),
+        }));
+      }
     }
   } catch (err) {
     // skip error

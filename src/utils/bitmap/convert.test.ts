@@ -2,16 +2,16 @@ import { expect, test } from '@/test-utils';
 import { getArrayOfNumLength, binaryToNumber, numberToBinary, toArrayOfNumber, toArrayOfBool } from './convert';
 
 const test1ArrayOfBool = Uint8Array.from([1, 1, 0, 1]);
-const test1ArrayOfNumber = Uint32Array.from([13]); // [size, elem1, elem2, ..., elemN]
+const test1ArrayOfNumber = [13]; // [size, elem1, elem2, ..., elemN]
 
 const test2ArrayOfBool = Uint8Array.from([...Array(16).fill(1), ...Array(16).fill(0), ...Array(16).fill(1)]);
-const test2ArrayOfNumber = Uint32Array.from([4294901760, 65535]);
+const test2ArrayOfNumber = [4294901760, 65535];
 
 const test3ArrayOfBool = new Uint8Array(16).fill(1);
-const test3ArrayOfNumber = Uint32Array.from([65535]);
+const test3ArrayOfNumber = [65535];
 
-const test4ArrayOfNumber = Uint32Array.from([65535]); // Wrong size (valid size 16-32)
-const test5ArrayOfNumber = Uint32Array.from([65535]); // Valid size
+const test4ArrayOfNumber = [65535]; // Wrong size (valid size 16-32)
+const test5ArrayOfNumber = [65535]; // Valid size
 
 test('getArrayOfNumLength', () => {
   expect(getArrayOfNumLength(1)).toBe(1);

@@ -1,3 +1,5 @@
+import { toArrayOfNumber } from '@/utils/bitmap/convert';
+import { toArrayOfBoolLegacy } from '@/utils/bitmap/convert_legacy';
 import { BitmapEntity } from '@/utils/bitmap/types';
 import { DateTime } from 'luxon';
 import { create } from 'zustand';
@@ -34,7 +36,7 @@ export const useBitmapsStore = create<BitmapsState>()(
     }),
     {
       name: 'bitmaps',
-      version: 2, // a migration will be triggered if the version in the storage mismatches this one
+      version: 3, // a migration will be triggered if the version in the storage mismatches this one
       migrate: (persistedState, version) => {
         if (version === 1) {
           // if the stored value is in version 0, we convert data
@@ -45,6 +47,16 @@ export const useBitmapsStore = create<BitmapsState>()(
             bitmaps: persistedStateV1.bitmaps.map((it) => ({
               ...it,
               data: it.data.length > 0 ? [it.width * it.height, ...it.data] : it.data,
+            })),
+          };
+        }
+        if (version === 2) {
+          const persistedStateV2 = persistedState as BitmapsState;
+          return {
+            ...persistedStateV2,
+            bitmaps: persistedStateV2.bitmaps.map((it) => ({
+              ...it,
+              data: toArrayOfNumber(toArrayOfBoolLegacy(it.data)),
             })),
           };
         }

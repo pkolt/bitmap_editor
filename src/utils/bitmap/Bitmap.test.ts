@@ -90,12 +90,12 @@ test('findFillPixelsArea (empty)', () => {
 
 test('copy', () => {
   const copied = bitmap.copy(Area.fromRectangle(0, 0, 4, 4));
-  expect(copied.toJSON()).toMatchObject({ width: 4, height: 4, data: [16, 63903] });
+  expect(copied.toJSON()).toMatchObject({ width: 4, height: 4, data: [63903] });
 });
 
 test('paste', () => {
   bitmap.paste(new Point(3, 3), new Bitmap(4, 4));
-  expect(bitmap.toJSON()).toMatchObject({ width: 8, height: 8, data: [64, 118081999, -209485696] });
+  expect(bitmap.toJSON()).toMatchObject({ width: 8, height: 8, data: [4086534368, 16892367] });
 });
 
 test('resize (8x8 -> 16x16)', () => {
@@ -103,7 +103,7 @@ test('resize (8x8 -> 16x16)', () => {
   expect(bitmap.toJSON()).toMatchObject({
     width: 16,
     height: 16,
-    data: [256, 13172943, 983049, 15728880, 15925491, 0, 0, 0, 0],
+    data: [4076901120, 2415980544, 251662080, 3472936704, 0, 0, 0, 0],
   });
 });
 
@@ -112,7 +112,7 @@ test('resize (8x8 -> 4x4)', () => {
   expect(bitmap.toJSON()).toMatchObject({
     width: 4,
     height: 4,
-    data: [16, 63903],
+    data: [63903],
   });
 });
 
@@ -121,7 +121,7 @@ test('move', () => {
   expect(bitmap.toJSON()).toMatchObject({
     width: 8,
     height: 8,
-    data: [64, 658243584, -1010811865],
+    data: [15588, 3829138371],
   });
 });
 
@@ -141,7 +141,7 @@ test('clear', () => {
   expect(bitmap.toJSON()).toMatchObject({
     width: 8,
     height: 8,
-    data: [64, 0, 0],
+    data: [0, 0],
   });
 });
 
@@ -151,7 +151,7 @@ test('clear (with area)', () => {
   expect(bitmap.toJSON()).toMatchObject({
     width: 8,
     height: 8,
-    data: [64, 49344, -202116880],
+    data: [50528256, 252694479],
   });
 });
 
@@ -160,7 +160,7 @@ test('invertColor', () => {
   expect(bitmap.toJSON()).toMatchObject({
     width: 8,
     height: 8,
-    data: [64, -252299728, 202116879],
+    data: [208432911, 4042272816],
   });
 });
 
@@ -170,7 +170,7 @@ test('invertColor (with area)', () => {
   expect(bitmap.toJSON()).toMatchObject({
     width: 8,
     height: 8,
-    data: [64, 444096, -202116880],
+    data: [56844288, 252694479],
   });
 });
 
@@ -180,7 +180,7 @@ test('clone', () => {
   expect(copied.toJSON()).toMatchObject({
     width: 8,
     height: 8,
-    data: [64, 252299727, -202116880],
+    data: [4086534384, 252694479],
   });
 });
 

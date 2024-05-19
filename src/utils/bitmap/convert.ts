@@ -1,9 +1,11 @@
 const BITS_PER_NUMBER = Uint32Array.BYTES_PER_ELEMENT * 8;
 
+/** @internal */
 export const getArrayOfNumLength = (lengthArrayOfBool: number) => {
   return Math.ceil(lengthArrayOfBool / BITS_PER_NUMBER);
 };
 
+/** @internal */
 export const binaryToNumber = (arrayOfBool: Uint8Array): number => {
   if (arrayOfBool.length > BITS_PER_NUMBER) {
     throw new Error('Invalid bool array size.');
@@ -19,15 +21,16 @@ export const binaryToNumber = (arrayOfBool: Uint8Array): number => {
   return Number(bigResult);
 };
 
+/** @internal */
 export const numberToBinary = (value: number, size: number): Uint8Array => {
   return Uint8Array.from({ length: size })
     .map((_, index) => Number(!!(value & (1 << index))))
     .toReversed();
 };
 
-export const toArrayOfNumber = (arrayOfBool: Uint8Array): Uint32Array => {
+export const toArrayOfNumber = (arrayOfBool: Uint8Array): number[] => {
   const length = getArrayOfNumLength(arrayOfBool.length);
-  const array = new Uint32Array(length);
+  const array: number[] = Array.from({ length });
   for (let i = 0; i < array.length; i++) {
     const start = i * BITS_PER_NUMBER;
     const end = start + BITS_PER_NUMBER;
@@ -36,7 +39,7 @@ export const toArrayOfNumber = (arrayOfBool: Uint8Array): Uint32Array => {
   return array;
 };
 
-export const toArrayOfBool = (input: Uint32Array, size: number): Uint8Array => {
+export const toArrayOfBool = (input: number[], size: number): Uint8Array => {
   const validInputLength = getArrayOfNumLength(size);
   if (input.length !== validInputLength) {
     throw new Error(`Invalid array length: ${input.length} !== ${validInputLength}`);
