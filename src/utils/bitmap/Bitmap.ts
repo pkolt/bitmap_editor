@@ -1,5 +1,5 @@
 import { UINT8_BITS_PER_ELEMENT } from './constants';
-import { convertBoolArrayToNumberArrayV1, convertNumberArrayToBoolArrayV1 } from './convert_v1';
+import { convertBoolArrayToNumberArrayV1, convertNumberArrayToBoolArrayV1 } from './convert_legacy';
 import { BitOrder, BitmapJSON } from './types';
 import { Area } from './Area';
 import { Point } from './Point';

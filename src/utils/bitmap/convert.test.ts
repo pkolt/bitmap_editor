@@ -1,5 +1,5 @@
 import { expect, test } from '@/test-utils';
-import { getArrayOfNumLength, binaryToNumber, numberToBinary, toArrayOfNumber, toArrayOfBool } from './convert_v2';
+import { getArrayOfNumLength, binaryToNumber, numberToBinary, toArrayOfNumber, toArrayOfBool } from './convert';
 
 const test1ArrayOfBool = Uint8Array.from([1, 1, 0, 1]);
 const test1ArrayOfNumber = Uint32Array.from([4, 13]); // [size, elem1, elem2, ..., elemN]

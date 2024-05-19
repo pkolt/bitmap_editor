@@ -1,5 +1,5 @@
 import { test, expect } from '@/test-utils';
-import { convertBoolArrayToNumberArrayV1, convertNumberArrayToBoolArrayV1 } from './convert_v1';
+import { convertBoolArrayToNumberArrayV1, convertNumberArrayToBoolArrayV1 } from './convert_legacy';
 
 const test1ArrayBool = new Uint8Array([1, 1, 0, 1]);
 const test1ArrayUint32 = [4, 11]; // [size, elem1, elem2, ..., elemN]
