@@ -1,4 +1,4 @@
-import { UINT32_BITS_PER_ELEMENT } from './constants';
+const UINT32_BITS_PER_ELEMENT = 32;
 
 export const convertBoolArrayToNumberArrayV1 = (boolArray: Uint8Array): number[] => {
   const uint32ArrayLength = Math.ceil(boolArray.length / UINT32_BITS_PER_ELEMENT);

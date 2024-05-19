@@ -2,16 +2,16 @@ import { expect, test } from '@/test-utils';
 import { getArrayOfNumLength, binaryToNumber, numberToBinary, toArrayOfNumber, toArrayOfBool } from './convert';
 
 const test1ArrayOfBool = Uint8Array.from([1, 1, 0, 1]);
-const test1ArrayOfNumber = Uint32Array.from([4, 13]); // [size, elem1, elem2, ..., elemN]
+const test1ArrayOfNumber = Uint32Array.from([13]); // [size, elem1, elem2, ..., elemN]
 
 const test2ArrayOfBool = Uint8Array.from([...Array(16).fill(1), ...Array(16).fill(0), ...Array(16).fill(1)]);
-const test2ArrayOfNumber = Uint32Array.from([48, 4294901760, 65535]);
+const test2ArrayOfNumber = Uint32Array.from([4294901760, 65535]);
 
 const test3ArrayOfBool = new Uint8Array(16).fill(1);
-const test3ArrayOfNumber = Uint32Array.from([16, 65535]);
+const test3ArrayOfNumber = Uint32Array.from([65535]);
 
-const test4ArrayOfNumber = Uint32Array.from([33, 65535]); // Wrong size (valid size 16-32)
-const test5ArrayOfNumber = Uint32Array.from([32, 65535]); // Valid size
+const test4ArrayOfNumber = Uint32Array.from([65535]); // Wrong size (valid size 16-32)
+const test5ArrayOfNumber = Uint32Array.from([65535]); // Valid size
 
 test('getArrayOfNumLength', () => {
   expect(getArrayOfNumLength(1)).toBe(1);
@@ -46,9 +46,9 @@ test('toArrayOfNumber', () => {
 });
 
 test('toArrayOfBool', () => {
-  expect(toArrayOfBool(test1ArrayOfNumber)).toEqual(test1ArrayOfBool);
-  expect(toArrayOfBool(test2ArrayOfNumber)).toEqual(test2ArrayOfBool);
-  expect(toArrayOfBool(test3ArrayOfNumber)).toEqual(test3ArrayOfBool);
-  expect(() => toArrayOfBool(test4ArrayOfNumber)).toThrowError();
-  expect(() => toArrayOfBool(test5ArrayOfNumber)).not.toThrowError();
+  expect(toArrayOfBool(test1ArrayOfNumber, test1ArrayOfBool.length)).toEqual(test1ArrayOfBool);
+  expect(toArrayOfBool(test2ArrayOfNumber, test2ArrayOfBool.length)).toEqual(test2ArrayOfBool);
+  expect(toArrayOfBool(test3ArrayOfNumber, test3ArrayOfBool.length)).toEqual(test3ArrayOfBool);
+  expect(() => toArrayOfBool(test4ArrayOfNumber, 33)).toThrowError();
+  expect(() => toArrayOfBool(test5ArrayOfNumber, 32)).not.toThrowError();
 });

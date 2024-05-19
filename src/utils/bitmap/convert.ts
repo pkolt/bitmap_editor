@@ -27,28 +27,26 @@ export const numberToBinary = (value: number, size: number): Uint8Array => {
 
 export const toArrayOfNumber = (arrayOfBool: Uint8Array): Uint32Array => {
   const length = getArrayOfNumLength(arrayOfBool.length);
-  const array = new Uint32Array(length + 1); // + 1 byte for array size
-  array[0] = arrayOfBool.length; // First byte is array size
-  for (let i = 1; i < array.length; i++) {
-    const start = (i - 1) * BITS_PER_NUMBER;
+  const array = new Uint32Array(length);
+  for (let i = 0; i < array.length; i++) {
+    const start = i * BITS_PER_NUMBER;
     const end = start + BITS_PER_NUMBER;
     array[i] = binaryToNumber(arrayOfBool.slice(start, end));
   }
   return array;
 };
 
-export const toArrayOfBool = (arrayOfNumber: Uint32Array): Uint8Array => {
-  const length = arrayOfNumber[0];
-  const validArrayLength = getArrayOfNumLength(length) + 1; // + 1 byte for array size
-  if (arrayOfNumber.length !== validArrayLength) {
-    throw new Error(`Invalid array length: ${arrayOfNumber.length} !== ${validArrayLength}`);
+export const toArrayOfBool = (input: Uint32Array, size: number): Uint8Array => {
+  const validInputLength = getArrayOfNumLength(size);
+  if (input.length !== validInputLength) {
+    throw new Error(`Invalid array length: ${input.length} !== ${validInputLength}`);
   }
-  const array = new Uint8Array(length);
-  const tail = length % BITS_PER_NUMBER;
-  for (let i = 1; i < arrayOfNumber.length; i++) {
-    const size = i === arrayOfNumber.length - 1 && tail > 0 ? tail : BITS_PER_NUMBER;
-    const value = numberToBinary(arrayOfNumber[i], size);
-    array.set(value, (i - 1) * BITS_PER_NUMBER);
+  const output = new Uint8Array(size);
+  const tail = size % BITS_PER_NUMBER;
+  for (let i = 0; i < input.length; i++) {
+    const curSize = i === input.length - 1 && tail > 0 ? tail : BITS_PER_NUMBER;
+    const value = numberToBinary(input[i], curSize);
+    output.set(value, i * BITS_PER_NUMBER);
   }
-  return array;
+  return output;
 };
