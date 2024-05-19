@@ -1,6 +1,5 @@
 import { UINT8_BITS_PER_ELEMENT } from './constants';
-import { setBit } from '../bitwise';
-import { convertBoolArrayToUint32Array, convertUint32ArrayToBoolArray } from './convert';
+import { toArrayOfBool, toArrayOfNumber } from './convert';
 import { BitOrder, BitmapJSON } from './types';
 import { Area } from './Area';
 import { Point } from './Point';
@@ -8,13 +7,13 @@ import { Point } from './Point';
 export class Bitmap {
   width: number;
   height: number;
-  _data: boolean[];
+  _data: Uint8Array;
 
   static fromJSON({ width, height, data }: BitmapJSON): Bitmap {
-    return new Bitmap(width, height, convertUint32ArrayToBoolArray(data));
+    return new Bitmap(width, height, toArrayOfBool(data, width * height));
   }
 
-  constructor(width: number, height: number, data?: boolean[]) {
+  constructor(width: number, height: number, data?: Uint8Array) {
     this.width = width;
     this.height = height;
 
@@ -22,11 +21,11 @@ export class Bitmap {
       throw new Error('Invalid bitmap data');
     }
 
-    this._data = data ? [...data] : this.#createData();
+    this._data = data ? new Uint8Array(data) : this.#createData();
   }
 
-  #createData() {
-    return new Array(this.getPixelCount()).fill(false);
+  #createData(): Uint8Array {
+    return new Uint8Array(this.getPixelCount());
   }
 
   #pointToIndex(p: Point): number {
@@ -53,20 +52,20 @@ export class Bitmap {
 
   getPixelValue(coords: Point | number): boolean {
     const index = this.#prepareCoords(coords);
-    return this.#isValidIndex(index) ? this._data[index] : false;
+    return this.#isValidIndex(index) ? !!this._data[index] : false;
   }
 
   setPixelValue(coords: Point | number, value: boolean): void {
     const index = this.#prepareCoords(coords);
     if (this.#isValidIndex(index)) {
-      this._data[index] = value;
+      this._data[index] = Number(value);
     }
   }
 
   invertPixelValue(coords: Point | number): void {
     const index = this.#prepareCoords(coords);
     if (this.#isValidIndex(index)) {
-      this._data[index] = !this._data[index];
+      this._data[index] = Number(!this._data[index]);
     }
   }
 
@@ -157,7 +156,7 @@ export class Bitmap {
         this.setPixelValue(p, false);
       });
     } else {
-      this._data.fill(false);
+      this._data.fill(0);
     }
   }
 
@@ -167,7 +166,7 @@ export class Bitmap {
         this.invertPixelValue(p);
       });
     } else {
-      this._data = this._data.map((val) => !val);
+      this._data = this._data.map((val) => Number(!val));
     }
   }
 
@@ -182,7 +181,7 @@ export class Bitmap {
         const srcIndex = dstIndex * UINT8_BITS_PER_ELEMENT + bit;
         if (this.getPixelValue(srcIndex)) {
           const resBit = bitOrder === BitOrder.BigEndian ? bit : UINT8_BITS_PER_ELEMENT - 1 - bit;
-          result[dstIndex] = setBit(result[dstIndex], resBit);
+          result[dstIndex] |= 1 << resBit;
         }
       }
     }
@@ -193,7 +192,7 @@ export class Bitmap {
     return {
       width: this.width,
       height: this.height,
-      data: convertBoolArrayToUint32Array(this._data),
+      data: toArrayOfNumber(this._data),
     };
   }
 }
