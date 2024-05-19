@@ -23,6 +23,7 @@ test('getArrayOfNumLength', () => {
 test('binaryToNumber', () => {
   expect(binaryToNumber(Uint8Array.from({ length: 16 }).fill(0))).toBe(0);
   expect(binaryToNumber(Uint8Array.from({ length: 16 }).fill(1))).toBe(65535);
+  expect(binaryToNumber(Uint8Array.from({ length: 32 }).fill(0))).toBe(0);
   expect(binaryToNumber(Uint8Array.from({ length: 32 }).fill(1))).toBe(4294967295);
   expect(() => binaryToNumber(Uint8Array.from({ length: 33 }))).toThrowError();
   expect(binaryToNumber(Uint8Array.from([1, 0, 1, 0]))).toBe(10);

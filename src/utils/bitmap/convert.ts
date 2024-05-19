@@ -9,14 +9,14 @@ export const binaryToNumber = (arrayOfBool: Uint8Array): number => {
     throw new Error('Invalid bool array size.');
   }
   const bigResult = arrayOfBool.toReversed().reduce((accum, value, index) => {
-    // Uint32 problem in JS. Use big numbers (BigInt).
+    // Integer overflow.
     // BAD: (1 << 31) // -2147483648
     // GOOD: (1n << 31n) // 2147483648n
     const bigValue = BigInt(value);
-    const bitIndex = BigInt(index);
-    return bigValue ? accum | (1n << bitIndex) : accum & ~(1n << bitIndex);
+    const bigIndex = BigInt(index);
+    return bigValue ? accum | (1n << bigIndex) : accum & ~(1n << bigIndex);
   }, 0n);
-  return parseInt(bigResult.toString(), 10);
+  return Number(bigResult);
 };
 
 export const numberToBinary = (value: number, size: number): Uint8Array => {
