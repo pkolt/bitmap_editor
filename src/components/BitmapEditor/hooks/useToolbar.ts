@@ -48,17 +48,19 @@ export const useToolbar = ({ bitmap, updateBitmap }: ToolbarHookParams) => {
   const updateBitmapDebounce = useDebounce({
     fn: (value: Bitmap) => {
       addToHistory(value);
-      updateBitmap(value);
+      updateBitmap(value); // Save in store
     },
     delayMs: 500,
   });
 
-  const onChangeBitmapDebounce = useCallback(
-    (value: Bitmap) => {
-      updateBitmap(value, true);
-      updateBitmapDebounce(value);
+  const onDraw = useCallback(
+    (x: number, y: number) => {
+      const nextBitmap = bitmap.clone();
+      nextBitmap.setPixelValue(new Point(x, y), !clearMode);
+      updateBitmap(nextBitmap, true); // Update and skip save in store
+      updateBitmapDebounce(nextBitmap);
     },
-    [updateBitmap, updateBitmapDebounce],
+    [bitmap, clearMode, updateBitmap, updateBitmapDebounce],
   );
 
   const selectedAreaOnly = selectedArea instanceof Area ? selectedArea : undefined;
@@ -197,6 +199,6 @@ export const useToolbar = ({ bitmap, updateBitmap }: ToolbarHookParams) => {
     selectedAreaOnly,
     onSelectArea,
     onChangeBitmap,
-    onChangeBitmapDebounce,
+    onDraw,
   };
 };
