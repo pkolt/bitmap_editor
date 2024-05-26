@@ -8,6 +8,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { generatePath, useNavigate } from 'react-router-dom';
 import { BitmapEntity } from '@/utils/bitmap/types';
 import { requiredValue } from '@/utils/requiredValue';
+import { useTranslation } from 'react-i18next';
 
 interface FormValues {
   name: string;
@@ -22,6 +23,7 @@ export const CopyBitmapDialog = ({ bitmapId, onClose }: CopyBitmapDialogProps): 
   const navigate = useNavigate();
   const { findBitmap, addBitmap } = useBitmapsStore();
   const bitmapEntity = requiredValue(findBitmap(bitmapId));
+  const { t } = useTranslation();
 
   const methods = useForm<FormValues>({
     mode: 'onChange',
@@ -57,13 +59,13 @@ export const CopyBitmapDialog = ({ bitmapId, onClose }: CopyBitmapDialogProps): 
   };
 
   return (
-    <Modal title="Create copy" onClose={onClose}>
+    <Modal title={t('Create copy')} onClose={onClose}>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
-          <Input label="Name:" autoFocus {...register('name', { required: true, minLength: 1 })} />
+          <Input label={`${t('Name')}:`} autoFocus {...register('name', { required: true, minLength: 1 })} />
           <div className="text-center">
             <button type="submit" className="btn btn-primary" disabled={!isValid || !isDirty}>
-              Save
+              {t('Save')}
             </button>
           </div>
         </form>

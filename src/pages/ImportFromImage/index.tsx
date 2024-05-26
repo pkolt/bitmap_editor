@@ -11,11 +11,13 @@ import { PageUrl } from '@/constants/urls';
 import { FormValues } from './ImportForm/types';
 import { ImportForm } from './ImportForm';
 import { requiredValue } from '@/utils/requiredValue';
+import { useTranslation } from 'react-i18next';
 
 const ImportFromImage = () => {
   const navigate = useNavigate();
   const { addBitmap } = useBitmapsStore();
   const [bitmap, setBitmap] = useState<Bitmap | null>(null);
+  const { t } = useTranslation();
 
   const onSubmit = useCallback(
     (data: FormValues) => {
@@ -37,9 +39,9 @@ const ImportFromImage = () => {
   );
 
   return (
-    <Page title="Create bitmap from image">
+    <Page title={t('Create bitmap from image')}>
       <main className="d-flex flex-column flex-grow-1 justify-content-center align-items-center gap-3">
-        <h1>Create bitmap from image</h1>
+        <h1>{t('Create bitmap from image')}</h1>
         <ImportForm setBitmap={setBitmap} onSubmit={onSubmit} />
         {bitmap && <BitmapView bitmap={bitmap} />}
       </main>

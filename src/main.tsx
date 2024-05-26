@@ -5,6 +5,7 @@ import './index.css';
 import '~bootstrap/dist/css/bootstrap.css';
 import '~bootstrap-icons/font/bootstrap-icons.css';
 import { SuspenseFallback } from './components/SuspenseFallback/index.tsx';
+import './i18n';
 
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

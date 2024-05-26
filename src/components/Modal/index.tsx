@@ -1,6 +1,7 @@
 import { useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Modal as BSModal } from 'bootstrap';
+import { useTranslation } from 'react-i18next';
 
 interface ModalProps {
   title: string;
@@ -10,6 +11,7 @@ interface ModalProps {
 }
 
 export const Modal = ({ title, onAccept, onClose, children }: ModalProps) => {
+  const { t } = useTranslation();
   const bsModalRef = useRef<BSModal | null>(null);
 
   const handleAccept = useCallback(() => {
@@ -48,10 +50,10 @@ export const Modal = ({ title, onAccept, onClose, children }: ModalProps) => {
           {onAccept && (
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" onClick={onClose}>
-                Cancel
+                {t('Cancel')}
               </button>
               <button type="button" className="btn btn-primary" onClick={handleAccept}>
-                Accept
+                {t('Accept')}
               </button>
             </div>
           )}

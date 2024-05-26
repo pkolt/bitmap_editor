@@ -8,6 +8,7 @@ import { FormValues } from './types';
 import { useCallback, useEffect } from 'react';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
 import { useEditImage } from './hooks';
+import { useTranslation } from 'react-i18next';
 
 interface ImportFormProps {
   setBitmap: (value: Bitmap | null) => void;
@@ -15,6 +16,7 @@ interface ImportFormProps {
 }
 
 export const ImportForm = ({ setBitmap, onSubmit }: ImportFormProps) => {
+  const { t } = useTranslation();
   const methods = useForm<FormValues>({
     mode: 'onChange',
     defaultValues,
@@ -60,14 +62,14 @@ export const ImportForm = ({ setBitmap, onSubmit }: ImportFormProps) => {
       <form onSubmit={handleSubmit(onSubmit)} className="w-50 d-flex flex-column gap-3">
         <div className="d-flex gap-3 align-items-center">
           <Input
-            label="Image (*.jpg, *.png, *.svg)"
+            label={`${t('Image')} (*.jpg, *.png, *.svg)`}
             type="file"
             accept="image/png,image/jpeg,image/svg+xml"
             autoFocus
             {...register('files', { required: true })}
           />
           <Range
-            label={`Threshold = ${threshold}`}
+            label={`${t('Threshold')} = ${threshold}`}
             type="range"
             min={0}
             max={255}
@@ -78,27 +80,27 @@ export const ImportForm = ({ setBitmap, onSubmit }: ImportFormProps) => {
         </div>
         <BitmapSizeAlert bitmapWidth={width} className="mb-3" />
         <div className="d-flex gap-3">
-          <Input label="Top" {...register('top', { required: true, valueAsNumber: true })} />
-          <Input label="Left" {...register('left', { required: true, valueAsNumber: true })} />
+          <Input label={t('Top')} {...register('top', { required: true, valueAsNumber: true })} />
+          <Input label={t('Left')} {...register('left', { required: true, valueAsNumber: true })} />
           <div className="d-flex flex-column">
-            <div className="form-label">Align:</div>
+            <div className="form-label">{t('Align')}:</div>
             <div className="d-flex gap-3">
-              <button type="button" className="btn p-0" title="Align left" onClick={onClickAlignLeft}>
+              <button type="button" className="btn p-0" title={t('Align left')} onClick={onClickAlignLeft}>
                 <i className="bi bi-align-start h2" />
               </button>
-              <button type="button" className="btn p-0" title="Align right" onClick={onClickAlignRight}>
+              <button type="button" className="btn p-0" title={t('Align right')} onClick={onClickAlignRight}>
                 <i className="bi bi-align-end h2" />
               </button>
-              <button type="button" className="btn p-0" title="Align horizontal" onClick={onClickAlignHorizontal}>
+              <button type="button" className="btn p-0" title={t('Align horizontal')} onClick={onClickAlignHorizontal}>
                 <i className="bi bi-align-middle h2" />
               </button>
-              <button type="button" className="btn p-0 p-0" title="Align top" onClick={onClickAlignTop}>
+              <button type="button" className="btn p-0 p-0" title={t('Align top')} onClick={onClickAlignTop}>
                 <i className="bi bi-align-top h2" />
               </button>
-              <button type="button" className="btn p-0" title="Align bottom" onClick={onClickAlignBottom}>
+              <button type="button" className="btn p-0" title={t('Align bottom')} onClick={onClickAlignBottom}>
                 <i className="bi bi-align-bottom h2" />
               </button>
-              <button type="button" className="btn p-0" title="Align vertical" onClick={onClickAlignVertical}>
+              <button type="button" className="btn p-0" title={t('Align vertical')} onClick={onClickAlignVertical}>
                 <i className="bi bi-align-center h2" />
               </button>
             </div>
@@ -108,21 +110,21 @@ export const ImportForm = ({ setBitmap, onSubmit }: ImportFormProps) => {
           <Input label="Width" {...register('width', { required: true, valueAsNumber: true })} />
           <Input label="Height" {...register('height', { required: true, valueAsNumber: true })} />
           <div className="d-flex flex-column">
-            <div className="form-label">Crop:</div>
+            <div className="form-label">{t('Crop')}:</div>
             <div className="d-flex gap-3">
-              <button type="button" className="btn p-0" title="Fit to image" onClick={onClickFitToImage}>
+              <button type="button" className="btn p-0" title={t('Fit to image')} onClick={onClickFitToImage}>
                 <i className="bi bi-aspect-ratio h2" />
               </button>
             </div>
           </div>
         </div>
         <div className="d-flex gap-3 align-items-end">
-          <Input label="Name" {...register('name', { required: true })} className="flex-grow-1" />
+          <Input label={t('Name')} {...register('name', { required: true })} className="flex-grow-1" />
           <button type="submit" className="btn btn-primary" disabled={!isValid || !isDirty || !isReady}>
-            Save
+            {t('Save')}
           </button>
           <button className="btn btn-secondary" onClick={handleReset} disabled={!isDirty}>
-            Reset
+            {t('Reset')}
           </button>
         </div>
       </form>

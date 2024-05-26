@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { pwaAcceptUpdate, subscribePwaRequestUpdate } from './utils';
 import { Modal } from '../Modal';
+import { useTranslation } from 'react-i18next';
 
 export const UpdatePwaDialog = () => {
+  const { t } = useTranslation();
   const [isShow, setIsShow] = useState(false);
 
   const onAccept = pwaAcceptUpdate;
@@ -20,8 +22,8 @@ export const UpdatePwaDialog = () => {
 
   if (isShow) {
     return (
-      <Modal title="Update PWA" onAccept={onAccept} onClose={onClose}>
-        <p>Update PWA and reload page?</p>
+      <Modal title={t('Update PWA')} onAccept={onAccept} onClose={onClose}>
+        <p>{t('Update PWA and reload page?')}</p>
       </Modal>
     );
   }

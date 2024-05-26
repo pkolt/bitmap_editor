@@ -3,6 +3,7 @@ import { Link, generatePath } from 'react-router-dom';
 import { DialogType, OpenDialogFn } from '../../types';
 import { useBitmapsStore } from '@/stores/bitmaps';
 import { requiredValue } from '@/utils/requiredValue';
+import { useTranslation } from 'react-i18next';
 
 interface BitmapItemProps {
   bitmapId: string;
@@ -12,6 +13,7 @@ interface BitmapItemProps {
 export const BitmapItem = ({ bitmapId, openDialog }: BitmapItemProps): JSX.Element | null => {
   const { findBitmap } = useBitmapsStore();
   const bitmapEntity = requiredValue(findBitmap(bitmapId));
+  const { t } = useTranslation();
 
   const url = generatePath(PageUrl.EditBitmap, { id: bitmapEntity.id });
   return (
@@ -25,19 +27,19 @@ export const BitmapItem = ({ bitmapId, openDialog }: BitmapItemProps): JSX.Eleme
       <i
         className="bi bi-copy"
         role="button"
-        title="Create copy"
+        title={t('Create copy')}
         onClick={() => openDialog({ type: DialogType.CopyBitmap, bitmapId: bitmapEntity.id })}
       />
       <i
         className="bi bi-floppy"
         role="button"
-        title="Export to file"
+        title={t('Export to file')}
         onClick={() => openDialog({ type: DialogType.ExportBitmap, bitmapId: bitmapEntity.id })}
       />
       <i
         className="bi bi-trash-fill text-danger"
         role="button"
-        title="Delete bitmap"
+        title={'Delete bitmap'}
         onClick={() => openDialog({ type: DialogType.DeleteBitmap, bitmapId: bitmapEntity.id })}
       />
     </li>

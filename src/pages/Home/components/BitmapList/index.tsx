@@ -2,6 +2,7 @@ import { useBitmapsStore } from '@/stores/bitmaps';
 import { useMemo } from 'react';
 import { OpenDialogFn } from '../../types';
 import { BitmapItem } from '../BitmapItem';
+import { useTranslation } from 'react-i18next';
 
 interface BitmapListProps {
   openDialog: OpenDialogFn;
@@ -10,6 +11,7 @@ interface BitmapListProps {
 export const BitmapList = ({ openDialog }: BitmapListProps): JSX.Element | null => {
   const { bitmaps } = useBitmapsStore();
   const bitmapIds = useMemo(() => bitmaps.toSorted((a, b) => b.updatedAt - a.updatedAt).map((it) => it.id), [bitmaps]);
+  const { t } = useTranslation();
 
   if (bitmapIds.length === 0) {
     return null;
@@ -17,7 +19,7 @@ export const BitmapList = ({ openDialog }: BitmapListProps): JSX.Element | null 
 
   return (
     <div className="mb-3" data-testid="bitmap-list">
-      <h2 className="text-center mb-2">Open</h2>
+      <h2 className="text-center mb-2">{t('Open')}</h2>
       <ul className="list-group list-group-flush mb-3">
         {bitmapIds.map((id) => (
           <BitmapItem key={id} bitmapId={id} openDialog={openDialog} />
@@ -25,7 +27,7 @@ export const BitmapList = ({ openDialog }: BitmapListProps): JSX.Element | null 
       </ul>
       <h5 className="d-flex gap-3 align-items-center">
         <hr className="flex-grow-1" />
-        Or
+        {t('Or')}
         <hr className="flex-grow-1" />
       </h5>
     </div>

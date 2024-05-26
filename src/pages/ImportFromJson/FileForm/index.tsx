@@ -2,6 +2,7 @@ import { Input } from '@/components/Input';
 import { BitmapEntity } from '@/utils/bitmap/types';
 import { parseBitmapFile } from '@/utils/bitmap/file';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
 interface FormValues {
   files: FileList | null;
@@ -12,6 +13,7 @@ interface FileFormProps {
 }
 
 export const FileForm = ({ onNext }: FileFormProps) => {
+  const { t } = useTranslation();
   const methods = useForm<FormValues>({
     mode: 'onChange',
     defaultValues: {},
@@ -43,14 +45,14 @@ export const FileForm = ({ onNext }: FileFormProps) => {
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column w-50">
         <Input
-          label="File (*.json)"
+          label={`${t('File')} (*.json)`}
           type="file"
           accept="application/json"
           autoFocus
           {...register('files', { required: true })}
         />
         <button type="submit" className="btn btn-primary mt-5 ms-auto me-auto" disabled={!isValid}>
-          Next step
+          {t('Next step')}
         </button>
       </form>
     </FormProvider>
