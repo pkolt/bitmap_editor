@@ -5,11 +5,11 @@ import { useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { CheckBox } from '@/components/CheckBox';
 import { Radio } from '@/components/Radio';
-import { Alert } from '@/components/Alert';
 import { Input } from '@/components/Input';
 import { BitOrder } from '@/utils/bitmap/types';
 import { Area } from '@/utils/bitmap/Area';
 import { requiredValue } from '@/utils/requiredValue';
+import Alert from 'react-bootstrap/Alert';
 
 interface ExportDialogProps {
   bitmapId: string;
@@ -60,7 +60,7 @@ export const ExportDialog = ({ bitmapId, area, onClose }: ExportDialogProps): JS
     <Modal title="Export bitmap" onClose={onClose}>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(() => {})} className="d-flex flex-column gap-3 mb-3">
-          <Alert type="warning">
+          <Alert variant="warning" dismissible>
             <div className="d-flex align-items-center gap-1">
               <i className="bi bi-exclamation-triangle" />
               <div>
