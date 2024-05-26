@@ -1,7 +1,6 @@
-import { Modal } from '@/components/Modal';
 import { useBitmapsStore } from '@/stores/bitmaps';
 import { DataFormat, Platform, SizeFormat, exportBitmap } from './utils';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { CheckBox } from '@/components/CheckBox';
 import { Radio } from '@/components/Radio';
@@ -10,8 +9,12 @@ import { BitOrder } from '@/utils/bitmap/types';
 import { Area } from '@/utils/bitmap/Area';
 import { requiredValue } from '@/utils/requiredValue';
 import Alert from 'react-bootstrap/Alert';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
+import { useTranslation } from 'react-i18next';
 
 interface ExportDialogProps {
+  show: boolean;
   bitmapId: string;
   area?: Area;
   onClose: () => void;
@@ -35,7 +38,8 @@ const defaultValues: FormValues = {
   progmem: true,
 };
 
-export const ExportDialog = ({ bitmapId, area, onClose }: ExportDialogProps): JSX.Element | null => {
+export const ExportDialog = ({ show, bitmapId, area, onClose }: ExportDialogProps): JSX.Element | null => {
+  const { t } = useTranslation();
   const { findBitmap: findBitmap } = useBitmapsStore();
   const bitmapEntity = requiredValue(findBitmap(bitmapId));
 
@@ -52,64 +56,75 @@ export const ExportDialog = ({ bitmapId, area, onClose }: ExportDialogProps): JS
     [area, bitmapEntity, formValues],
   );
 
-  const handleCopy = () => {
+  const onSubmit = useCallback(() => {
     navigator.clipboard.writeText(exportCode);
-  };
+  }, [exportCode]);
 
   return (
-    <Modal title="Export bitmap" onClose={onClose}>
-      <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(() => {})} className="d-flex flex-column gap-3 mb-3">
-          <Alert variant="warning" dismissible>
-            <div className="d-flex align-items-center gap-1">
-              <i className="bi bi-exclamation-triangle" />
-              <div>
-                Exported image as{' '}
-                <a href="https://en.wikipedia.org/wiki/X_BitMap" target="_blank" rel="noreferrer">
-                  X BitMap format
-                </a>
+    <Modal show={show} onHide={onClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>{t('Export bitmap')}</Modal.Title>
+      </Modal.Header>
+
+      <Modal.Body>
+        <FormProvider {...methods}>
+          <form id="export-dialog" onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3 mb-3">
+            <Alert variant="warning" dismissible>
+              <div className="d-flex align-items-center gap-1">
+                <i className="bi bi-exclamation-triangle" />
+                <div>
+                  Exported image as{' '}
+                  <a href="https://en.wikipedia.org/wiki/X_BitMap" target="_blank" rel="noreferrer">
+                    X BitMap format
+                  </a>
+                </div>
               </div>
+            </Alert>
+            <Input label="Name:" {...register('name', { required: true })} />
+            <div className="d-flex gap-3">
+              <div>Bit order:</div>
+              <Radio
+                label="Big-endian (U8g2)"
+                value={BitOrder.BigEndian}
+                {...register('bitOrder', { required: true })}
+              />
+              <Radio
+                label="Little-endian (Adafruit)"
+                value={BitOrder.LittleEndian}
+                {...register('bitOrder', { required: true })}
+              />
             </div>
-          </Alert>
-          <Input label="Name:" {...register('name', { required: true })} />
-          <div className="d-flex gap-3">
-            <div>Bit order:</div>
-            <Radio label="Big-endian (U8g2)" value={BitOrder.BigEndian} {...register('bitOrder', { required: true })} />
-            <Radio
-              label="Little-endian (Adafruit)"
-              value={BitOrder.LittleEndian}
-              {...register('bitOrder', { required: true })}
-            />
-          </div>
-          <hr className="m-0" />
-          <div className="d-flex gap-3">
-            <div>Data format:</div>
-            <Radio label="Hex" value={DataFormat.Hex} {...register('dataFormat', { required: true })} />
-            <Radio label="Bin" value={DataFormat.Bin} {...register('dataFormat', { required: true })} />
-          </div>
-          <hr className="m-0" />
-          <div className="d-flex gap-3">
-            <div>Size format:</div>
-            <Radio label="Variables" value={SizeFormat.Variables} {...register('sizeFormat', { required: true })} />
-            <Radio label="Comments" value={SizeFormat.Comments} {...register('sizeFormat', { required: true })} />
-            <Radio label="Defines" value={SizeFormat.Defines} {...register('sizeFormat', { required: true })} />
-          </div>
-          <hr className="m-0" />
-          <div className="d-flex gap-3">
-            <div>Platform:</div>
-            <Radio label="Arduino" value={Platform.Arduino} {...register('platform', { required: true })} />
-            <Radio label="C language" value={Platform.Clang} {...register('platform', { required: true })} />
-          </div>
-          <hr className="m-0" />
-          <CheckBox label="Include PROGMEM (AVR)" {...register('progmem', { required: true })} />
-          <textarea className="form-control" rows={10} value={exportCode} readOnly />
-        </form>
-        <div className="d-flex justify-content-center">
-          <button className="btn btn-primary" onClick={handleCopy}>
-            Copy to clipboard
-          </button>
-        </div>
-      </FormProvider>
+            <hr className="m-0" />
+            <div className="d-flex gap-3">
+              <div>Data format:</div>
+              <Radio label="Hex" value={DataFormat.Hex} {...register('dataFormat', { required: true })} />
+              <Radio label="Bin" value={DataFormat.Bin} {...register('dataFormat', { required: true })} />
+            </div>
+            <hr className="m-0" />
+            <div className="d-flex gap-3">
+              <div>Size format:</div>
+              <Radio label="Variables" value={SizeFormat.Variables} {...register('sizeFormat', { required: true })} />
+              <Radio label="Comments" value={SizeFormat.Comments} {...register('sizeFormat', { required: true })} />
+              <Radio label="Defines" value={SizeFormat.Defines} {...register('sizeFormat', { required: true })} />
+            </div>
+            <hr className="m-0" />
+            <div className="d-flex gap-3">
+              <div>Platform:</div>
+              <Radio label="Arduino" value={Platform.Arduino} {...register('platform', { required: true })} />
+              <Radio label="C language" value={Platform.Clang} {...register('platform', { required: true })} />
+            </div>
+            <hr className="m-0" />
+            <CheckBox label="Include PROGMEM (AVR)" {...register('progmem', { required: true })} />
+            <textarea className="form-control" rows={10} value={exportCode} readOnly />
+          </form>
+        </FormProvider>
+      </Modal.Body>
+
+      <Modal.Footer>
+        <Button type="submit" form="export-dialog">
+          {t('Copy to clipboard')}
+        </Button>
+      </Modal.Footer>
     </Modal>
   );
 };

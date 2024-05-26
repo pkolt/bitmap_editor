@@ -1,6 +1,5 @@
 import { DateTime } from 'luxon';
 import FileSaver from 'file-saver';
-import { Modal } from '@/components/Modal';
 import { useBitmapsStore } from '@/stores/bitmaps';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useMemo } from 'react';
@@ -8,6 +7,8 @@ import { convertToBitmapFile } from '@/utils/bitmap/file';
 import { Input } from '@/components/Input';
 import { SelectBitmap } from '@/components/SelectBitmap';
 import { useTranslation } from 'react-i18next';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 
 interface FormValues {
   name: string;
@@ -15,11 +16,12 @@ interface FormValues {
 }
 
 interface ExportBitmapDialogProps {
+  show: boolean;
   bitmapId: string;
   onClose: () => void;
 }
 
-export const ExportBitmapDialog = ({ bitmapId, onClose }: ExportBitmapDialogProps): JSX.Element | null => {
+export const ExportBitmapDialog = ({ show, bitmapId, onClose }: ExportBitmapDialogProps): JSX.Element | null => {
   const { bitmaps } = useBitmapsStore();
   const { t } = useTranslation();
 
@@ -48,18 +50,25 @@ export const ExportBitmapDialog = ({ bitmapId, onClose }: ExportBitmapDialogProp
   };
 
   return (
-    <Modal title={t('Export bitmap')} onClose={onClose}>
-      <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
-          <Input label={t('Filename')} {...register('name', { required: true, minLength: 1 })} />
-          <SelectBitmap name={'ids' satisfies keyof FormValues} bitmaps={bitmaps} />
-          <div className="text-center">
-            <button type="submit" className="btn btn-primary" disabled={!isValid}>
-              {t('Save as file')}
-            </button>
-          </div>
-        </form>
-      </FormProvider>
+    <Modal show={show} onHide={onClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>{t('Export bitmap')}</Modal.Title>
+      </Modal.Header>
+
+      <Modal.Body>
+        <FormProvider {...methods}>
+          <form id="export-bitmap-dialog" onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
+            <Input label={t('Filename')} {...register('name', { required: true, minLength: 1 })} />
+            <SelectBitmap name={'ids' satisfies keyof FormValues} bitmaps={bitmaps} />
+          </form>
+        </FormProvider>
+      </Modal.Body>
+
+      <Modal.Footer>
+        <Button form="export-bitmap-dialog" type="submit" disabled={!isValid}>
+          {t('Save as file')}
+        </Button>
+      </Modal.Footer>
     </Modal>
   );
 };
