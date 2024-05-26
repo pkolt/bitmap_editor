@@ -51,14 +51,14 @@ export const GridDialog = ({ show, onClose }: GridDialogProps): JSX.Element | nu
       <Modal.Body>
         <FormProvider {...methods}>
           <form id="grid-dialog" onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
-            <CheckBox label="Visible rows" {...register('visibleRows')} />
+            <CheckBox label={t('Visible rows')} {...register('visibleRows')} />
             <Input
-              label="Row size:"
+              label={t('Row size')}
               {...register('rowSize', { required: true, validate: validatorSize, valueAsNumber: true })}
             />
-            <CheckBox label="Visible columns" {...register('visibleColumns')} />
+            <CheckBox label={t('Visible columns')} {...register('visibleColumns')} />
             <Input
-              label="Column size:"
+              label={t('Column size')}
               {...register('columnSize', { required: true, validate: validatorSize, valueAsNumber: true })}
             />
           </form>

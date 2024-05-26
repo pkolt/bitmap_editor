@@ -46,7 +46,7 @@ export const RenameDialog = ({ show, bitmapId, onClose }: RenameDialogProps): JS
       <Modal.Body>
         <FormProvider {...methods}>
           <form id="rename-dialog" onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
-            <Input label="Name:" autoFocus {...register('name', { required: true, minLength: 3 })} />
+            <Input label={t('Name')} autoFocus {...register('name', { required: true, minLength: 3 })} />
           </form>
         </FormProvider>
       </Modal.Body>

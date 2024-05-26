@@ -11,9 +11,9 @@ test('create bitmap', async () => {
   const height = 32;
 
   const { userEvent, router, stores } = renderCreateBitmapPage();
-  const inputName = screen.getByLabelText('Name:');
-  const inputWidth = screen.getByLabelText('Width:');
-  const inputHeight = screen.getByLabelText('Height:');
+  const inputName = screen.getByLabelText('Name');
+  const inputWidth = screen.getByLabelText('Width');
+  const inputHeight = screen.getByLabelText('Height');
   const submitButton: HTMLButtonElement = screen.getByText('Save');
 
   await userEvent.type(inputName, name);

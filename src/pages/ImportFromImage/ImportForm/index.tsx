@@ -83,7 +83,7 @@ export const ImportForm = ({ setBitmap, onSubmit }: ImportFormProps) => {
           <Input label={t('Top')} {...register('top', { required: true, valueAsNumber: true })} />
           <Input label={t('Left')} {...register('left', { required: true, valueAsNumber: true })} />
           <div className="d-flex flex-column">
-            <div className="form-label">{t('Align')}:</div>
+            <div className="form-label">{t('Align')}</div>
             <div className="d-flex gap-3">
               <button type="button" className="btn p-0" title={t('Align left')} onClick={onClickAlignLeft}>
                 <i className="bi bi-align-start h2" />
@@ -110,7 +110,7 @@ export const ImportForm = ({ setBitmap, onSubmit }: ImportFormProps) => {
           <Input label="Width" {...register('width', { required: true, valueAsNumber: true })} />
           <Input label="Height" {...register('height', { required: true, valueAsNumber: true })} />
           <div className="d-flex flex-column">
-            <div className="form-label">{t('Crop')}:</div>
+            <div className="form-label">{t('Crop')}</div>
             <div className="d-flex gap-3">
               <button type="button" className="btn p-0" title={t('Fit to image')} onClick={onClickFitToImage}>
                 <i className="bi bi-aspect-ratio h2" />

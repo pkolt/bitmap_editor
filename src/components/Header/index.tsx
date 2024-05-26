@@ -15,7 +15,7 @@ export const Header = () => {
           <i className="bi bi-border-all display-6" />
           <div className="d-flex flex-column">
             <div className="lh-sm">Bitmap Editor</div>
-            <div className="h6 text-body-tertiary mb-0">{t('Create bitmap image for OLED display')}</div>
+            <div className="h6 text-body-tertiary mb-0">{t('Create image for OLED display')}</div>
           </div>
         </Navbar.Brand>
 

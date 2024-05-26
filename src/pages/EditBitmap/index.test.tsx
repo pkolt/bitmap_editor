@@ -29,7 +29,7 @@ test('rename bitmap', async () => {
   expect(renameButton).toBeEnabled();
   await userEvent.click(renameButton);
   // Show rename dialog
-  const inputName = screen.getByLabelText('Name:');
+  const inputName = screen.getByLabelText('Name');
   const saveButton = screen.getByText('Save');
   await userEvent.clear(inputName);
   await userEvent.type(inputName, bitmapName);
@@ -101,8 +101,8 @@ test('grid settings', async () => {
   // Show grid settings dialog
   const rowSize = 10;
   const columnSize = 16;
-  const inputRowSize = screen.getByLabelText('Row size:');
-  const inputColSize = screen.getByLabelText('Column size:');
+  const inputRowSize = screen.getByLabelText('Row size');
+  const inputColSize = screen.getByLabelText('Column size');
   const clearInput = async () => {
     await userEvent.clear(inputRowSize);
     await userEvent.clear(inputColSize);

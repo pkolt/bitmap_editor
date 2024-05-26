@@ -55,8 +55,8 @@ export const ResizeDialog = ({ show, bitmap, onChangeBitmap, onClose }: ResizeDi
         <FormProvider {...methods}>
           <form id="resize-dialog" onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
             <BitmapSizeAlert bitmapWidth={bitmapWidth} />
-            <Input label="Width" {...register('width', { required: true, valueAsNumber: true, min: 1 })} />
-            <Input label="Height" {...register('height', { required: true, valueAsNumber: true, min: 1 })} />
+            <Input label={t('Width')} {...register('width', { required: true, valueAsNumber: true, min: 1 })} />
+            <Input label={t('Height')} {...register('height', { required: true, valueAsNumber: true, min: 1 })} />
           </form>
         </FormProvider>
       </Modal.Body>

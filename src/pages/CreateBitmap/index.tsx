@@ -64,9 +64,9 @@ const CreateBitmap = () => {
         <BitmapSizeAlert bitmapWidth={bitmapWidth} className="mb-3" />
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className="w-50 d-flex flex-column gap-3">
-            <Input label={`${t('Name')}:`} autoFocus {...register('name', { required: true })} />
-            <Input label={`${t('Width')}:`} {...register('width', { required: true, valueAsNumber: true, min: 1 })} />
-            <Input label={`${t('Height')}:`} {...register('height', { required: true, valueAsNumber: true, min: 1 })} />
+            <Input label={t('Name')} autoFocus {...register('name', { required: true })} />
+            <Input label={t('Width')} {...register('width', { required: true, valueAsNumber: true, min: 1 })} />
+            <Input label={t('Height')} {...register('height', { required: true, valueAsNumber: true, min: 1 })} />
             <div className="text-center">
               <button type="submit" className="btn btn-primary" disabled={!isValid}>
                 {t('Save')}

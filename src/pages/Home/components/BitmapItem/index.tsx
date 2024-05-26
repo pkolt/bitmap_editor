@@ -39,7 +39,7 @@ export const BitmapItem = ({ bitmapId, openDialog }: BitmapItemProps): JSX.Eleme
       <i
         className="bi bi-trash-fill text-danger"
         role="button"
-        title={'Delete bitmap'}
+        title={t('Delete bitmap')}
         onClick={() => openDialog({ type: DialogType.DeleteBitmap, bitmapId: bitmapEntity.id })}
       />
     </li>

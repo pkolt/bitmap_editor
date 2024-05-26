@@ -80,9 +80,9 @@ export const ExportDialog = ({ show, bitmapId, area, onClose }: ExportDialogProp
                 </div>
               </div>
             </Alert>
-            <Input label="Name:" {...register('name', { required: true })} />
+            <Input label={t('Name')} {...register('name', { required: true })} />
             <div className="d-flex gap-3">
-              <div>Bit order:</div>
+              <div>{t('Bit order')}</div>
               <Radio
                 label="Big-endian (U8g2)"
                 value={BitOrder.BigEndian}
@@ -96,25 +96,33 @@ export const ExportDialog = ({ show, bitmapId, area, onClose }: ExportDialogProp
             </div>
             <hr className="m-0" />
             <div className="d-flex gap-3">
-              <div>Data format:</div>
+              <div>{t('Data format')}</div>
               <Radio label="Hex" value={DataFormat.Hex} {...register('dataFormat', { required: true })} />
               <Radio label="Bin" value={DataFormat.Bin} {...register('dataFormat', { required: true })} />
             </div>
             <hr className="m-0" />
             <div className="d-flex gap-3">
-              <div>Size format:</div>
-              <Radio label="Variables" value={SizeFormat.Variables} {...register('sizeFormat', { required: true })} />
-              <Radio label="Comments" value={SizeFormat.Comments} {...register('sizeFormat', { required: true })} />
-              <Radio label="Defines" value={SizeFormat.Defines} {...register('sizeFormat', { required: true })} />
+              <div>{t('Size format')}</div>
+              <Radio
+                label={t('Variables')}
+                value={SizeFormat.Variables}
+                {...register('sizeFormat', { required: true })}
+              />
+              <Radio
+                label={t('Comments')}
+                value={SizeFormat.Comments}
+                {...register('sizeFormat', { required: true })}
+              />
+              <Radio label={t('Defines')} value={SizeFormat.Defines} {...register('sizeFormat', { required: true })} />
             </div>
             <hr className="m-0" />
             <div className="d-flex gap-3">
-              <div>Platform:</div>
-              <Radio label="Arduino" value={Platform.Arduino} {...register('platform', { required: true })} />
-              <Radio label="C language" value={Platform.Clang} {...register('platform', { required: true })} />
+              <div>{t('Platform')}</div>
+              <Radio label={t('Arduino')} value={Platform.Arduino} {...register('platform', { required: true })} />
+              <Radio label={t('C language')} value={Platform.Clang} {...register('platform', { required: true })} />
             </div>
             <hr className="m-0" />
-            <CheckBox label="Include PROGMEM (AVR)" {...register('progmem', { required: true })} />
+            <CheckBox label={t('Include PROGMEM (AVR)')} {...register('progmem', { required: true })} />
             <textarea className="form-control" rows={10} value={exportCode} readOnly />
           </form>
         </FormProvider>

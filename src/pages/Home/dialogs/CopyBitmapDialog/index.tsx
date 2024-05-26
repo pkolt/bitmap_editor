@@ -68,7 +68,7 @@ export const CopyBitmapDialog = ({ show, bitmapId, onClose }: CopyBitmapDialogPr
       <Modal.Body>
         <FormProvider {...methods}>
           <form id="copy-bitmap-dialog" onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
-            <Input label={`${t('Name')}:`} autoFocus {...register('name', { required: true, minLength: 1 })} />
+            <Input label={t('Name')} autoFocus {...register('name', { required: true, minLength: 1 })} />
           </form>
         </FormProvider>
       </Modal.Body>
