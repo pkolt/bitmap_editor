@@ -1,21 +1,17 @@
-import cn from 'classnames';
 import { forwardRef, useId } from 'react';
+import Form from 'react-bootstrap/Form';
 
-interface CheckBoxProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface CheckBoxProps
+  extends Pick<React.InputHTMLAttributes<HTMLInputElement>, 'name' | 'onChange' | 'onBlur' | 'checked' | 'value'> {
   label: string;
+  type?: 'checkbox' | 'radio' | 'switch';
+  className?: string;
 }
 
 export const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>(function CheckBox(
-  { label, className, ...props }: CheckBoxProps,
+  { label, className, type, ...props }: CheckBoxProps,
   ref,
 ) {
   const id = useId();
-  return (
-    <div className={cn('form-check', className)}>
-      <input type="checkbox" className="form-check-input" id={id} ref={ref} {...props} />
-      <label className="form-check-label" htmlFor={id}>
-        {label}
-      </label>
-    </div>
-  );
+  return <Form.Check type={type} className={className} ref={ref} label={label} id={id} {...props} />;
 });

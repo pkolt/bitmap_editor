@@ -14,7 +14,7 @@ export const Header = () => {
         <Navbar.Brand as={Link} to={PageUrl.Home} className="d-flex gap-2 align-items-center">
           <i className="bi bi-border-all display-6" />
           <div className="d-flex flex-column">
-            <div className="lh-sm">Bitmap Editor</div>
+            <div className="lh-sm">{t('Bitmap Editor')}</div>
             <div className="h6 text-body-tertiary mb-0">{t('Create image for OLED display')}</div>
           </div>
         </Navbar.Brand>

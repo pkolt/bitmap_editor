@@ -70,8 +70,7 @@ export const ImportForm = ({ setBitmap, onSubmit }: ImportFormProps) => {
           />
           <Range
             label={`${t('Threshold')} = ${threshold}`}
-            type="range"
-            min={0}
+            min={1}
             max={255}
             step={1}
             {...register('threshold', { required: true, valueAsNumber: true })}

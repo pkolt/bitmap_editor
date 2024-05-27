@@ -3,7 +3,6 @@ import { DataFormat, Platform, SizeFormat, exportBitmap } from './utils';
 import { useCallback, useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { CheckBox } from '@/components/CheckBox';
-import { Radio } from '@/components/Radio';
 import { Input } from '@/components/Input';
 import { BitOrder } from '@/utils/bitmap/types';
 import { Area } from '@/utils/bitmap/Area';
@@ -83,43 +82,72 @@ export const ExportDialog = ({ show, bitmapId, area, onClose }: ExportDialogProp
             <Input label={t('Name')} {...register('name', { required: true })} />
             <div className="d-flex gap-3">
               <div>{t('Bit order')}</div>
-              <Radio
+              <CheckBox
                 label="Big-endian (U8g2)"
                 value={BitOrder.BigEndian}
+                type="radio"
                 {...register('bitOrder', { required: true })}
               />
-              <Radio
+              <CheckBox
                 label="Little-endian (Adafruit)"
                 value={BitOrder.LittleEndian}
+                type="radio"
                 {...register('bitOrder', { required: true })}
               />
             </div>
             <hr className="m-0" />
             <div className="d-flex gap-3">
               <div>{t('Data format')}</div>
-              <Radio label="Hex" value={DataFormat.Hex} {...register('dataFormat', { required: true })} />
-              <Radio label="Bin" value={DataFormat.Bin} {...register('dataFormat', { required: true })} />
+              <CheckBox
+                label="Hex"
+                value={DataFormat.Hex}
+                type="radio"
+                {...register('dataFormat', { required: true })}
+              />
+              <CheckBox
+                label="Bin"
+                value={DataFormat.Bin}
+                type="radio"
+                {...register('dataFormat', { required: true })}
+              />
             </div>
             <hr className="m-0" />
             <div className="d-flex gap-3">
               <div>{t('Size format')}</div>
-              <Radio
+              <CheckBox
                 label={t('Variables')}
                 value={SizeFormat.Variables}
+                type="radio"
                 {...register('sizeFormat', { required: true })}
               />
-              <Radio
+              <CheckBox
                 label={t('Comments')}
                 value={SizeFormat.Comments}
+                type="radio"
                 {...register('sizeFormat', { required: true })}
               />
-              <Radio label={t('Defines')} value={SizeFormat.Defines} {...register('sizeFormat', { required: true })} />
+              <CheckBox
+                label={t('Defines')}
+                value={SizeFormat.Defines}
+                type="radio"
+                {...register('sizeFormat', { required: true })}
+              />
             </div>
             <hr className="m-0" />
             <div className="d-flex gap-3">
               <div>{t('Platform')}</div>
-              <Radio label={t('Arduino')} value={Platform.Arduino} {...register('platform', { required: true })} />
-              <Radio label={t('C language')} value={Platform.Clang} {...register('platform', { required: true })} />
+              <CheckBox
+                label={t('Arduino')}
+                value={Platform.Arduino}
+                type="radio"
+                {...register('platform', { required: true })}
+              />
+              <CheckBox
+                label={t('C language')}
+                value={Platform.Clang}
+                type="radio"
+                {...register('platform', { required: true })}
+              />
             </div>
             <hr className="m-0" />
             <CheckBox label={t('Include PROGMEM (AVR)')} {...register('progmem', { required: true })} />

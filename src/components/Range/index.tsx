@@ -1,9 +1,10 @@
-import cn from 'classnames';
 import { useId, forwardRef } from 'react';
-import { useFormState } from 'react-hook-form';
+import Form from 'react-bootstrap/Form';
 
-interface RangeProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface RangeProps
+  extends Pick<React.InputHTMLAttributes<HTMLInputElement>, 'name' | 'onChange' | 'onBlur' | 'min' | 'max' | 'step'> {
   label: string;
+  className?: string;
 }
 
 export const Range = forwardRef<HTMLInputElement, RangeProps>(function Range(
@@ -11,22 +12,10 @@ export const Range = forwardRef<HTMLInputElement, RangeProps>(function Range(
   ref,
 ): JSX.Element {
   const id = useId();
-  const name = props.name!;
-  const { errors } = useFormState();
-  const error = errors[name];
-  const errorMessage = error?.message as string;
   return (
-    <div className={className}>
-      <label className="form-label" htmlFor={id}>
-        {label}
-      </label>
-      <input
-        type="range"
-        className={cn('form-range', (error || errorMessage) && 'is-invalid')}
-        id={id}
-        ref={ref}
-        {...props}
-      />
-    </div>
+    <Form.Group className={className} controlId={id}>
+      <Form.Label>{label}</Form.Label>
+      <Form.Range ref={ref} {...props} />
+    </Form.Group>
   );
 });
