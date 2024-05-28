@@ -32,6 +32,7 @@
     "pre-commit": "node --run lint-all && node --run test && node --run bench"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.4.2",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "classnames": "^2.5.1",
@@ -52,6 +53,7 @@
     "workbox-routing": "^7.1.0",
     "workbox-strategies": "^7.1.0",
     "workbox-window": "^7.1.0",
+    "zod": "^3.23.8",
     "zustand": "^4.5.2"
   },
   "devDependencies": {
