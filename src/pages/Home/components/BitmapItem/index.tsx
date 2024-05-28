@@ -25,19 +25,19 @@ export const BitmapItem = ({ bitmapId, openDialog }: BitmapItemProps): JSX.Eleme
         ({bitmapEntity.width}x{bitmapEntity.height})
       </div>
       <i
-        className="bi bi-copy"
+        className="bi-copy"
         role="button"
         title={t('Create copy')}
         onClick={() => openDialog({ type: DialogType.CopyBitmap, bitmapId: bitmapEntity.id })}
       />
       <i
-        className="bi bi-floppy"
+        className="bi-floppy"
         role="button"
         title={t('Export to file')}
         onClick={() => openDialog({ type: DialogType.ExportBitmap, bitmapId: bitmapEntity.id })}
       />
       <i
-        className="bi bi-trash-fill text-danger"
+        className="bi-trash-fill text-danger"
         role="button"
         title={t('Delete bitmap')}
         onClick={() => openDialog({ type: DialogType.DeleteBitmap, bitmapId: bitmapEntity.id })}

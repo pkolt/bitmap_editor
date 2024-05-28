@@ -3,6 +3,7 @@ import { useBitmapsStore } from '@/stores/bitmaps';
 import { BitmapEntity } from '@/utils/bitmap/types';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import Button from 'react-bootstrap/Button';
 
 interface FormValues {
   ids: string[];
@@ -42,9 +43,9 @@ export const FinalForm = ({ entities, onFinish }: FinalFormProps) => {
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column">
         <SelectBitmap name={'ids' satisfies keyof FormValues} bitmaps={entities} />
-        <button type="submit" className="btn btn-primary ms-auto me-auto mt-5" disabled={!isValid}>
+        <Button type="submit" className="ms-auto me-auto mt-5" disabled={!isValid}>
           {t('Save bitmaps')}
-        </button>
+        </Button>
       </form>
     </FormProvider>
   );

@@ -76,6 +76,7 @@
     "Invert": "Invert",
     "Export to C": "Export to C",
     "Grid": "Grid",
-    "Resize": "Resize"
+    "Resize": "Resize",
+    "Invert color": "Invert color"
   }
 }

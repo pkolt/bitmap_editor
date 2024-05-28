@@ -10,6 +10,8 @@ import { useBitmapsStore } from '@/stores/bitmaps';
 import { BitmapSizeAlert } from '@/components/BitmapSizeAlert';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
 import { useTranslation } from 'react-i18next';
+import Button from 'react-bootstrap/Button';
+import { validatePositiveNumber } from '@/utils/validators';
 
 interface FormValues {
   name: string;
@@ -65,12 +67,18 @@ const CreateBitmap = () => {
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className="w-50 d-flex flex-column gap-3">
             <Input label={t('Name')} autoFocus {...register('name', { required: true })} />
-            <Input label={t('Width')} {...register('width', { required: true, valueAsNumber: true, min: 1 })} />
-            <Input label={t('Height')} {...register('height', { required: true, valueAsNumber: true, min: 1 })} />
+            <Input
+              label={t('Width')}
+              {...register('width', { required: true, valueAsNumber: true, validate: validatePositiveNumber })}
+            />
+            <Input
+              label={t('Height')}
+              {...register('height', { required: true, valueAsNumber: true, validate: validatePositiveNumber })}
+            />
             <div className="text-center">
-              <button type="submit" className="btn btn-primary" disabled={!isValid}>
+              <Button type="submit" disabled={!isValid}>
                 {t('Save')}
-              </button>
+              </Button>
             </div>
           </form>
         </FormProvider>

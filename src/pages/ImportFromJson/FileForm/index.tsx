@@ -3,6 +3,7 @@ import { BitmapEntity } from '@/utils/bitmap/types';
 import { parseBitmapFile } from '@/utils/bitmap/file';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import Button from 'react-bootstrap/Button';
 
 interface FormValues {
   files: FileList | null;
@@ -51,9 +52,9 @@ export const FileForm = ({ onNext }: FileFormProps) => {
           autoFocus
           {...register('files', { required: true })}
         />
-        <button type="submit" className="btn btn-primary mt-5 ms-auto me-auto" disabled={!isValid}>
+        <Button type="submit" className="mt-5 ms-auto me-auto" disabled={!isValid}>
           {t('Next step')}
-        </button>
+        </Button>
       </form>
     </FormProvider>
   );

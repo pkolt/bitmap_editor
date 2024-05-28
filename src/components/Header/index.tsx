@@ -12,7 +12,7 @@ export const Header = () => {
     <Navbar className="bg-body-tertiary rounded-bottom-2 p-2">
       <Container fluid>
         <Navbar.Brand as={Link} to={PageUrl.Home} className="d-flex gap-2 align-items-center">
-          <i className="bi bi-border-all display-6" />
+          <i className="bi-border-all display-6" />
           <div className="d-flex flex-column">
             <div className="lh-sm">{t('Bitmap Editor')}</div>
             <div className="h6 text-body-tertiary mb-0">{t('Create image for OLED display')}</div>
@@ -25,7 +25,7 @@ export const Header = () => {
           </Nav>
 
           <a href="https://github.com/pkolt/bitmap_editor" target="_blank" rel="noreferrer" className="h3 m-0">
-            <i className="bi bi-github" />
+            <i className="bi-github" />
           </a>
         </div>
       </Container>

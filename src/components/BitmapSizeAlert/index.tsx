@@ -7,7 +7,7 @@ interface BitmapSizeAlertProps {
 }
 
 export const BitmapSizeAlert = ({ bitmapWidth, className }: BitmapSizeAlertProps) => {
-  if (bitmapWidth % UINT8_BITS_PER_ELEMENT === 0) {
+  if (!bitmapWidth || bitmapWidth % UINT8_BITS_PER_ELEMENT === 0) {
     return null;
   }
   const leftValue = Math.floor(bitmapWidth / 8) * UINT8_BITS_PER_ELEMENT;
@@ -15,7 +15,7 @@ export const BitmapSizeAlert = ({ bitmapWidth, className }: BitmapSizeAlertProps
   return (
     <Alert variant="danger" className={className} dismissible>
       <div className="d-flex gap-1">
-        <i className="bi bi-exclamation-triangle" />
+        <i className="bi-exclamation-triangle" />
         The width ({bitmapWidth}) of your image is not a multiple of 8, this may cause distortion in the display. Maybe{' '}
         {leftValue} or {rightValue}?
       </div>

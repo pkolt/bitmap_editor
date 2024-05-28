@@ -9,6 +9,7 @@ import { useCallback, useEffect } from 'react';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
 import { useEditImage } from './hooks';
 import { useTranslation } from 'react-i18next';
+import Button from 'react-bootstrap/Button';
 
 interface ImportFormProps {
   setBitmap: (value: Bitmap | null) => void;
@@ -75,7 +76,7 @@ export const ImportForm = ({ setBitmap, onSubmit }: ImportFormProps) => {
             step={1}
             {...register('threshold', { required: true, valueAsNumber: true })}
           />
-          <CheckBox label="Invert color" {...register('invertColor')} className="text-nowrap" />
+          <CheckBox label={t('Invert color')} {...register('invertColor')} className="text-nowrap" />
         </div>
         <BitmapSizeAlert bitmapWidth={width} className="mb-3" />
         <div className="d-flex gap-3">
@@ -83,25 +84,25 @@ export const ImportForm = ({ setBitmap, onSubmit }: ImportFormProps) => {
           <Input label={t('Left')} {...register('left', { required: true, valueAsNumber: true })} />
           <div className="d-flex flex-column">
             <div className="form-label">{t('Align')}</div>
-            <div className="d-flex gap-3">
-              <button type="button" className="btn p-0" title={t('Align left')} onClick={onClickAlignLeft}>
-                <i className="bi bi-align-start h2" />
-              </button>
-              <button type="button" className="btn p-0" title={t('Align right')} onClick={onClickAlignRight}>
-                <i className="bi bi-align-end h2" />
-              </button>
-              <button type="button" className="btn p-0" title={t('Align horizontal')} onClick={onClickAlignHorizontal}>
-                <i className="bi bi-align-middle h2" />
-              </button>
-              <button type="button" className="btn p-0 p-0" title={t('Align top')} onClick={onClickAlignTop}>
-                <i className="bi bi-align-top h2" />
-              </button>
-              <button type="button" className="btn p-0" title={t('Align bottom')} onClick={onClickAlignBottom}>
-                <i className="bi bi-align-bottom h2" />
-              </button>
-              <button type="button" className="btn p-0" title={t('Align vertical')} onClick={onClickAlignVertical}>
-                <i className="bi bi-align-center h2" />
-              </button>
+            <div className="d-flex gap-2">
+              <Button variant="light" className="p-0" title={t('Align left')} onClick={onClickAlignLeft}>
+                <i className="bi-align-start h2 mx-2" />
+              </Button>
+              <Button variant="light" className="p-0" title={t('Align right')} onClick={onClickAlignRight}>
+                <i className="bi-align-end h2 mx-2" />
+              </Button>
+              <Button variant="light" className="p-0" title={t('Align horizontal')} onClick={onClickAlignHorizontal}>
+                <i className="bi-align-middle h2 mx-2" />
+              </Button>
+              <Button variant="light" className="p-0 p-0" title={t('Align top')} onClick={onClickAlignTop}>
+                <i className="bi-align-top h2 mx-2" />
+              </Button>
+              <Button variant="light" className="p-0" title={t('Align bottom')} onClick={onClickAlignBottom}>
+                <i className="bi-align-bottom h2 mx-2" />
+              </Button>
+              <Button variant="light" className="p-0" title={t('Align vertical')} onClick={onClickAlignVertical}>
+                <i className="bi-align-center h2 mx-2" />
+              </Button>
             </div>
           </div>
         </div>
@@ -111,20 +112,20 @@ export const ImportForm = ({ setBitmap, onSubmit }: ImportFormProps) => {
           <div className="d-flex flex-column">
             <div className="form-label">{t('Crop')}</div>
             <div className="d-flex gap-3">
-              <button type="button" className="btn p-0" title={t('Fit to image')} onClick={onClickFitToImage}>
-                <i className="bi bi-aspect-ratio h2" />
-              </button>
+              <Button variant="light" className="p-0" title={t('Fit to image')} onClick={onClickFitToImage}>
+                <i className="bi-aspect-ratio h2 mx-2" />
+              </Button>
             </div>
           </div>
         </div>
         <div className="d-flex gap-3 align-items-end">
           <Input label={t('Name')} {...register('name', { required: true })} className="flex-grow-1" />
-          <button type="submit" className="btn btn-primary" disabled={!isValid || !isDirty || !isReady}>
+          <Button type="submit" disabled={!isValid || !isDirty || !isReady}>
             {t('Save')}
-          </button>
-          <button className="btn btn-secondary" onClick={handleReset} disabled={!isDirty}>
+          </Button>
+          <Button variant="secondary" onClick={handleReset} disabled={!isDirty}>
             {t('Reset')}
-          </button>
+          </Button>
         </div>
       </form>
     </FormProvider>
