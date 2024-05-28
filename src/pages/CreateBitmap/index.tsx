@@ -11,13 +11,16 @@ import { BitmapSizeAlert } from '@/components/BitmapSizeAlert';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
 import { useTranslation } from 'react-i18next';
 import Button from 'react-bootstrap/Button';
-import { validatePositiveNumber } from '@/utils/validators';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-interface FormValues {
-  name: string;
-  width: number;
-  height: number;
-}
+const formSchema = z.object({
+  name: z.string().trim().min(1),
+  width: z.number().positive(),
+  height: z.number().positive(),
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 const defaultValues: FormValues = { name: '', width: 128, height: 64 };
 
@@ -29,6 +32,7 @@ const CreateBitmap = () => {
   const methods = useForm<FormValues>({
     mode: 'onChange',
     defaultValues,
+    resolver: zodResolver(formSchema),
   });
 
   const {
@@ -67,14 +71,8 @@ const CreateBitmap = () => {
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className="w-50 d-flex flex-column gap-3">
             <Input label={t('Name')} autoFocus {...register('name', { required: true })} />
-            <Input
-              label={t('Width')}
-              {...register('width', { required: true, valueAsNumber: true, validate: validatePositiveNumber })}
-            />
-            <Input
-              label={t('Height')}
-              {...register('height', { required: true, valueAsNumber: true, validate: validatePositiveNumber })}
-            />
+            <Input label={t('Width')} {...register('width', { required: true, valueAsNumber: true })} />
+            <Input label={t('Height')} {...register('height', { required: true, valueAsNumber: true })} />
             <div className="text-center">
               <Button type="submit" disabled={!isValid}>
                 {t('Save')}
