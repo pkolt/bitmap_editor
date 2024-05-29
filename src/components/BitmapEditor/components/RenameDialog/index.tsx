@@ -5,24 +5,28 @@ import { FormProvider, useForm } from 'react-hook-form';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { useTranslation } from 'react-i18next';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 interface RenameDialogProps {
-  show: boolean;
   bitmapId: string;
   onClose: () => void;
 }
 
-interface FormValues {
-  name: string;
-}
+const formSchema = z.object({
+  name: z.string().trim().min(1),
+});
 
-export const RenameDialog = ({ show, bitmapId, onClose }: RenameDialogProps): JSX.Element | null => {
+type FormValues = z.infer<typeof formSchema>;
+
+export const RenameDialog = ({ bitmapId, onClose }: RenameDialogProps): JSX.Element | null => {
   const { t } = useTranslation();
   const { findBitmap, changeBitmap } = useBitmapsStore();
   const bitmapEntity = requiredValue(findBitmap(bitmapId));
   const methods = useForm<FormValues>({
     mode: 'onChange',
     defaultValues: { name: bitmapEntity?.name },
+    resolver: zodResolver(formSchema),
   });
 
   const {
@@ -39,14 +43,14 @@ export const RenameDialog = ({ show, bitmapId, onClose }: RenameDialogProps): JS
   };
 
   return (
-    <Modal show={show} onHide={onClose}>
+    <Modal show onHide={onClose}>
       <Modal.Header closeButton>
         <Modal.Title>{t('Rename bitmap')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <FormProvider {...methods}>
           <form id="rename-dialog" onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
-            <Input label={t('Name')} autoFocus {...register('name', { required: true, minLength: 3 })} />
+            <Input label={t('Name')} autoFocus {...register('name')} />
           </form>
         </FormProvider>
       </Modal.Body>

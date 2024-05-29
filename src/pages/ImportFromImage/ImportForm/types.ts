@@ -1,10 +1,4 @@
-export interface FormValues {
-  files: FileList | null;
-  name: string;
-  top: number;
-  left: number;
-  width: number;
-  height: number;
-  threshold: number;
-  invertColor: boolean;
-}
+import { z } from 'zod';
+import { formSchema } from './schema';
+
+export type FormValues = z.infer<typeof formSchema>;

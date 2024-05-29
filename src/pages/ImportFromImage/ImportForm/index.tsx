@@ -10,6 +10,8 @@ import { Bitmap } from '@/utils/bitmap/Bitmap';
 import { useEditImage } from './hooks';
 import { useTranslation } from 'react-i18next';
 import Button from 'react-bootstrap/Button';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { formSchema } from './schema';
 
 interface ImportFormProps {
   setBitmap: (value: Bitmap | null) => void;
@@ -21,6 +23,7 @@ export const ImportForm = ({ setBitmap, onSubmit }: ImportFormProps) => {
   const methods = useForm<FormValues>({
     mode: 'onChange',
     defaultValues,
+    resolver: zodResolver(formSchema),
   });
   const {
     handleSubmit,
@@ -74,14 +77,14 @@ export const ImportForm = ({ setBitmap, onSubmit }: ImportFormProps) => {
             min={1}
             max={255}
             step={1}
-            {...register('threshold', { required: true, valueAsNumber: true })}
+            {...register('threshold', { valueAsNumber: true })}
           />
           <CheckBox label={t('Invert color')} {...register('invertColor')} className="text-nowrap" />
         </div>
         <BitmapSizeAlert bitmapWidth={width} className="mb-3" />
         <div className="d-flex gap-3">
-          <Input label={t('Top')} {...register('top', { required: true, valueAsNumber: true })} />
-          <Input label={t('Left')} {...register('left', { required: true, valueAsNumber: true })} />
+          <Input label={t('Top')} {...register('top', { valueAsNumber: true })} />
+          <Input label={t('Left')} {...register('left', { valueAsNumber: true })} />
           <div className="d-flex flex-column">
             <div className="form-label">{t('Align')}</div>
             <div className="d-flex gap-2">
@@ -107,8 +110,8 @@ export const ImportForm = ({ setBitmap, onSubmit }: ImportFormProps) => {
           </div>
         </div>
         <div className="d-flex gap-3">
-          <Input label="Width" {...register('width', { required: true, valueAsNumber: true })} />
-          <Input label="Height" {...register('height', { required: true, valueAsNumber: true })} />
+          <Input label="Width" {...register('width', { valueAsNumber: true })} />
+          <Input label="Height" {...register('height', { valueAsNumber: true })} />
           <div className="d-flex flex-column">
             <div className="form-label">{t('Crop')}</div>
             <div className="d-flex gap-3">

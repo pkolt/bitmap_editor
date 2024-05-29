@@ -6,24 +6,28 @@ import { FormProvider, useForm } from 'react-hook-form';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { useTranslation } from 'react-i18next';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-interface FormValues {
-  width: number;
-  height: number;
-}
+const formSchema = z.object({
+  width: z.number().positive(),
+  height: z.number().positive(),
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 interface ResizeDialogProps {
-  show: boolean;
   bitmap: Bitmap;
   onChangeBitmap: (bitmap: Bitmap) => void;
   onClose: () => void;
 }
 
-export const ResizeDialog = ({ show, bitmap, onChangeBitmap, onClose }: ResizeDialogProps): JSX.Element | null => {
+export const ResizeDialog = ({ bitmap, onChangeBitmap, onClose }: ResizeDialogProps): JSX.Element | null => {
   const { t } = useTranslation();
   const methods = useForm<FormValues>({
     mode: 'onChange',
     defaultValues: { width: bitmap.width, height: bitmap.height },
+    resolver: zodResolver(formSchema),
   });
 
   const {
@@ -46,7 +50,7 @@ export const ResizeDialog = ({ show, bitmap, onChangeBitmap, onClose }: ResizeDi
   };
 
   return (
-    <Modal show={show} onHide={onClose}>
+    <Modal show onHide={onClose}>
       <Modal.Header closeButton>
         <Modal.Title>{t('Resize layout')}</Modal.Title>
       </Modal.Header>
@@ -55,8 +59,8 @@ export const ResizeDialog = ({ show, bitmap, onChangeBitmap, onClose }: ResizeDi
         <FormProvider {...methods}>
           <form id="resize-dialog" onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
             <BitmapSizeAlert bitmapWidth={bitmapWidth} />
-            <Input label={t('Width')} {...register('width', { required: true, valueAsNumber: true, min: 1 })} />
-            <Input label={t('Height')} {...register('height', { required: true, valueAsNumber: true, min: 1 })} />
+            <Input label={t('Width')} {...register('width', { valueAsNumber: true })} />
+            <Input label={t('Height')} {...register('height', { valueAsNumber: true })} />
           </form>
         </FormProvider>
       </Modal.Body>

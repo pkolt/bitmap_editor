@@ -10,18 +10,21 @@ import { requiredValue } from '@/utils/requiredValue';
 import { useTranslation } from 'react-i18next';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-interface FormValues {
-  name: string;
-}
+const formSchema = z.object({
+  name: z.string().trim().min(1),
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 interface CopyBitmapDialogProps {
-  show: boolean;
   bitmapId: string;
   onClose: () => void;
 }
 
-export const CopyBitmapDialog = ({ show, bitmapId, onClose }: CopyBitmapDialogProps): JSX.Element | null => {
+export const CopyBitmapDialog = ({ bitmapId, onClose }: CopyBitmapDialogProps): JSX.Element | null => {
   const navigate = useNavigate();
   const { findBitmap, addBitmap } = useBitmapsStore();
   const bitmapEntity = requiredValue(findBitmap(bitmapId));
@@ -32,6 +35,7 @@ export const CopyBitmapDialog = ({ show, bitmapId, onClose }: CopyBitmapDialogPr
     defaultValues: {
       name: bitmapEntity?.name,
     },
+    resolver: zodResolver(formSchema),
   });
 
   const {
@@ -61,14 +65,14 @@ export const CopyBitmapDialog = ({ show, bitmapId, onClose }: CopyBitmapDialogPr
   };
 
   return (
-    <Modal show={show} onHide={onClose}>
+    <Modal show onHide={onClose}>
       <Modal.Header closeButton>
         <Modal.Title>{t('Create copy')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <FormProvider {...methods}>
           <form id="copy-bitmap-dialog" onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
-            <Input label={t('Name')} autoFocus {...register('name', { required: true, minLength: 1 })} />
+            <Input label={t('Name')} autoFocus {...register('name')} />
           </form>
         </FormProvider>
       </Modal.Body>

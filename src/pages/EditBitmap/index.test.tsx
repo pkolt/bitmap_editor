@@ -73,13 +73,13 @@ const uint8_t sun[] = { 0b11110011, 0b10010011, 0b10010000, 0b11110000, 0b000011
 
 #endif // SUN_H`;
 
-test.skip('export bitmap', async () => {
+test('export bitmap', async () => {
   const { userEvent } = await setupTest();
   const exportButton = screen.getByText('Export to C');
   expect(exportButton).toBeEnabled();
   await userEvent.click(exportButton);
   // Show export dialog
-  const inputName = screen.getByLabelText('Name:');
+  const inputName = screen.getByLabelText('Name');
   await userEvent.clear(inputName);
   await userEvent.type(inputName, 'Sun');
   await userEvent.click(screen.getByLabelText('Little-endian (Adafruit)'));
@@ -87,8 +87,8 @@ test.skip('export bitmap', async () => {
   await userEvent.click(screen.getByLabelText('Variables'));
   await userEvent.click(screen.getByLabelText('C language'));
   await userEvent.click(screen.getByLabelText('Include PROGMEM (AVR)'));
-  const copyButton = screen.getByText('Copy to clipboard');
   const spy = vi.spyOn(navigator.clipboard, 'writeText');
+  const copyButton = screen.getByText('Copy to clipboard');
   await userEvent.click(copyButton);
   expect(spy).toHaveBeenCalledWith(exportCode);
 });
@@ -111,8 +111,8 @@ test('grid settings', async () => {
   // Input invalid values
   await userEvent.type(inputRowSize, 'foo');
   await userEvent.type(inputColSize, '0');
-  expect(screen.queryByText('Value must be a number')).not.toBeNull();
-  expect(screen.queryByText('The value must be greater than zero')).not.toBeNull();
+  expect(screen.queryByText('Expected number, received nan')).not.toBeNull();
+  expect(screen.queryByText('Number must be greater than 0')).not.toBeNull();
   // Clear and input valid values
   await clearInput();
   await userEvent.type(inputRowSize, `${rowSize}`);

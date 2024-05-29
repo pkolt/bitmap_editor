@@ -7,7 +7,12 @@ interface BitmapSizeAlertProps {
 }
 
 export const BitmapSizeAlert = ({ bitmapWidth, className }: BitmapSizeAlertProps) => {
-  if (!bitmapWidth || bitmapWidth <= 0 || bitmapWidth % UINT8_BITS_PER_ELEMENT === 0) {
+  if (
+    typeof bitmapWidth !== 'number' ||
+    Number.isNaN(bitmapWidth) ||
+    bitmapWidth <= 0 ||
+    bitmapWidth % UINT8_BITS_PER_ELEMENT === 0
+  ) {
     return null;
   }
   const leftValue = Math.floor(bitmapWidth / 8) * UINT8_BITS_PER_ELEMENT;

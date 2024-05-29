@@ -20,9 +20,9 @@ export const UpdatePwaDialog = () => {
     return unsubscribe;
   });
 
-  return (
-    <ConfirmDialog show={isShow} title={t('Update PWA')} onAccept={onAccept} onClose={onClose}>
+  return isShow ? (
+    <ConfirmDialog title={t('Update PWA')} onAccept={onAccept} onClose={onClose}>
       <p>{t('Update PWA and reload page?')}</p>
     </ConfirmDialog>
-  );
+  ) : null;
 };

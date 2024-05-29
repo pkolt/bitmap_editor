@@ -11,17 +11,13 @@ interface DialogListProps {
 export const DialogList = ({ dialog, closeDialog }: DialogListProps): JSX.Element => {
   return (
     <>
-      <DeleteBitmapDialog
-        show={dialog.type === DialogType.DeleteBitmap}
-        bitmapId={dialog.bitmapId}
-        onClose={closeDialog}
-      />
-      <CopyBitmapDialog show={dialog.type === DialogType.CopyBitmap} bitmapId={dialog.bitmapId} onClose={closeDialog} />
-      <ExportBitmapDialog
-        show={dialog.type === DialogType.ExportBitmap}
-        bitmapId={dialog.bitmapId}
-        onClose={closeDialog}
-      />
+      {dialog.type === DialogType.DeleteBitmap && (
+        <DeleteBitmapDialog bitmapId={dialog.bitmapId} onClose={closeDialog} />
+      )}
+      {dialog.type === DialogType.CopyBitmap && <CopyBitmapDialog bitmapId={dialog.bitmapId} onClose={closeDialog} />}
+      {dialog.type === DialogType.ExportBitmap && (
+        <ExportBitmapDialog bitmapId={dialog.bitmapId} onClose={closeDialog} />
+      )}
     </>
   );
 };

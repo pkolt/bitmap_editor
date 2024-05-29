@@ -1,6 +1,6 @@
 import { useBitmapsStore } from '@/stores/bitmaps';
 import { DataFormat, Platform, SizeFormat, exportBitmap } from './utils';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { CheckBox } from '@/components/CheckBox';
 import { Input } from '@/components/Input';
@@ -13,7 +13,6 @@ import Button from 'react-bootstrap/Button';
 import { useTranslation } from 'react-i18next';
 
 interface ExportDialogProps {
-  show: boolean;
   bitmapId: string;
   area?: Area;
   onClose: () => void;
@@ -37,7 +36,7 @@ const defaultValues: FormValues = {
   progmem: true,
 };
 
-export const ExportDialog = ({ show, bitmapId, area, onClose }: ExportDialogProps): JSX.Element | null => {
+export const ExportDialog = ({ bitmapId, area, onClose }: ExportDialogProps): JSX.Element | null => {
   const { t } = useTranslation();
   const { findBitmap: findBitmap } = useBitmapsStore();
   const bitmapEntity = requiredValue(findBitmap(bitmapId));
@@ -55,19 +54,19 @@ export const ExportDialog = ({ show, bitmapId, area, onClose }: ExportDialogProp
     [area, bitmapEntity, formValues],
   );
 
-  const onSubmit = useCallback(() => {
+  const onClickCopy = () => {
     navigator.clipboard.writeText(exportCode);
-  }, [exportCode]);
+  };
 
   return (
-    <Modal show={show} onHide={onClose}>
+    <Modal show onHide={onClose}>
       <Modal.Header closeButton>
         <Modal.Title>{t('Export bitmap')}</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
         <FormProvider {...methods}>
-          <form id="export-dialog" onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3 mb-3">
+          <form onSubmit={handleSubmit(() => {})} className="d-flex flex-column gap-3 mb-3">
             <Alert variant="warning" dismissible>
               <div className="d-flex align-items-center gap-1">
                 <i className="bi-exclamation-triangle" />
@@ -163,9 +162,7 @@ export const ExportDialog = ({ show, bitmapId, area, onClose }: ExportDialogProp
       </Modal.Body>
 
       <Modal.Footer>
-        <Button type="submit" form="export-dialog">
-          {t('Copy to clipboard')}
-        </Button>
+        <Button onClick={onClickCopy}>{t('Copy to clipboard')}</Button>
       </Modal.Footer>
     </Modal>
   );
