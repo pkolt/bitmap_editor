@@ -12,6 +12,6 @@ i18n
       en: transEn,
       ru: transRu,
     },
-    debug: import.meta.env.MODE === '',
+    debug: import.meta.env.MODE === 'development',
     fallbackLng: 'en',
   });
