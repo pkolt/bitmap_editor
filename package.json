@@ -27,7 +27,7 @@
     "knip": "knip --production",
     "lint-all": "node --run check-ts && node --run eslint && node --run format && node --run knip",
     "lint-all-fix": "node --run eslint-fix && node --run format-fix",
-    "scan-i18n": "node ./scripts/scan_i18n.js",
+    "find-i18n": "node ./scripts/find_i18n.js",
     "prepare": "git config core.hooksPath .git-hooks",
     "pre-commit": "node --run lint-all && node --run test && node --run bench"
   },
