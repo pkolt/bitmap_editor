@@ -3,6 +3,7 @@ import { CheckBox } from '../CheckBox';
 import { useCallback, useMemo } from 'react';
 import { isEqualArrays } from './utils';
 import { useFormContext } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
 interface SelectBitmapProps {
   name: string;
@@ -11,6 +12,7 @@ interface SelectBitmapProps {
 }
 
 export const SelectBitmap = ({ name, bitmaps, className }: SelectBitmapProps) => {
+  const { t } = useTranslation();
   const { watch, setValue, register } = useFormContext();
 
   const selectedIds = watch(name);
@@ -25,7 +27,7 @@ export const SelectBitmap = ({ name, bitmaps, className }: SelectBitmapProps) =>
     <div className={className}>
       {isShowSelectedAll && (
         <>
-          <CheckBox label="Select all" checked={isSelectedAll} onChange={toggleSelectAll} />
+          <CheckBox label={t('Select all')} checked={isSelectedAll} onChange={toggleSelectAll} />
           <hr />
         </>
       )}

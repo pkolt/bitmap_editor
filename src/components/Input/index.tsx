@@ -1,9 +1,14 @@
-import cn from 'classnames';
 import { useId, forwardRef } from 'react';
 import { useFormState } from 'react-hook-form';
+import Form from 'react-bootstrap/Form';
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputProps
+  extends Pick<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    'name' | 'onChange' | 'onBlur' | 'autoFocus' | 'type' | 'accept'
+  > {
   label: string;
+  className?: string;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
@@ -15,20 +20,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   const { errors } = useFormState();
   const error = errors[name];
   const errorMessage = error?.message as string;
+  const isInvalid = !!errorMessage;
   return (
-    <div className={className}>
-      <label className="form-label" htmlFor={id}>
-        {label}
-      </label>
-      <input
-        type="text"
-        className={cn('form-control', (error || errorMessage) && 'is-invalid')}
-        id={id}
-        ref={ref}
-        data-bs-autofocus={props.autoFocus ? true : undefined}
-        {...props}
-      />
-      {errorMessage && <div className="invalid-feedback">{errorMessage}</div>}
-    </div>
+    <Form.Group className={className} controlId={id}>
+      <Form.Label>{label}</Form.Label>
+      <Form.Control isInvalid={isInvalid} ref={ref} {...props} />
+      {isInvalid && <Form.Control.Feedback type="invalid">{errorMessage}</Form.Control.Feedback>}
+    </Form.Group>
   );
 });

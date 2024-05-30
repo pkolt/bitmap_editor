@@ -6,9 +6,11 @@ import { FinalForm } from './FinalForm';
 import { FileForm } from './FileForm';
 import { useNavigate } from 'react-router-dom';
 import { PageUrl } from '@/constants/urls';
+import { useTranslation } from 'react-i18next';
 
 const ImportFromJson = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { findBitmap } = useBitmapsStore();
   const [entities, setEntities] = useState<BitmapEntity[] | null>(null);
 
@@ -29,9 +31,9 @@ const ImportFromJson = () => {
   );
 
   return (
-    <Page title="Import bitmap from JSON">
+    <Page title={t('Import bitmap from JSON')}>
       <main className="d-flex flex-column flex-grow-1 justify-content-center align-items-center gap-3">
-        <h1>Import bitmap from JSON</h1>
+        <h1>{t('Import bitmap from JSON')}</h1>
         {entities ? <FinalForm entities={entities} onFinish={handleFinish} /> : <FileForm onNext={handleNext} />}
       </main>
     </Page>

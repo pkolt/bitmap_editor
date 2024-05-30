@@ -2,7 +2,7 @@
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "entry": ["src/main.tsx!", "src/service-worker.ts!"],
   "project": ["src/**/*.{ts,tsx}!", "!src/test-utils"],
-  "ignoreDependencies": ["bootstrap-icons"],
+  "ignoreDependencies": ["bootstrap-icons", "bootstrap"],
   "ignoreBinaries": ["vite"],
   "ignore": ["src/**/__mocks__/**"]
 }

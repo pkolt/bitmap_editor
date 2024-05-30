@@ -5,6 +5,7 @@ import { cleanup } from '@testing-library/react';
 import { Settings } from 'luxon';
 import { afterEach, vi } from 'vitest';
 import { setupMatchers } from './test-utils/matchers';
+import './i18n';
 
 setupMatchers();
 

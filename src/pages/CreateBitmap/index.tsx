@@ -9,22 +9,30 @@ import { BitmapEntity } from '@/utils/bitmap/types';
 import { useBitmapsStore } from '@/stores/bitmaps';
 import { BitmapSizeAlert } from '@/components/BitmapSizeAlert';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
+import { useTranslation } from 'react-i18next';
+import Button from 'react-bootstrap/Button';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-interface FormValues {
-  name: string;
-  width: number;
-  height: number;
-}
+const formSchema = z.object({
+  name: z.string().trim().min(1),
+  width: z.number().positive(),
+  height: z.number().positive(),
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 const defaultValues: FormValues = { name: '', width: 128, height: 64 };
 
 const CreateBitmap = () => {
   const navigate = useNavigate();
   const { addBitmap } = useBitmapsStore();
+  const { t } = useTranslation();
 
   const methods = useForm<FormValues>({
     mode: 'onChange',
     defaultValues,
+    resolver: zodResolver(formSchema),
   });
 
   const {
@@ -56,19 +64,19 @@ const CreateBitmap = () => {
   };
 
   return (
-    <Page title="Create new image">
+    <Page title={t('Create new image')}>
       <main className="d-flex flex-column flex-grow-1 justify-content-center align-items-center">
-        <h1>Create new bitmap</h1>
+        <h1>{t('Create new bitmap')}</h1>
         <BitmapSizeAlert bitmapWidth={bitmapWidth} className="mb-3" />
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className="w-50 d-flex flex-column gap-3">
-            <Input label="Name:" autoFocus {...register('name', { required: true })} />
-            <Input label="Width:" {...register('width', { required: true, valueAsNumber: true, min: 1 })} />
-            <Input label="Height:" {...register('height', { required: true, valueAsNumber: true, min: 1 })} />
+            <Input label={t('Name')} autoFocus {...register('name', { required: true })} />
+            <Input label={t('Width')} {...register('width', { valueAsNumber: true })} />
+            <Input label={t('Height')} {...register('height', { valueAsNumber: true })} />
             <div className="text-center">
-              <button type="submit" className="btn btn-primary" disabled={!isValid}>
-                Save
-              </button>
+              <Button type="submit" disabled={!isValid}>
+                {t('Save')}
+              </Button>
             </div>
           </form>
         </FormProvider>

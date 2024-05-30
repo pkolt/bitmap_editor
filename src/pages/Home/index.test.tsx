@@ -49,9 +49,9 @@ test('delete bitmap', async () => {
 test('export bitmap', async () => {
   const spy = vi.spyOn(FileSaver, 'saveAs');
   const { stores, userEvent } = renderHomePage();
-  stores.bitmaps.addBitmap({ ...bitmapEntity, name: 'Test #1', id: '1' });
-  stores.bitmaps.addBitmap({ ...bitmapEntity, name: 'Test #2', id: '2' });
-  stores.bitmaps.addBitmap({ ...bitmapEntity, name: 'Test #3', id: '3' });
+  stores.bitmaps.addBitmap({ ...bitmapEntity, name: 'Test #1', id: '0bd26b6a-ed1c-4fe9-8cb7-fba87bf3086a' });
+  stores.bitmaps.addBitmap({ ...bitmapEntity, name: 'Test #2', id: 'aec7089c-6573-4c33-895e-87a7a022ce0b' });
+  stores.bitmaps.addBitmap({ ...bitmapEntity, name: 'Test #3', id: 'd4445877-1fbd-445a-bc04-0792a5b1e7e8' });
   const [exportButton] = screen.getAllByTitle('Export to file');
   await userEvent.click(exportButton);
   // Show dialog

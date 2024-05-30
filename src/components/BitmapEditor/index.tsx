@@ -1,4 +1,3 @@
-import cn from 'classnames';
 import { ExportDialog } from './components/ExportDialog';
 import { RenameDialog } from './components/RenameDialog';
 import { BitmapView } from './components/BitmapView';
@@ -8,12 +7,16 @@ import { ResizeDialog } from './components/ResizeDialog';
 import { useToolbar } from './hooks/useToolbar';
 import { Dialog, useDialog } from './hooks/useDialog';
 import { useBitmap } from './hooks/useBitmap';
+import { useTranslation } from 'react-i18next';
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 
 interface BitmapEditorProps {
   bitmapId: string;
 }
 
 export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
+  const { t } = useTranslation();
   const dialog = useDialog();
   const { bitmapEntity, bitmap, updateBitmap } = useBitmap(bitmapId);
   const { buttons, selectedArea, selectedAreaOnly, onSelectArea, onChangeBitmap, onDraw } = useToolbar({
@@ -26,82 +29,78 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
       <div className="d-flex flex-column align-items-center">
         <h3 className="mb-3 d-flex gap-2">
           {bitmapEntity.name} ({bitmapEntity.width}x{bitmapEntity.height})
-          <button className="btn btn-outline-primary" aria-label="Rename" onClick={dialog.openRenameDialog}>
-            <i className="bi bi-pencil-square" /> Rename
-          </button>
+          <Button variant="outline-primary" aria-label={t('Rename')} onClick={dialog.openRenameDialog}>
+            <i className="bi-pencil-square" /> {t('Rename')}
+          </Button>
         </h3>
         <div className="d-flex gap-3 mb-3 text-black-50">
           <div className="d-flex gap-2">
-            <i className="bi bi-brush" />
-            Draw: Ctrl + Mouse key
+            <i className="bi-brush" />
+            {t('Draw: Ctrl + Mouse key')}
           </div>
           <div className="d-flex gap-2">
-            <i className="bi bi-arrows-move" />
-            Move: Up / Down / Left / Right
+            <i className="bi-arrows-move" />
+            {t('Move: Up / Down / Left / Right')}
           </div>
         </div>
         <div className="mb-3 d-flex gap-2">
-          <div className="btn-group">
-            <button
-              className={cn('btn btn-outline-primary', buttons.draw.active && 'active')}
+          <ButtonGroup>
+            <Button
+              variant="outline-primary"
+              active={buttons.draw.active}
               onClick={buttons.draw.onClick}
               disabled={buttons.draw.disabled}
               title="Ctr+U / Cmd+U">
-              <i className="bi bi-brush" /> Draw
-            </button>
-            <button
-              className={cn('btn btn-outline-primary', buttons.clear.active && 'active')}
+              <i className="bi-brush" /> {t('Draw')}
+            </Button>
+            <Button
+              variant="outline-primary"
+              active={buttons.clear.active}
               onClick={buttons.clear.onClick}
               disabled={buttons.clear.disabled}
               title="Ctr+I / Cmd+I">
-              <i className="bi bi-eraser" /> Clear
-            </button>
-          </div>
-          <button
-            className="btn btn-outline-primary"
+              <i className="bi-eraser" /> {t('Clear')}
+            </Button>
+          </ButtonGroup>
+          <Button
+            variant="outline-primary"
             onClick={buttons.undo.onClick}
             disabled={buttons.undo.disabled}
             title="Ctr+Z / Cmd+Z">
-            <i className="bi bi-arrow-counterclockwise" /> Undo
-          </button>
-          <button
-            className="btn btn-outline-primary"
+            <i className="bi-arrow-counterclockwise" /> {t('Undo')}
+          </Button>
+          <Button
+            variant="outline-primary"
             onClick={buttons.redo.onClick}
             disabled={buttons.redo.disabled}
             title="Ctr+Shift+Z / Cmd+Shift+Z">
-            <i className="bi bi-arrow-clockwise" /> Redo
-          </button>
-          <button
-            className={cn('btn', buttons.area.active ? 'btn-primary' : 'btn-outline-primary')}
+            <i className="bi-arrow-clockwise" /> {t('Redo')}
+          </Button>
+          <Button
+            variant={buttons.area.active ? 'primary' : 'outline-primary'}
             onClick={buttons.area.onClick}
             disabled={buttons.area.disabled}>
-            <i className="bi bi-bounding-box" /> Area
-          </button>
-          <button
-            className="btn btn-outline-primary"
+            <i className="bi-bounding-box" /> {t('Area')}
+          </Button>
+          <Button
+            variant="outline-primary"
             title="Invert color"
             onClick={buttons.invert.onClick}
             disabled={buttons.invert.disabled}>
-            <i className="bi bi-highlights" /> Invert
-          </button>
-          <button className="btn btn-outline-primary" onClick={buttons.reset.onClick} disabled={buttons.reset.disabled}>
-            Reset
-          </button>
-          <button
-            className="btn btn-outline-primary"
-            onClick={dialog.openExportDialog}
-            disabled={buttons.export.disabled}>
-            <i className="bi bi-code-slash" /> Export to C
-          </button>
-          <button className="btn btn-outline-primary" onClick={dialog.openGridDialog} disabled={buttons.grid.disabled}>
-            <i className="bi bi-border-all" /> Grid
-          </button>
-          <button
-            className="btn btn-outline-primary"
-            onClick={dialog.openLayoutDialog}
-            disabled={buttons.resize.disabled}>
-            <i className="bi bi-arrows-fullscreen" /> Resize
-          </button>
+            <i className="bi-highlights" /> {t('Invert')}
+          </Button>
+          <Button variant="outline-primary" onClick={buttons.reset.onClick} disabled={buttons.reset.disabled}>
+            {t('Reset')}
+          </Button>
+          <Button variant="outline-primary" onClick={dialog.openExportDialog} disabled={buttons.export.disabled}>
+            <i className="bi-code-slash" /> {t('Export to C')}
+          </Button>
+          <Button variant="outline-primary" onClick={dialog.openGridDialog} disabled={buttons.grid.disabled}>
+            <i className="bi-border-all" /> {t('Grid')}
+          </Button>
+          <Button variant="outline-primary" onClick={dialog.openLayoutDialog} disabled={buttons.resize.disabled}>
+            <i className="bi-arrows-fullscreen" /> {t('Resize')}
+          </Button>
         </div>
         <BitmapSizeAlert bitmapWidth={bitmapEntity.width} className="mb-3" />
         <BitmapView

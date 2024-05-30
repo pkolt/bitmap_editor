@@ -8,6 +8,10 @@ import { FormValues } from './types';
 import { useCallback, useEffect } from 'react';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
 import { useEditImage } from './hooks';
+import { useTranslation } from 'react-i18next';
+import Button from 'react-bootstrap/Button';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { formSchema } from './schema';
 
 interface ImportFormProps {
   setBitmap: (value: Bitmap | null) => void;
@@ -15,9 +19,11 @@ interface ImportFormProps {
 }
 
 export const ImportForm = ({ setBitmap, onSubmit }: ImportFormProps) => {
+  const { t } = useTranslation();
   const methods = useForm<FormValues>({
     mode: 'onChange',
     defaultValues,
+    resolver: zodResolver(formSchema),
   });
   const {
     handleSubmit,
@@ -60,70 +66,69 @@ export const ImportForm = ({ setBitmap, onSubmit }: ImportFormProps) => {
       <form onSubmit={handleSubmit(onSubmit)} className="w-50 d-flex flex-column gap-3">
         <div className="d-flex gap-3 align-items-center">
           <Input
-            label="Image (*.jpg, *.png, *.svg)"
+            label={`${t('Image')} (*.jpg, *.png, *.svg)`}
             type="file"
             accept="image/png,image/jpeg,image/svg+xml"
             autoFocus
             {...register('files', { required: true })}
           />
           <Range
-            label={`Threshold = ${threshold}`}
-            type="range"
-            min={0}
+            label={`${t('Threshold')} = ${threshold}`}
+            min={1}
             max={255}
             step={1}
-            {...register('threshold', { required: true, valueAsNumber: true })}
+            {...register('threshold', { valueAsNumber: true })}
           />
-          <CheckBox label="Invert color" {...register('invertColor')} className="text-nowrap" />
+          <CheckBox label={t('Invert color')} {...register('invertColor')} className="text-nowrap" />
         </div>
         <BitmapSizeAlert bitmapWidth={width} className="mb-3" />
         <div className="d-flex gap-3">
-          <Input label="Top" {...register('top', { required: true, valueAsNumber: true })} />
-          <Input label="Left" {...register('left', { required: true, valueAsNumber: true })} />
+          <Input label={t('Top')} {...register('top', { valueAsNumber: true })} />
+          <Input label={t('Left')} {...register('left', { valueAsNumber: true })} />
           <div className="d-flex flex-column">
-            <div className="form-label">Align:</div>
-            <div className="d-flex gap-3">
-              <button type="button" className="btn p-0" title="Align left" onClick={onClickAlignLeft}>
-                <i className="bi bi-align-start h2" />
-              </button>
-              <button type="button" className="btn p-0" title="Align right" onClick={onClickAlignRight}>
-                <i className="bi bi-align-end h2" />
-              </button>
-              <button type="button" className="btn p-0" title="Align horizontal" onClick={onClickAlignHorizontal}>
-                <i className="bi bi-align-middle h2" />
-              </button>
-              <button type="button" className="btn p-0 p-0" title="Align top" onClick={onClickAlignTop}>
-                <i className="bi bi-align-top h2" />
-              </button>
-              <button type="button" className="btn p-0" title="Align bottom" onClick={onClickAlignBottom}>
-                <i className="bi bi-align-bottom h2" />
-              </button>
-              <button type="button" className="btn p-0" title="Align vertical" onClick={onClickAlignVertical}>
-                <i className="bi bi-align-center h2" />
-              </button>
+            <div className="form-label">{t('Align')}</div>
+            <div className="d-flex gap-2">
+              <Button variant="light" className="p-0" title={t('Align left')} onClick={onClickAlignLeft}>
+                <i className="bi-align-start h2 mx-2" />
+              </Button>
+              <Button variant="light" className="p-0" title={t('Align right')} onClick={onClickAlignRight}>
+                <i className="bi-align-end h2 mx-2" />
+              </Button>
+              <Button variant="light" className="p-0" title={t('Align horizontal')} onClick={onClickAlignHorizontal}>
+                <i className="bi-align-middle h2 mx-2" />
+              </Button>
+              <Button variant="light" className="p-0 p-0" title={t('Align top')} onClick={onClickAlignTop}>
+                <i className="bi-align-top h2 mx-2" />
+              </Button>
+              <Button variant="light" className="p-0" title={t('Align bottom')} onClick={onClickAlignBottom}>
+                <i className="bi-align-bottom h2 mx-2" />
+              </Button>
+              <Button variant="light" className="p-0" title={t('Align vertical')} onClick={onClickAlignVertical}>
+                <i className="bi-align-center h2 mx-2" />
+              </Button>
             </div>
           </div>
         </div>
         <div className="d-flex gap-3">
-          <Input label="Width" {...register('width', { required: true, valueAsNumber: true })} />
-          <Input label="Height" {...register('height', { required: true, valueAsNumber: true })} />
+          <Input label="Width" {...register('width', { valueAsNumber: true })} />
+          <Input label="Height" {...register('height', { valueAsNumber: true })} />
           <div className="d-flex flex-column">
-            <div className="form-label">Crop:</div>
+            <div className="form-label">{t('Crop')}</div>
             <div className="d-flex gap-3">
-              <button type="button" className="btn p-0" title="Fit to image" onClick={onClickFitToImage}>
-                <i className="bi bi-aspect-ratio h2" />
-              </button>
+              <Button variant="light" className="p-0" title={t('Fit to image')} onClick={onClickFitToImage}>
+                <i className="bi-aspect-ratio h2 mx-2" />
+              </Button>
             </div>
           </div>
         </div>
         <div className="d-flex gap-3 align-items-end">
-          <Input label="Name" {...register('name', { required: true })} className="flex-grow-1" />
-          <button type="submit" className="btn btn-primary" disabled={!isValid || !isDirty || !isReady}>
-            Save
-          </button>
-          <button className="btn btn-secondary" onClick={handleReset} disabled={!isDirty}>
-            Reset
-          </button>
+          <Input label={t('Name')} {...register('name', { required: true })} className="flex-grow-1" />
+          <Button type="submit" disabled={!isValid || !isDirty || !isReady}>
+            {t('Save')}
+          </Button>
+          <Button variant="secondary" onClick={handleReset} disabled={!isDirty}>
+            {t('Reset')}
+          </Button>
         </div>
       </form>
     </FormProvider>

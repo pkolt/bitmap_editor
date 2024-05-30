@@ -1,5 +1,4 @@
 import { Input } from '@/components/Input';
-import { Modal } from '@/components/Modal';
 import { PageUrl } from '@/constants/urls';
 import { useBitmapsStore } from '@/stores/bitmaps';
 import { DateTime } from 'luxon';
@@ -8,10 +7,17 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { generatePath, useNavigate } from 'react-router-dom';
 import { BitmapEntity } from '@/utils/bitmap/types';
 import { requiredValue } from '@/utils/requiredValue';
+import { useTranslation } from 'react-i18next';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-interface FormValues {
-  name: string;
-}
+const formSchema = z.object({
+  name: z.string().trim().min(1),
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 interface CopyBitmapDialogProps {
   bitmapId: string;
@@ -22,12 +28,14 @@ export const CopyBitmapDialog = ({ bitmapId, onClose }: CopyBitmapDialogProps): 
   const navigate = useNavigate();
   const { findBitmap, addBitmap } = useBitmapsStore();
   const bitmapEntity = requiredValue(findBitmap(bitmapId));
+  const { t } = useTranslation();
 
   const methods = useForm<FormValues>({
     mode: 'onChange',
     defaultValues: {
       name: bitmapEntity?.name,
     },
+    resolver: zodResolver(formSchema),
   });
 
   const {
@@ -57,17 +65,22 @@ export const CopyBitmapDialog = ({ bitmapId, onClose }: CopyBitmapDialogProps): 
   };
 
   return (
-    <Modal title="Create copy" onClose={onClose}>
-      <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
-          <Input label="Name:" autoFocus {...register('name', { required: true, minLength: 1 })} />
-          <div className="text-center">
-            <button type="submit" className="btn btn-primary" disabled={!isValid || !isDirty}>
-              Save
-            </button>
-          </div>
-        </form>
-      </FormProvider>
+    <Modal show onHide={onClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>{t('Create copy')}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <FormProvider {...methods}>
+          <form id="copy-bitmap-dialog" onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
+            <Input label={t('Name')} autoFocus {...register('name')} />
+          </form>
+        </FormProvider>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button form="copy-bitmap-dialog" type="submit" disabled={!isValid || !isDirty}>
+          {t('Save')}
+        </Button>
+      </Modal.Footer>
     </Modal>
   );
 };

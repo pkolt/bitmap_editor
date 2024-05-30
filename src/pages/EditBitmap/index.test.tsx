@@ -29,7 +29,7 @@ test('rename bitmap', async () => {
   expect(renameButton).toBeEnabled();
   await userEvent.click(renameButton);
   // Show rename dialog
-  const inputName = screen.getByLabelText('Name:');
+  const inputName = screen.getByLabelText('Name');
   const saveButton = screen.getByText('Save');
   await userEvent.clear(inputName);
   await userEvent.type(inputName, bitmapName);
@@ -79,7 +79,7 @@ test('export bitmap', async () => {
   expect(exportButton).toBeEnabled();
   await userEvent.click(exportButton);
   // Show export dialog
-  const inputName = screen.getByLabelText('Name:');
+  const inputName = screen.getByLabelText('Name');
   await userEvent.clear(inputName);
   await userEvent.type(inputName, 'Sun');
   await userEvent.click(screen.getByLabelText('Little-endian (Adafruit)'));
@@ -87,8 +87,8 @@ test('export bitmap', async () => {
   await userEvent.click(screen.getByLabelText('Variables'));
   await userEvent.click(screen.getByLabelText('C language'));
   await userEvent.click(screen.getByLabelText('Include PROGMEM (AVR)'));
-  const copyButton = screen.getByText('Copy to clipboard');
   const spy = vi.spyOn(navigator.clipboard, 'writeText');
+  const copyButton = screen.getByText('Copy to clipboard');
   await userEvent.click(copyButton);
   expect(spy).toHaveBeenCalledWith(exportCode);
 });
@@ -101,8 +101,8 @@ test('grid settings', async () => {
   // Show grid settings dialog
   const rowSize = 10;
   const columnSize = 16;
-  const inputRowSize = screen.getByLabelText('Row size:');
-  const inputColSize = screen.getByLabelText('Column size:');
+  const inputRowSize = screen.getByLabelText('Row size');
+  const inputColSize = screen.getByLabelText('Column size');
   const clearInput = async () => {
     await userEvent.clear(inputRowSize);
     await userEvent.clear(inputColSize);
@@ -111,8 +111,8 @@ test('grid settings', async () => {
   // Input invalid values
   await userEvent.type(inputRowSize, 'foo');
   await userEvent.type(inputColSize, '0');
-  expect(screen.queryByText('Value must be a number')).not.toBeNull();
-  expect(screen.queryByText('The value must be greater than zero')).not.toBeNull();
+  expect(screen.queryByText('Expected number, received nan')).not.toBeNull();
+  expect(screen.queryByText('Number must be greater than 0')).not.toBeNull();
   // Clear and input valid values
   await clearInput();
   await userEvent.type(inputRowSize, `${rowSize}`);
