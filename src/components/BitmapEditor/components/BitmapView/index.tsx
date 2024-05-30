@@ -11,21 +11,13 @@ import { getCanvas } from './getCanvas';
 
 interface BitmapViewProps {
   bitmap: Bitmap;
-  onChangeBitmap?: (bitmap: Bitmap) => void;
-  clearMode?: boolean;
+  onDraw?: (x: number, y: number) => void;
   areaMode?: boolean;
   selectedArea?: BitmapArea;
   onSelectArea?: (value: BitmapArea) => void;
 }
 
-export const BitmapView = ({
-  bitmap,
-  onChangeBitmap,
-  clearMode,
-  areaMode,
-  selectedArea,
-  onSelectArea,
-}: BitmapViewProps): JSX.Element => {
+export const BitmapView = ({ bitmap, areaMode, selectedArea, onSelectArea, onDraw }: BitmapViewProps): JSX.Element => {
   const { grid } = useSettingsStore();
   const [sizes, setSizes] = useState<Sizes | null>(null);
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
@@ -56,7 +48,7 @@ export const BitmapView = ({
 
   const handleClick = useCallback(
     (event: React.MouseEvent<HTMLCanvasElement>) => {
-      if (canvas && sizes && onChangeBitmap) {
+      if (canvas && sizes && onDraw) {
         const { left, top } = canvas.getBoundingClientRect();
         const x = event.clientX - left;
         const y = event.clientY - top;
@@ -72,20 +64,16 @@ export const BitmapView = ({
             if (areaMode && selectedArea instanceof Area) {
               const isIntersection = selectedArea.isIntersect(new Point(posX, posY));
               if (isIntersection) {
-                const nextBitmap = bitmap.clone();
-                nextBitmap.setPixelValue(new Point(posX, posY), !clearMode);
-                onChangeBitmap(nextBitmap);
+                onDraw(posX, posY);
               }
             } else {
-              const nextBitmap = bitmap.clone();
-              nextBitmap.setPixelValue(new Point(posX, posY), !clearMode);
-              onChangeBitmap(nextBitmap);
+              onDraw(posX, posY);
             }
           }
         }
       }
     },
-    [canvas, sizes, onChangeBitmap, onSelectArea, areaMode, selectedArea, bitmap, clearMode],
+    [canvas, sizes, onSelectArea, areaMode, selectedArea, onDraw],
   );
 
   const handleMouseMove = useCallback(

@@ -19,7 +19,7 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
   const { t } = useTranslation();
   const dialog = useDialog();
   const { bitmapEntity, bitmap, updateBitmap } = useBitmap(bitmapId);
-  const { buttons, selectedArea, selectedAreaOnly, onSelectArea, onChangeBitmap, onChangeBitmapDebounce } = useToolbar({
+  const { buttons, selectedArea, selectedAreaOnly, onSelectArea, onChangeBitmap, onDraw } = useToolbar({
     bitmap,
     updateBitmap,
   });
@@ -105,8 +105,7 @@ export const BitmapEditor = ({ bitmapId }: BitmapEditorProps): JSX.Element => {
         <BitmapSizeAlert bitmapWidth={bitmapEntity.width} className="mb-3" />
         <BitmapView
           bitmap={bitmap}
-          onChangeBitmap={onChangeBitmapDebounce}
-          clearMode={buttons.clear.active}
+          onDraw={onDraw}
           areaMode={buttons.area.active}
           selectedArea={selectedArea}
           onSelectArea={onSelectArea}
