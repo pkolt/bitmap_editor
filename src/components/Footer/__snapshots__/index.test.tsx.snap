@@ -5,14 +5,15 @@ exports[`show component 1`] = `
   <footer
     class="container-fluid p-3 bg-light text-center rounded-top-2"
   >
-    Created by 
+    Created by
+     
     <a
       href="https://github.com/pkolt"
     >
       Pavel Koltyshev
     </a>
-     © 2023-
-    2024
+     © 
+    2023-2024
   </footer>
 </div>
 `;
