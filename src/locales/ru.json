@@ -78,6 +78,8 @@
     "Grid": "Сетка",
     "Resize": "Размер",
     "Invert color": "Инвертировать цвет",
-    "Created by": "Создано"
+    "Created by": "Создано",
+    "Import from collections": "Импортировать из набора",
+    "Search": "Поиск"
   }
 }
