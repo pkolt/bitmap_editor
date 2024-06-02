@@ -7,18 +7,22 @@ import { defaultValues } from './constants';
 import { FormValues } from './types';
 import { useCallback, useEffect } from 'react';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
-import { useEditImage } from './hooks';
+import { useEditImage } from './hooks/useEditImage';
 import { useTranslation } from 'react-i18next';
 import Button from 'react-bootstrap/Button';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formSchema } from './schema';
+import { useImageUrl } from './hooks/useImageUrl';
+
+const ID_FILE_INPUT = 'id_file_input'; // Simple way that use two ref
 
 interface ImportFormProps {
   setBitmap: (value: Bitmap | null) => void;
   onSubmit: (data: FormValues) => void;
+  imageUrl?: string;
 }
 
-export const ImportForm = ({ setBitmap, onSubmit }: ImportFormProps) => {
+export const ImportForm = ({ setBitmap, onSubmit, imageUrl }: ImportFormProps) => {
   const { t } = useTranslation();
   const methods = useForm<FormValues>({
     mode: 'onChange',
@@ -53,6 +57,18 @@ export const ImportForm = ({ setBitmap, onSubmit }: ImportFormProps) => {
     onReset();
   }, [onReset, reset]);
 
+  const setImage = useCallback(
+    (value: FileList) => {
+      const elem = document.getElementById(ID_FILE_INPUT);
+      if (elem) {
+        setValue('files', value);
+        (elem as HTMLInputElement).files = value;
+      }
+    },
+    [setValue],
+  );
+  useImageUrl({ imageUrl, setImage });
+
   useEffect(() => {
     setValue('left', 0);
   }, [setValue, width]);
@@ -70,6 +86,7 @@ export const ImportForm = ({ setBitmap, onSubmit }: ImportFormProps) => {
             type="file"
             accept="image/png,image/jpeg,image/svg+xml"
             autoFocus
+            id={ID_FILE_INPUT}
             {...register('files', { required: true })}
           />
           <Range

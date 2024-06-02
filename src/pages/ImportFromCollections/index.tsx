@@ -7,9 +7,13 @@ import { useIcons } from './hooks/useIcons';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import { useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { PageUrl } from '@/constants/urls';
+import { ImportFromImagePageState } from '../ImportFromImage/types';
 
 const ImportFromCollections = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [searchText, setSearchText] = useState('');
   const { data } = useFetchData();
   const { icons } = useIcons({ data, searchText });
@@ -17,6 +21,12 @@ const ImportFromCollections = () => {
   const handleChangeSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(event.target.value);
   }, []);
+
+  const openImportFromImagePage = (filename: string) => {
+    const imageUrl = `${import.meta.env.BASE_URL}images/bootstrap-icons/icons/${filename}`;
+    const pageState = { imageUrl } satisfies ImportFromImagePageState;
+    navigate(PageUrl.ImportFromImage, { state: pageState });
+  };
 
   return (
     <Page title={t('Import from collections')}>
@@ -35,7 +45,14 @@ const ImportFromCollections = () => {
             </div>
             <div className="grid">
               {icons.map((it) => {
-                return <Item key={it.name} iconName={it.name} className="g-col-2" onClick={() => {}} />;
+                return (
+                  <Item
+                    key={it.name}
+                    iconName={it.name}
+                    className="g-col-2"
+                    onClick={() => openImportFromImagePage(it.filename)}
+                  />
+                );
               })}
             </div>
           </>
