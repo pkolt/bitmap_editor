@@ -10,6 +10,7 @@ import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageUrl } from '@/constants/urls';
 import { ImportFromImagePageState } from '../ImportFromImage/types';
+import { ICONS_DIR_URL } from './constants';
 
 const ImportFromCollections = () => {
   const { t } = useTranslation();
@@ -23,7 +24,7 @@ const ImportFromCollections = () => {
   }, []);
 
   const openImportFromImagePage = (filename: string) => {
-    const imageUrl = `${import.meta.env.BASE_URL}images/bootstrap-icons/icons/${filename}`;
+    const imageUrl = `${ICONS_DIR_URL}${filename}`;
     const pageState = { imageUrl } satisfies ImportFromImagePageState;
     navigate(PageUrl.ImportFromImage, { state: pageState });
   };
