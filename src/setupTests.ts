@@ -3,8 +3,9 @@
 import { DateTime } from 'luxon';
 import { cleanup } from '@testing-library/react';
 import { Settings } from 'luxon';
-import { afterEach, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, vi } from 'vitest';
 import { setupMatchers } from './test-utils/matchers';
+import { server } from './test-utils/msw/server';
 import './i18n';
 
 setupMatchers();
@@ -25,3 +26,8 @@ vi.mock('zustand/middleware');
 // https://github.com/vitest-dev/vitest/issues/1430
 // Use cleanup if vitest config `globals: false`
 afterEach(cleanup);
+
+// Setup msw
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());

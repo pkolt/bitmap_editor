@@ -8,6 +8,7 @@ const CreateBitmap = lazy(() => import('./pages/CreateBitmap'));
 const EditBitmap = lazy(() => import('./pages/EditBitmap'));
 const ImportFromImage = lazy(() => import('./pages/ImportFromImage'));
 const ImportFromJson = lazy(() => import('./pages/ImportFromJson'));
+const ImportFromCollections = lazy(() => import('./pages/ImportFromCollections'));
 
 export const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ export const router = createBrowserRouter([
   {
     path: PageUrl.ImportFromJson,
     element: <ImportFromJson />,
+  },
+  {
+    path: PageUrl.ImportFromCollections,
+    element: <ImportFromCollections />,
   },
   {
     path: '*',

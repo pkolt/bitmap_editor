@@ -1,10 +1,11 @@
 import ImportFromImage from './';
-import { test, renderPage, expect, screen, waitFor } from '@/test-utils';
+import { test, renderPage, expect, screen, waitFor, server, http, HttpResponse } from '@/test-utils';
 import { PageUrl } from '@/constants/urls';
 import { vi } from 'vitest';
 import { FakeCanvas } from '@/test-utils/canvas';
 import * as createCanvasModule from '@/pages/ImportFromImage/ImportForm/createCanvas';
 import { generatePath } from 'react-router-dom';
+import { ImportFromImagePageState } from './types';
 
 // https://icons.getbootstrap.com/icons/brilliance/
 const svgData = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -83,13 +84,18 @@ const createFileFromSvg = (data: string, filename: string): File => {
   return new File([blob], filename, { type: mimeType });
 };
 
-const renderImportFromJsonPage = () => renderPage(<ImportFromImage />, { route: { path: PageUrl.ImportFromImage } });
+const renderImportFromImagePage = () => renderPage(<ImportFromImage />, { route: { path: PageUrl.ImportFromImage } });
+
+const mockCreateCanvas = async () => {
+  const mockCreateCanvas = await vi.importMock<typeof createCanvasModule>(
+    '@/pages/ImportFromImage/ImportForm/createCanvas',
+  );
+  mockCreateCanvas.createCanvas.mockImplementation(() => new FakeCanvas(imageData) as unknown as HTMLCanvasElement);
+};
 
 const setupTest = async () => {
-  const mockModule = await vi.importMock<typeof createCanvasModule>('@/pages/ImportFromImage/ImportForm/createCanvas');
-  mockModule.createCanvas.mockImplementation(() => new FakeCanvas(imageData) as unknown as HTMLCanvasElement);
-
-  const renderResult = renderImportFromJsonPage();
+  await mockCreateCanvas();
+  const renderResult = renderImportFromImagePage();
   const { userEvent } = renderResult;
   const file = createFileFromSvg(svgData, 'brilliance.svg');
   const inputFile = screen.getByLabelText('Image (*.jpg, *.png, *.svg)');
@@ -149,4 +155,19 @@ test('reset form', async () => {
 
   await userEvent.click(resetButton);
   expect(saveButton).toBeDisabled();
+});
+
+test('imageUrl param', async () => {
+  server.use(
+    http.get('/apple.svg', () => {
+      return HttpResponse.xml('<svg />');
+    }),
+  );
+  await mockCreateCanvas();
+  const { router } = renderImportFromImagePage();
+  const pageState = { imageUrl: 'apple.svg' } satisfies ImportFromImagePageState;
+  await router.navigate(PageUrl.ImportFromImage, { state: pageState });
+  const inputFile: HTMLInputElement = screen.getByLabelText('Image (*.jpg, *.png, *.svg)');
+  expect(inputFile.files?.length).toBe(1);
+  expect(inputFile.files?.[0]?.name).toBe('apple.svg');
 });

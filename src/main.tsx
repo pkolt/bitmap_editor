@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
-import '~bootstrap/dist/css/bootstrap.css';
+import './scss/styles.scss';
 import '~bootstrap-icons/font/bootstrap-icons.css';
 import { SuspenseFallback } from './components/SuspenseFallback/index.tsx';
 import './i18n';

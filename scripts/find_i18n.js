@@ -39,9 +39,11 @@ const main = ({ locales, srcDir, ext, transDir }) => {
     for (const key of Object.keys(jsonData)) {
       if (!tokens.has(key)) {
         if (!showHeader) {
+          // eslint-disable-next-line no-console, no-undef
           console.log(`Unknown tokens in file: ${jsonFile}`);
           showHeader = true;
         }
+        // eslint-disable-next-line no-console, no-undef
         console.log(`"${key}"`);
       }
     }
@@ -56,7 +58,8 @@ const main = ({ locales, srcDir, ext, transDir }) => {
     }
 
     if (addedCount > 0) {
-      fs.writeFileSync(jsonFile, JSON.stringify(data, null, 2), 'utf-8');
+      fs.writeFileSync(jsonFile, JSON.stringify(data, null, 2) + '\n', 'utf-8');
+      // eslint-disable-next-line no-console, no-undef
       console.log(`Change file "${jsonFile}" - ${addedCount} added`);
     }
   }

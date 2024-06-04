@@ -78,6 +78,8 @@
     "Grid": "Grid",
     "Resize": "Resize",
     "Invert color": "Invert color",
-    "Created by": "Created by"
+    "Created by": "Created by",
+    "Import from collections": "Import from collections",
+    "Search": "Search"
   }
 }

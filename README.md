@@ -113,3 +113,8 @@ npm start
 For some LCD displays such as the SSD1306, the image width must be a multiple of 8. If this requirement is not met, you will see a distorted image when displayed.
 
 Just use an image width that is a multiple of 8.
+
+## License
+
+- Bitmap Editor - [MIT](./LICENSE.md)
+- Bootstrap icons - [MIT](https://github.com/twbs/icons/blob/main/LICENSE)

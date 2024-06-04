@@ -12,6 +12,9 @@ export const ButtonList = () => {
       <Link to={PageUrl.ImportFromImage} className="btn btn-primary btn-lg">
         {t('Import from image')}
       </Link>
+      <Link to={PageUrl.ImportFromCollections} className="btn btn-primary btn-lg">
+        {t('Import from collections')}
+      </Link>
       <Link to={PageUrl.ImportFromJson} className="btn btn-primary btn-lg">
         {t('Import from JSON')}
       </Link>

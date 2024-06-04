@@ -1,15 +1,17 @@
 import { Component } from 'react';
 
-interface ErrorBoundaryProps extends React.PropsWithChildren {}
+interface ErrorBoundaryProps extends React.PropsWithChildren {
+  error?: Error;
+}
 
 interface ErrorBoundaryState {
-  error: Error | null;
+  error?: Error;
 }
 
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    this.state = { error: null };
+    this.state = { error: props.error };
   }
 
   static getDerivedStateFromError(error: Error) {
