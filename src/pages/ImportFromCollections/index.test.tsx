@@ -10,11 +10,9 @@ const renderImportFromCollectionsPage = () =>
 
 const setupServerHandler = (data: string[]) => {
   server.use(
-    ...[
-      http.get(ICONS_DATA_URL, () => {
-        return HttpResponse.json(data);
-      }),
-    ],
+    http.get(ICONS_DATA_URL, () => {
+      return HttpResponse.json(data);
+    }),
   );
 };
 
