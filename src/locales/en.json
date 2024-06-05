@@ -5,8 +5,6 @@
     "Export to file": "Export to file",
     "Or": "Or",
     "Create new bitmap": "Create new bitmap",
-    "Import from image": "Import from image",
-    "Import from JSON": "Import from JSON",
     "Name": "Name",
     "Save": "Save",
     "Delete bitmap": "Delete bitmap",
@@ -33,7 +31,6 @@
     "Fit to image": "Fit to image",
     "Reset": "Reset",
     "Image": "Image",
-    "Close": "Close",
     "Create image for OLED display": "Create image for OLED display",
     "Cancel": "Cancel",
     "Accept": "Accept",
@@ -80,6 +77,11 @@
     "Invert color": "Invert color",
     "Created by": "Created by",
     "Import from collections": "Import from collections",
-    "Search": "Search"
+    "Search": "Search",
+    "Create": "Create",
+    "Import": "Import",
+    "From image": "From image",
+    "From collections": "From collections",
+    "From JSON": "From JSON"
   }
 }
