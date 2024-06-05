@@ -9,12 +9,24 @@ const BITMAP_ITEM_ID = 'bitmap-item';
 
 const renderHomePage = () => renderPage(<Home />, { route: { path: PageUrl.Home } });
 
-const createTestRedirect = (buttonText: string, redirectUrl: PageUrl) => async () => {
-  const { router, userEvent } = renderHomePage();
-  const button = screen.getByText(buttonText);
-  await userEvent.click(button);
-  expect(router.location.pathname).toBe(redirectUrl);
-};
+interface TestRedirectParams {
+  buttonText: string;
+  dropdownText?: string;
+  redirectUrl: PageUrl;
+}
+
+const createTestRedirect =
+  ({ buttonText, dropdownText, redirectUrl }: TestRedirectParams) =>
+  async () => {
+    const { router, userEvent } = renderHomePage();
+    if (dropdownText) {
+      const dropdown = screen.getByText(dropdownText);
+      await userEvent.click(dropdown);
+    }
+    const button = screen.getByText(buttonText);
+    await userEvent.click(button);
+    expect(router.location.pathname).toBe(redirectUrl);
+  };
 
 test('show empty', async () => {
   const { router } = renderHomePage();
@@ -22,11 +34,26 @@ test('show empty', async () => {
   expect(router.location.pathname).toBe(PageUrl.Home);
 });
 
-test('click create new bitmap', createTestRedirect('Create new bitmap', PageUrl.CreateBitmap));
+test('click create new bitmap', createTestRedirect({ buttonText: 'Create', redirectUrl: PageUrl.CreateBitmap }));
 
-test('click import from image', createTestRedirect('Import from image', PageUrl.ImportFromImage));
+test(
+  'click import from image',
+  createTestRedirect({ buttonText: 'From image', dropdownText: 'Import', redirectUrl: PageUrl.ImportFromImage }),
+);
 
-test('click import from json', createTestRedirect('Import from JSON', PageUrl.ImportFromJson));
+test(
+  'click import from json',
+  createTestRedirect({ buttonText: 'From JSON', dropdownText: 'Import', redirectUrl: PageUrl.ImportFromJson }),
+);
+
+test(
+  'click import from collections',
+  createTestRedirect({
+    buttonText: 'From collections',
+    dropdownText: 'Import',
+    redirectUrl: PageUrl.ImportFromCollections,
+  }),
+);
 
 test('show list', () => {
   const { stores } = renderHomePage();
