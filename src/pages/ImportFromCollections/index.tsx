@@ -34,7 +34,7 @@ const ImportFromCollections = () => {
       <main className="d-flex flex-grow-1 flex-column gap-3">
         <h1 className="text-center">{t('Import from collections')}</h1>
         {!icons && <Loading />}
-        {icons && icons.length > 0 && (
+        {data && (
           <>
             <div className="d-flex justify-content-center mb-3">
               <InputGroup className="w-25">
@@ -45,7 +45,7 @@ const ImportFromCollections = () => {
               </InputGroup>
             </div>
             <div className="grid">
-              {icons.map((it) => {
+              {icons?.map((it) => {
                 return (
                   <Item
                     key={it.name}
