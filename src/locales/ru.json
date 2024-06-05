@@ -5,8 +5,6 @@
     "Export to file": "Экспортировать в файл",
     "Or": "Или",
     "Create new bitmap": "Создать новый bitmap",
-    "Import from image": "Импортировать из изображения",
-    "Import from JSON": "Импортировать из JSON",
     "Name": "Имя",
     "Save": "Сохранить",
     "Delete bitmap": "Удалить bitmap",
@@ -33,7 +31,6 @@
     "Fit to image": "По размеру изображения",
     "Reset": "Сброс",
     "Image": "Изображение",
-    "Close": "Закрыть",
     "Create image for OLED display": "Создайте изображение для OLED дисплея",
     "Cancel": "Отмена",
     "Accept": "Подтвердить",
@@ -80,6 +77,11 @@
     "Invert color": "Инвертировать цвет",
     "Created by": "Создано",
     "Import from collections": "Импортировать из набора",
-    "Search": "Поиск"
+    "Search": "Поиск",
+    "Create": "Создать",
+    "Import": "Импортировать",
+    "From image": "Из изображения",
+    "From collections": "Из коллекции",
+    "From JSON": "Из JSON"
   }
 }
