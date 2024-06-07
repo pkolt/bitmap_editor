@@ -20,7 +20,7 @@
     "coverage": "vitest run --coverage --coverage.reporter='text-summary'",
     "coverage-dev": "vitest run --coverage --coverage.reporter='html'",
     "check-ts": "tsc --noEmit",
-    "eslint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "eslint": "eslint . --report-unused-disable-directives --max-warnings 0",
     "eslint-fix": "node --run eslint -- --fix",
     "format": "prettier --check src",
     "format-fix": "prettier --write src",
@@ -33,7 +33,7 @@
     "pre-commit": "node --run lint-all && node --run test && node --run bench"
   },
   "dependencies": {
-    "@hookform/resolvers": "^3.4.2",
+    "@hookform/resolvers": "^3.6.0",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "classnames": "^2.5.1",
@@ -58,12 +58,15 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
+    "@eslint/compat": "^1.0.3",
+    "@eslint/eslintrc": "^3.1.0",
+    "@eslint/js": "^9.4.0",
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.5.2",
     "@types/bootstrap": "^5.2.10",
     "@types/file-saver": "^2.0.7",
     "@types/luxon": "^3.4.2",
-    "@types/node": "^20.14.1",
+    "@types/node": "^20.14.2",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@types/uuid": "^9.0.8",
@@ -77,12 +80,12 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
     "happy-dom": "^14.12.0",
-    "knip": "^5.17.4",
+    "knip": "^5.18.0",
     "msw": "^2.3.1",
-    "prettier": "^3.3.0",
+    "prettier": "^3.3.1",
     "sass": "^1.77.4",
     "typescript": "^5.4.5",
-    "vite": "^5.2.12",
+    "vite": "^5.2.13",
     "vitest": "^1.5.0"
   }
 }
