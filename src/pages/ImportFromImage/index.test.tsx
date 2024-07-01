@@ -127,7 +127,7 @@ test('import bitmap from image', async () => {
   expect(bitmap).toBeDefined();
   const url = generatePath(PageUrl.EditBitmap, { id: bitmap!.id });
   expect(router.location.pathname).toBe(url);
-  expect(bitmap?.data).toEqual(BITMAP_NORMAL_DATA);
+  expect(bitmap?.data).toEqual(BITMAP_INVERT_DATA);
 });
 
 test('invert color', async () => {
@@ -142,7 +142,7 @@ test('invert color', async () => {
 
   const bitmap = stores.bitmaps.bitmaps.find((it) => it.name === BITMAP_NAME);
   expect(bitmap).toBeDefined();
-  expect(bitmap!.data).toEqual(BITMAP_INVERT_DATA);
+  expect(bitmap!.data).toEqual(BITMAP_NORMAL_DATA);
 });
 
 test('reset form', async () => {

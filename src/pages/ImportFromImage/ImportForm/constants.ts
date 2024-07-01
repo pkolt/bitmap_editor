@@ -8,5 +8,5 @@ export const defaultValues: FormValues = {
   height: 64,
   threshold: 100,
   name: '',
-  invertColor: false,
+  invertColor: true,
 };
