@@ -1,5 +1,4 @@
 import { DateTime } from 'luxon';
-import { v4 as uuidv4 } from 'uuid';
 import { Page } from '@/components/Page';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Input } from '@/components/Input';
@@ -45,7 +44,7 @@ const CreateBitmap = () => {
   const bitmapWidth = watch('width');
 
   const onSubmit = (data: FormValues) => {
-    const id = uuidv4();
+    const id = crypto.randomUUID();
     const timestamp = DateTime.now().toMillis();
     const bitmap = new Bitmap(data.width, data.height);
 

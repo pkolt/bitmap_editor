@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import { Page } from '@/components/Page';
 import { useCallback, useState } from 'react';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
@@ -25,7 +24,7 @@ const ImportFromImage = () => {
   const onSubmit = useCallback(
     (data: FormValues) => {
       const newBitmap = requiredValue(bitmap);
-      const id = uuidv4();
+      const id = crypto.randomUUID();
       const timestamp = DateTime.now().toMillis();
       const image: BitmapEntity = {
         id,
