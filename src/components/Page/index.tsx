@@ -6,9 +6,10 @@ import { ErrorBoundary } from './ErrorBoundary';
 
 interface PageProps extends React.PropsWithChildren {
   title: string;
+  hideTitle?: boolean;
 }
 
-export const Page = ({ title, children }: PageProps) => {
+export const Page = ({ title, hideTitle, children }: PageProps) => {
   useEffect(() => {
     document.title = title;
   }, [title]);
@@ -16,7 +17,12 @@ export const Page = ({ title, children }: PageProps) => {
   return (
     <div className="container d-flex flex-column gap-4 min-vh-100">
       <Header />
-      <ErrorBoundary>{children}</ErrorBoundary>
+      <ErrorBoundary>
+        <main className="d-flex flex-column flex-grow-1 justify-content-center align-items-center gap-3">
+          {!hideTitle && <h1 className="text-center">{title}</h1>}
+          {children}
+        </main>
+      </ErrorBoundary>
       <Footer />
       <UpdatePwaDialog />
     </div>

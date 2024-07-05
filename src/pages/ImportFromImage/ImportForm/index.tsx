@@ -36,6 +36,7 @@ export const ImportForm = ({ setBitmap, onSubmit, imageUrl }: ImportFormProps) =
     watch,
     setValue,
     formState: { isValid, isDirty },
+    setFocus,
   } = methods;
   const data = watch();
   const { width, height, threshold } = data;
@@ -63,9 +64,10 @@ export const ImportForm = ({ setBitmap, onSubmit, imageUrl }: ImportFormProps) =
       if (elem) {
         setValue('files', value);
         (elem as HTMLInputElement).files = value;
+        setFocus('name');
       }
     },
-    [setValue],
+    [setValue, setFocus],
   );
   useImageUrl({ imageUrl, setImage });
 

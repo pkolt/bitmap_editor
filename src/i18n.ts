@@ -13,5 +13,6 @@ i18n
       ru: transRu,
     },
     debug: import.meta.env.MODE === 'development',
+    supportedLngs: ['en', 'ru'],
     fallbackLng: 'en',
   });

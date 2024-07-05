@@ -9,11 +9,9 @@ const Home = () => {
   const { openDialog, dialog, closeDialog } = useHomePage();
   const { t } = useTranslation();
   return (
-    <Page title={t('Bitmap Editor')}>
-      <main className="d-flex flex-column flex-grow-1 justify-content-center align-items-center">
-        <BitmapList openDialog={openDialog} />
-        <ButtonList />
-      </main>
+    <Page title={t('Bitmap Editor')} hideTitle>
+      <BitmapList openDialog={openDialog} />
+      <ButtonList />
       {dialog && <DialogList dialog={dialog} closeDialog={closeDialog} />}
     </Page>
   );

@@ -32,10 +32,7 @@ const ImportFromJson = () => {
 
   return (
     <Page title={t('Import bitmap from JSON')}>
-      <main className="d-flex flex-column flex-grow-1 justify-content-center align-items-center gap-3">
-        <h1>{t('Import bitmap from JSON')}</h1>
-        {entities ? <FinalForm entities={entities} onFinish={handleFinish} /> : <FileForm onNext={handleNext} />}
-      </main>
+      {entities ? <FinalForm entities={entities} onFinish={handleFinish} /> : <FileForm onNext={handleNext} />}
     </Page>
   );
 };

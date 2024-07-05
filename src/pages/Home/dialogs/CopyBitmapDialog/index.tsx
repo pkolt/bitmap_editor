@@ -2,7 +2,6 @@ import { Input } from '@/components/Input';
 import { PageUrl } from '@/constants/urls';
 import { useBitmapsStore } from '@/stores/bitmaps';
 import { DateTime } from 'luxon';
-import { v4 as uuidv4 } from 'uuid';
 import { FormProvider, useForm } from 'react-hook-form';
 import { generatePath, useNavigate } from 'react-router-dom';
 import { BitmapEntity } from '@/utils/bitmap/types';
@@ -45,7 +44,7 @@ export const CopyBitmapDialog = ({ bitmapId, onClose }: CopyBitmapDialogProps): 
   } = methods;
 
   const onSubmit = (data: FormValues) => {
-    const id = uuidv4();
+    const id = crypto.randomUUID();
     const timestamp = DateTime.now().toMillis();
 
     const image: BitmapEntity = {

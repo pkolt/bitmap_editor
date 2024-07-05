@@ -1,5 +1,4 @@
 import { DateTime } from 'luxon';
-import { v4 as uuidv4 } from 'uuid';
 import { Page } from '@/components/Page';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Input } from '@/components/Input';
@@ -45,7 +44,7 @@ const CreateBitmap = () => {
   const bitmapWidth = watch('width');
 
   const onSubmit = (data: FormValues) => {
-    const id = uuidv4();
+    const id = crypto.randomUUID();
     const timestamp = DateTime.now().toMillis();
     const bitmap = new Bitmap(data.width, data.height);
 
@@ -65,22 +64,19 @@ const CreateBitmap = () => {
 
   return (
     <Page title={t('Create new image')}>
-      <main className="d-flex flex-column flex-grow-1 justify-content-center align-items-center">
-        <h1>{t('Create new bitmap')}</h1>
-        <BitmapSizeAlert bitmapWidth={bitmapWidth} className="mb-3" />
-        <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)} className="w-50 d-flex flex-column gap-3">
-            <Input label={t('Name')} autoFocus {...register('name', { required: true })} />
-            <Input label={t('Width')} {...register('width', { valueAsNumber: true })} />
-            <Input label={t('Height')} {...register('height', { valueAsNumber: true })} />
-            <div className="text-center">
-              <Button type="submit" disabled={!isValid}>
-                {t('Save')}
-              </Button>
-            </div>
-          </form>
-        </FormProvider>
-      </main>
+      <BitmapSizeAlert bitmapWidth={bitmapWidth} className="mb-3" />
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)} className="w-50 d-flex flex-column gap-3">
+          <Input label={t('Name')} autoFocus {...register('name', { required: true })} />
+          <Input label={t('Width')} {...register('width', { valueAsNumber: true })} />
+          <Input label={t('Height')} {...register('height', { valueAsNumber: true })} />
+          <div className="text-center">
+            <Button type="submit" disabled={!isValid}>
+              {t('Save')}
+            </Button>
+          </div>
+        </form>
+      </FormProvider>
     </Page>
   );
 };
