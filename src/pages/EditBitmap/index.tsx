@@ -16,10 +16,8 @@ const EditBitmap = () => {
   }
 
   return (
-    <Page title={`${t('Edit bitmap:')} ${image.name}`}>
-      <main className="d-flex flex-column flex-grow-1 justify-content-center align-items-center">
-        <BitmapEditor bitmapId={id} />
-      </main>
+    <Page title={`${t('Edit bitmap:')} ${image.name}`} hideTitle>
+      <BitmapEditor bitmapId={id} />
     </Page>
   );
 };

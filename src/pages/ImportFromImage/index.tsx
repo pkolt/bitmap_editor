@@ -42,11 +42,8 @@ const ImportFromImage = () => {
 
   return (
     <Page title={t('Create bitmap from image')}>
-      <main className="d-flex flex-column flex-grow-1 justify-content-center align-items-center gap-3">
-        <h1>{t('Create bitmap from image')}</h1>
-        <ImportForm setBitmap={setBitmap} onSubmit={onSubmit} imageUrl={imageUrl} />
-        {bitmap && <BitmapView bitmap={bitmap} />}
-      </main>
+      <ImportForm setBitmap={setBitmap} onSubmit={onSubmit} imageUrl={imageUrl} />
+      {bitmap && <BitmapView bitmap={bitmap} />}
     </Page>
   );
 };
