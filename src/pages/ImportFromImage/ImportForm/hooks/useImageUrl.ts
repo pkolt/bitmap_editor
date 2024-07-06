@@ -1,8 +1,9 @@
+import { capitalize } from '@/utils/string';
 import { useEffect } from 'react';
 
 interface ImageUrlHookParams {
   imageUrl?: string;
-  setImage: (value: FileList) => void;
+  setImage: (files: FileList, name: string) => void;
 }
 
 export const useImageUrl = ({ imageUrl, setImage }: ImageUrlHookParams): void => {
@@ -13,9 +14,10 @@ export const useImageUrl = ({ imageUrl, setImage }: ImageUrlHookParams): void =>
         const blob = await res.blob();
         const dataTransfer = new DataTransfer();
         const mimeType = 'image/svg+xml';
-        const name = imageUrl.split('/').at(-1) ?? '';
-        dataTransfer.items.add(new File([blob], name, { type: mimeType }));
-        setImage(dataTransfer.files);
+        const filename = imageUrl.split('/').at(-1) ?? '';
+        const name = capitalize(filename.split('.')[0].replaceAll('-', ' '));
+        dataTransfer.items.add(new File([blob], filename, { type: mimeType }));
+        setImage(dataTransfer.files, name);
       })();
     }
   }, [imageUrl, setImage]);
