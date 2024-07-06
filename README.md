@@ -106,11 +106,11 @@ npm start
 
 ## FAQ
 
-### Why is my image distorted?
+### Why my image show wrong?
 
 ![Distorted image](./docs/distorted_image.jpg)
 
-For some LCD displays such as the SSD1306, the image width must be a multiple of 8. If this requirement is not met, you will see a distorted image when displayed.
+For some LCD displays such as the SSD1306, the image width must be a multiple of 8. If this requirement is not met, you will see a wrong image when displayed.
 
 Just use an image width that is a multiple of 8.
 
