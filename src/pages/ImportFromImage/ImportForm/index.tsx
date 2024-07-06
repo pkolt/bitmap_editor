@@ -59,16 +59,18 @@ export const ImportForm = ({ setBitmap, onSubmit, imageUrl }: ImportFormProps) =
   }, [onReset, reset]);
 
   const setImage = useCallback(
-    (value: FileList) => {
+    (files: FileList, name: string) => {
       const elem = document.getElementById(ID_FILE_INPUT);
       if (elem) {
-        setValue('files', value);
-        (elem as HTMLInputElement).files = value;
+        setValue('files', files);
+        (elem as HTMLInputElement).files = files;
+        setValue('name', name);
         setFocus('name');
       }
     },
     [setValue, setFocus],
   );
+
   useImageUrl({ imageUrl, setImage });
 
   useEffect(() => {
