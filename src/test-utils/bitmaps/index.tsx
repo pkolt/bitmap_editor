@@ -8,4 +8,5 @@ export const bitmapEntity: BitmapEntity = {
   data: [4086534384, 252694479],
   width: 8,
   height: 8,
+  favorite: false,
 };

@@ -55,6 +55,7 @@ export const CopyBitmapDialog = ({ bitmapId, onClose }: CopyBitmapDialogProps): 
       data: bitmapEntity.data,
       width: bitmapEntity.width,
       height: bitmapEntity.height,
+      favorite: bitmapEntity.favorite,
     };
 
     addBitmap(image);

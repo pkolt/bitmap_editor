@@ -31,6 +31,7 @@ const ImportFromImage = () => {
         name: data.name,
         createdAt: timestamp,
         updatedAt: timestamp,
+        favorite: false,
         ...newBitmap.toJSON(),
       };
       addBitmap(image);

@@ -17,4 +17,5 @@ export interface BitmapEntity {
   data: number[];
   createdAt: number;
   updatedAt: number;
+  favorite: boolean;
 }
