@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Component } from 'react';
 
 interface ErrorBoundaryProps extends React.PropsWithChildren {

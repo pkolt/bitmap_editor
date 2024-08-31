@@ -8,7 +8,7 @@ interface RangeProps
 }
 
 export const Range = forwardRef<HTMLInputElement, RangeProps>(function Range(
-  { label, className, ...props },
+  { label, className, ...props }: RangeProps,
   ref,
 ): JSX.Element {
   const id = useId();

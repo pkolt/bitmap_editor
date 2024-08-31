@@ -38,7 +38,7 @@ export const parseBitmapFile = (data: string): BitmapEntity[] => {
         }));
       }
     }
-  } catch (err) {
+  } catch {
     // skip error
   }
   return entities;
