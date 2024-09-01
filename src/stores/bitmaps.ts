@@ -36,7 +36,7 @@ export const useBitmapsStore = create<BitmapsState>()(
     }),
     {
       name: 'bitmaps',
-      version: 3, // a migration will be triggered if the version in the storage mismatches this one
+      version: 4, // a migration will be triggered if the version in the storage mismatches this one
       migrate: (persistedState, version) => {
         if (version === 1) {
           // if the stored value is in version 0, we convert data
@@ -57,6 +57,17 @@ export const useBitmapsStore = create<BitmapsState>()(
             bitmaps: persistedStateV2.bitmaps.map((it) => ({
               ...it,
               data: toArrayOfNumber(toArrayOfBoolLegacy(it.data)),
+            })),
+          };
+        }
+        if (version === 3) {
+          type BitmapEntityV3 = Omit<BitmapEntity, 'favorite'>;
+          const persistedStateV3 = persistedState as Omit<BitmapsState, 'bitmaps'> & { bitmaps: BitmapEntityV3[] };
+          return {
+            ...persistedStateV3,
+            bitmaps: persistedStateV3.bitmaps.map((it) => ({
+              ...it,
+              favorite: false,
             })),
           };
         }

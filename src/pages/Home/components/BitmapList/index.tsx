@@ -3,6 +3,10 @@ import { useMemo } from 'react';
 import { OpenDialogFn } from '../../types';
 import { BitmapItem } from '../BitmapItem';
 import { useTranslation } from 'react-i18next';
+import { SortDirection } from './types';
+import { SortButton } from './SortButton';
+import { useSortButton } from './SortButton/hooks';
+import { orderBitmaps } from './utils';
 
 interface BitmapListProps {
   openDialog: OpenDialogFn;
@@ -11,7 +15,11 @@ interface BitmapListProps {
 export const BitmapList = ({ openDialog }: BitmapListProps): JSX.Element | null => {
   const { t } = useTranslation();
   const { bitmaps } = useBitmapsStore();
-  const bitmapIds = useMemo(() => bitmaps.toSorted((a, b) => b.createdAt - a.createdAt).map((it) => it.id), [bitmaps]);
+  const nameSortBtn = useSortButton(SortDirection.NONE);
+  const dateSortBtn = useSortButton(SortDirection.DESC);
+  const bitmapIds: string[] = useMemo(() => {
+    return orderBitmaps(bitmaps, nameSortBtn.direction, dateSortBtn.direction).map((it) => it.id);
+  }, [bitmaps, dateSortBtn.direction, nameSortBtn.direction]);
 
   if (bitmapIds.length === 0) {
     return null;
@@ -19,14 +27,22 @@ export const BitmapList = ({ openDialog }: BitmapListProps): JSX.Element | null 
 
   return (
     <div className="mb-3" data-testid="bitmap-list">
-      <h2 className="text-center mb-2">{t('Open')}</h2>
+      <h2 className="text-center mb-3">{t('Open')}</h2>
       <table className="table table-borderless mb-3">
         <thead>
           <tr>
             <th></th>
-            <th>{t('Name')}</th>
+            <th>
+              <SortButton direction={nameSortBtn.direction} onClick={nameSortBtn.toggle}>
+                {t('Name')}
+              </SortButton>
+            </th>
             <th className="text-center">{t('Size')}</th>
-            <th>{t('Created')}</th>
+            <th>
+              <SortButton direction={dateSortBtn.direction} onClick={dateSortBtn.toggle}>
+                {t('Created')}
+              </SortButton>
+            </th>
             <th colSpan={3}>{t('Actions')}</th>
           </tr>
         </thead>
