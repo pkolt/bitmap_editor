@@ -1,6 +1,7 @@
 {
   "translation": {
     "Accept": "Подтвердить",
+    "Actions": "Действия",
     "Align": "Выравнивание",
     "Align bottom": "Выравнивание снизу",
     "Align horizontal": "Выравнивание по горизонтали",
@@ -24,6 +25,7 @@
     "Create copy": "Создать копию",
     "Create image for OLED display": "Создайте изображение для OLED дисплея",
     "Create new image": "Создать новое изображение",
+    "Created": "Создано",
     "Created by": "Создано",
     "Crop": "Обрезать",
     "Data format": "Формат данных",
@@ -72,6 +74,7 @@
     "Save bitmaps": "Сохранить bitmaps",
     "Search": "Поиск",
     "Select all": "Выбрать все",
+    "Size": "Размер",
     "Size format": "Формат размера",
     "Threshold": "Чувствительность",
     "Top": "Верх",

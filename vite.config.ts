@@ -42,6 +42,8 @@ export default defineConfig({
         'src/components/BitmapEditor/components/BitmapView/getCanvas.ts',
         'src/components/SuspenseFallback',
         'src/**/__mocks__',
+        'src/**/*.test.tsx',
+        'src/**/*.test.ts',
         'src/App.tsx',
         'src/main.tsx',
         'src/router.tsx',

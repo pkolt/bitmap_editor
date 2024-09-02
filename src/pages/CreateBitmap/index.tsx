@@ -53,6 +53,7 @@ const CreateBitmap = () => {
       name: data.name,
       createdAt: timestamp,
       updatedAt: timestamp,
+      favorite: false,
       ...bitmap.toJSON(),
     };
 

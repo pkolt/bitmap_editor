@@ -1,7 +1,7 @@
 import * as zustandMiddleware from 'zustand/middleware';
-import { vi } from 'vitest';
 
-const { persist: actualPersist } = await vi.importActual<typeof zustandMiddleware>('zustand/middleware');
+type ZustandMiddleware = typeof zustandMiddleware;
+type Persist = ZustandMiddleware['persist'];
 
 // Skip persist logic
-export const persist = (...args: Parameters<typeof actualPersist>) => args[0];
+export const persist = (...args: Parameters<Persist>) => args[0];

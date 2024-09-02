@@ -11,7 +11,7 @@ interface InputProps
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
-  { label, className, id, ...props },
+  { label, className, id, ...props }: InputProps,
   ref,
 ): JSX.Element {
   const defaultId = useId();
