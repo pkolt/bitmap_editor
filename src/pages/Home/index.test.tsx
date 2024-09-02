@@ -4,8 +4,11 @@ import { PageUrl } from '@/constants/urls';
 import { bitmapEntity } from '@/test-utils/bitmaps';
 import FileSaver from 'file-saver';
 import { generatePath } from 'react-router-dom';
+import { SortValue } from '@/stores/settings';
+import { DateTime } from 'luxon';
 
 const BITMAP_ITEM_ID = 'bitmap-item';
+const BITMAP_ITEM_TITLE_ID = 'bitmap-item-title';
 
 const renderHomePage = () => renderPage(<Home />, { route: { path: PageUrl.Home } });
 
@@ -107,4 +110,101 @@ test('copy bitmap', async () => {
   const id = stores.bitmaps.bitmaps.at(-1)?.id ?? '';
   const url = generatePath(PageUrl.EditBitmap, { id });
   expect(router.location.pathname).toBe(url);
+});
+
+const renderPageForSorting = () => {
+  const props = renderHomePage();
+  const { stores } = props;
+  stores.settings.updateBitmapListSettings({ nameSortValue: SortValue.NONE, dateSortValue: SortValue.NONE });
+  stores.bitmaps.addBitmap({
+    ...bitmapEntity,
+    id: '1',
+    name: 'Banana',
+    createdAt: DateTime.now().minus({ day: 2 }).toMillis(),
+  });
+  stores.bitmaps.addBitmap({
+    ...bitmapEntity,
+    id: '2',
+    name: 'Orange',
+    createdAt: DateTime.now().minus({ day: 3 }).toMillis(),
+  });
+  stores.bitmaps.addBitmap({
+    ...bitmapEntity,
+    id: '3',
+    name: 'Apple',
+    createdAt: DateTime.now().minus({ day: 1 }).toMillis(),
+  });
+  return props;
+};
+
+test('sort by favorite', async () => {
+  const { userEvent } = renderPageForSorting();
+
+  const favoriteButtons = screen.getAllByTitle('Favorite');
+  expect(favoriteButtons.length).toBe(3);
+
+  await userEvent.click(favoriteButtons[favoriteButtons.length - 1]);
+
+  const items = screen.getAllByTestId(BITMAP_ITEM_TITLE_ID);
+  expect(items[0].textContent).toBe('Apple');
+  expect(items[1].textContent).toBe('Banana');
+  expect(items[2].textContent).toBe('Orange');
+});
+
+test('sort by name', async () => {
+  const { userEvent } = renderPageForSorting();
+
+  const sortButton = screen.getByText('Name');
+  await userEvent.click(sortButton);
+  {
+    const items = screen.getAllByTestId(BITMAP_ITEM_TITLE_ID);
+    expect(items[0].textContent).toBe('Apple');
+    expect(items[1].textContent).toBe('Banana');
+    expect(items[2].textContent).toBe('Orange');
+  }
+
+  await userEvent.click(sortButton);
+  {
+    const items = screen.getAllByTestId(BITMAP_ITEM_TITLE_ID);
+    expect(items[0].textContent).toBe('Orange');
+    expect(items[1].textContent).toBe('Banana');
+    expect(items[2].textContent).toBe('Apple');
+  }
+
+  await userEvent.click(sortButton);
+  {
+    const items = screen.getAllByTestId(BITMAP_ITEM_TITLE_ID);
+    expect(items[0].textContent).toBe('Banana');
+    expect(items[1].textContent).toBe('Orange');
+    expect(items[2].textContent).toBe('Apple');
+  }
+});
+
+test('sort by date', async () => {
+  const { userEvent } = renderPageForSorting();
+
+  const sortButton = screen.getByText('Created');
+  await userEvent.click(sortButton);
+  {
+    const items = screen.getAllByTestId(BITMAP_ITEM_TITLE_ID);
+    expect(items[0].textContent).toBe('Apple');
+    expect(items[1].textContent).toBe('Banana');
+    expect(items[2].textContent).toBe('Orange');
+  }
+
+  await userEvent.click(sortButton);
+  {
+    const items = screen.getAllByTestId(BITMAP_ITEM_TITLE_ID);
+    expect(items[0].textContent).toBe('Orange');
+    expect(items[1].textContent).toBe('Banana');
+    expect(items[2].textContent).toBe('Apple');
+  }
+
+  await userEvent.click(sortButton);
+  {
+    const items = screen.getAllByTestId(BITMAP_ITEM_TITLE_ID);
+    expect(items[0].textContent).toBe('Banana');
+    expect(items[1].textContent).toBe('Orange');
+    expect(items[2].textContent).toBe('Apple');
+  }
 });

@@ -34,10 +34,11 @@ export const BitmapItem = ({ bitmapId, openDialog }: BitmapItemProps): JSX.Eleme
           className={bitmapEntity.favorite ? 'bi-star-fill text-warning' : 'bi-star text-black-50'}
           role="button"
           onClick={toggleFavorite}
+          title={t('Favorite')}
         />
       </td>
       <td>
-        <Link to={url} className="btn-link me-1">
+        <Link to={url} className="btn-link me-1" data-testid="bitmap-item-title">
           {bitmapEntity.name}
         </Link>
       </td>
