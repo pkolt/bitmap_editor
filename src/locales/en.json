@@ -1,6 +1,7 @@
 {
   "translation": {
     "Accept": "Accept",
+    "Actions": "Actions",
     "Align": "Align",
     "Align bottom": "Align bottom",
     "Align horizontal": "Align horizontal",
@@ -24,6 +25,7 @@
     "Create copy": "Create copy",
     "Create image for OLED display": "Create image for OLED display",
     "Create new image": "Create new image",
+    "Created": "Created",
     "Created by": "Created by",
     "Crop": "Crop",
     "Data format": "Data format",
@@ -72,6 +74,7 @@
     "Save bitmaps": "Save bitmaps",
     "Search": "Search",
     "Select all": "Select all",
+    "Size": "Size",
     "Size format": "Size format",
     "Threshold": "Threshold",
     "Top": "Top",
