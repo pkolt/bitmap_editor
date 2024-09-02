@@ -1,15 +1,15 @@
-import { SortDirection } from '../types';
+import { SortValue } from '@/stores/settings';
 
 interface Props {
-  direction: SortDirection;
+  direction: SortValue;
   onClick: () => void;
   children: string;
 }
 
-const Config: Record<SortDirection, { className: string }> = {
-  [SortDirection.NONE]: { className: 'bi-filter-circle' },
-  [SortDirection.DESC]: { className: 'bi-sort-down' },
-  [SortDirection.ASC]: { className: 'bi-sort-up-alt' },
+const Config: Record<SortValue, { className: string }> = {
+  [SortValue.NONE]: { className: 'bi-filter-circle' },
+  [SortValue.DESC]: { className: 'bi-sort-down' },
+  [SortValue.ASC]: { className: 'bi-sort-up-alt' },
 };
 
 export const SortButton = ({ direction, onClick, children }: Props) => {

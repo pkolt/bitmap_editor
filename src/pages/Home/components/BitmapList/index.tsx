@@ -1,12 +1,11 @@
 import { useBitmapsStore } from '@/stores/bitmaps';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { OpenDialogFn } from '../../types';
 import { BitmapItem } from '../BitmapItem';
 import { useTranslation } from 'react-i18next';
-import { SortDirection } from './types';
+import { useSettingsStore } from '@/stores/settings';
 import { SortButton } from './SortButton';
-import { useSortButton } from './SortButton/hooks';
-import { orderBitmaps } from './utils';
+import { getNextSortValue, orderBitmaps } from './utils';
 
 interface BitmapListProps {
   openDialog: OpenDialogFn;
@@ -15,11 +14,19 @@ interface BitmapListProps {
 export const BitmapList = ({ openDialog }: BitmapListProps): JSX.Element | null => {
   const { t } = useTranslation();
   const { bitmaps } = useBitmapsStore();
-  const nameSortBtn = useSortButton(SortDirection.NONE);
-  const dateSortBtn = useSortButton(SortDirection.DESC);
+  const { bitmapListSettings, updateBitmapListSettings } = useSettingsStore();
+
+  const onClickNameSort = useCallback(() => {
+    updateBitmapListSettings({ nameSortValue: getNextSortValue(bitmapListSettings.nameSortValue) });
+  }, [bitmapListSettings.nameSortValue, updateBitmapListSettings]);
+
+  const onClickDateSort = useCallback(() => {
+    updateBitmapListSettings({ dateSortValue: getNextSortValue(bitmapListSettings.dateSortValue) });
+  }, [bitmapListSettings.dateSortValue, updateBitmapListSettings]);
+
   const bitmapIds: string[] = useMemo(() => {
-    return orderBitmaps(bitmaps, nameSortBtn.direction, dateSortBtn.direction).map((it) => it.id);
-  }, [bitmaps, dateSortBtn.direction, nameSortBtn.direction]);
+    return orderBitmaps(bitmaps, bitmapListSettings.nameSortValue, bitmapListSettings.dateSortValue).map((it) => it.id);
+  }, [bitmaps, bitmapListSettings.dateSortValue, bitmapListSettings.nameSortValue]);
 
   if (bitmapIds.length === 0) {
     return null;
@@ -33,13 +40,13 @@ export const BitmapList = ({ openDialog }: BitmapListProps): JSX.Element | null 
           <tr>
             <th></th>
             <th>
-              <SortButton direction={nameSortBtn.direction} onClick={nameSortBtn.toggle}>
+              <SortButton direction={bitmapListSettings.nameSortValue} onClick={onClickNameSort}>
                 {t('Name')}
               </SortButton>
             </th>
             <th className="text-center">{t('Size')}</th>
             <th>
-              <SortButton direction={dateSortBtn.direction} onClick={dateSortBtn.toggle}>
+              <SortButton direction={bitmapListSettings.dateSortValue} onClick={onClickDateSort}>
                 {t('Created')}
               </SortButton>
             </th>
