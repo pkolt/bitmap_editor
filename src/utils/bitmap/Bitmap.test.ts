@@ -20,7 +20,7 @@ test('fromJSON', () => {
   const bitmapFromJson = Bitmap.fromJSON(bitmapEntity);
   expect(bitmapFromJson.width).toBe(8);
   expect(bitmapFromJson.height).toBe(8);
-  expect(bitmapFromJson._data).toEqual(bitmapData8x8);
+  expect(bitmapFromJson.data).toEqual(bitmapData8x8);
 });
 
 test('constructor', () => {
@@ -32,18 +32,18 @@ test('constructor (invalid data)', () => {
   expect(() => new Bitmap(8, 10, bitmapData8x8)).toThrowError();
 });
 
-test('getPixelCount', () => {
-  expect(bitmap.getPixelCount()).toBe(64);
+test('getter pixelCount', () => {
+  expect(bitmap.pixelCount).toBe(64);
 });
 
 test('getArea', () => {
-  const area = bitmap.getArea();
+  const area = bitmap.area;
   expect(area.width).toBe(8);
   expect(area.height).toBe(8);
-  expect(area.minX).toBe(0);
-  expect(area.minY).toBe(0);
-  expect(area.maxX).toBe(7); //! Why 7?
-  expect(area.maxY).toBe(7); //! Why 7?
+  expect(area.minPoint.x).toBe(0);
+  expect(area.minPoint.y).toBe(0);
+  expect(area.maxPoint.x).toBe(7); //! Why 7?
+  expect(area.maxPoint.y).toBe(7); //! Why 7?
 });
 
 test('getPixelValue', () => {
@@ -51,7 +51,7 @@ test('getPixelValue', () => {
   expect(bitmap.getPixelValue(new Point(0, 0))).toBeTruthy();
   expect(bitmap.getPixelValue(4)).toBeFalsy();
   expect(bitmap.getPixelValue(new Point(0, 4))).toBeFalsy();
-  expect(bitmap.getPixelValue(bitmap.getPixelCount() + 10)).toBeFalsy(); // invalid value (no throw error)
+  expect(bitmap.getPixelValue(bitmap.pixelCount + 10)).toBeFalsy(); // invalid value (no throw error)
 });
 
 test('setPixelValue', () => {
@@ -76,10 +76,10 @@ test('findFillPixelsArea (2x2)', () => {
   expect(area).not.toBeNull();
   expect(area?.width).toBe(2);
   expect(area?.height).toBe(2);
-  expect(area?.minX).toBe(0);
-  expect(area?.minY).toBe(0);
-  expect(area?.maxX).toBe(1); //! Why 1?
-  expect(area?.maxY).toBe(1); //! Why 1?
+  expect(area?.minPoint.x).toBe(0);
+  expect(area?.minPoint.y).toBe(0);
+  expect(area?.maxPoint.x).toBe(1); //! Why 1?
+  expect(area?.maxPoint.y).toBe(1); //! Why 1?
 });
 
 test('findFillPixelsArea (empty)', () => {
