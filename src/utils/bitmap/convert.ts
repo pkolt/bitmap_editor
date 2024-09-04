@@ -1,4 +1,4 @@
-const BITS_PER_NUMBER = Uint32Array.BYTES_PER_ELEMENT * 8;
+const BITS_PER_NUMBER = 32;
 
 /** @internal */
 export const getArrayOfNumLength = (lengthArrayOfBool: number) => {
