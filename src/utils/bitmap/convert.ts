@@ -14,9 +14,8 @@ export const binaryToNumber = (arrayOfBool: Uint8Array): number => {
     // Integer overflow.
     // BAD: (1 << 31) // -2147483648
     // GOOD: (1n << 31n) // 2147483648n
-    const bigValue = BigInt(value);
     const bigIndex = BigInt(index);
-    return bigValue ? accum | (1n << bigIndex) : accum & ~(1n << bigIndex);
+    return value ? accum | (1n << bigIndex) : accum & ~(1n << bigIndex);
   }, 0n);
   return Number(bigResult);
 };
