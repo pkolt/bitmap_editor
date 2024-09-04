@@ -131,8 +131,8 @@ export const ImportForm = ({ setBitmap, onSubmit, imageUrl }: ImportFormProps) =
           </div>
         </div>
         <div className="d-flex gap-3">
-          <Input label="Width" {...register('width', { valueAsNumber: true })} />
-          <Input label="Height" {...register('height', { valueAsNumber: true })} />
+          <Input label={t('Width')} {...register('width', { valueAsNumber: true })} />
+          <Input label={t('Height')} {...register('height', { valueAsNumber: true })} />
           <div className="d-flex flex-column">
             <div className="form-label">{t('Crop')}</div>
             <div className="d-flex gap-3">
