@@ -46,7 +46,7 @@ const CreateBitmap = () => {
   const onSubmit = (data: FormValues) => {
     const id = crypto.randomUUID();
     const timestamp = DateTime.now().toMillis();
-    const bitmap = new Bitmap(data.width, data.height);
+    const bitmap = Bitmap.create(data.width, data.height);
 
     const image: BitmapEntity = {
       id,

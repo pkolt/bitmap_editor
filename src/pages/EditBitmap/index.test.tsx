@@ -7,7 +7,7 @@ import { vi } from 'vitest';
 
 vi.mock('@/components/BitmapEditor/components/BitmapView/getCanvas');
 
-const INVERT_BITMAP_DATA = [208432911, 4042272816];
+const INVERT_BITMAP_DATA = [4042667568, 202116879];
 const EMPTY_BITMAP_DATA = [0, 0];
 
 const url = generatePath(PageUrl.EditBitmap, { id: bitmapEntity.id });
@@ -140,10 +140,11 @@ test('resize bitmap', async () => {
   const applyButton = screen.getByText('Apply');
   await userEvent.click(applyButton);
   const bitmap = stores.bitmaps.bitmaps.find((it) => it.id === bitmapEntity.id);
+
   expect(bitmap).toMatchObject({
     width,
     height,
-    data: [4076901120, 2415980544, 251662080, 3472936704, 0, 0, 0, 0, 0, 0],
+    data: [13172943, 983049, 15728880, 15925491, 0, 0, 0, 0, 0, 0],
   });
 });
 

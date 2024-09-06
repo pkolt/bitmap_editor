@@ -1,5 +1,5 @@
 import { DEFAULT_FILE_VERSION } from './constants';
-import { toArrayOfNumber } from './convert';
+import { reverseBits, toArrayOfNumber } from './convert';
 import { toArrayOfBoolLegacy } from './convert_legacy';
 import { BitmapEntity } from './types';
 
@@ -35,6 +35,12 @@ export const parseBitmapFile = (data: string): BitmapEntity[] => {
         entities = entities.map((it) => ({
           ...it,
           data: toArrayOfNumber(toArrayOfBoolLegacy(it.data)),
+        }));
+      }
+      if (obj.version === 2) {
+        entities = entities.map((it) => ({
+          ...it,
+          data: it.data.map(reverseBits),
         }));
       }
     }

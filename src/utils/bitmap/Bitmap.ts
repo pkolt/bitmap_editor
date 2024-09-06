@@ -1,84 +1,52 @@
-import { UINT8_BITS_PER_ELEMENT } from './constants';
-import { toArrayOfBool, toArrayOfNumber } from './convert';
-import { BitOrder, BitmapJSON } from './types';
+import { BitmapJSON, Coords } from './types';
 import { Area } from './Area';
 import { Point } from './Point';
+import { BitmapData } from './BitmapData';
 
 export class Bitmap {
-  #width: number;
-  #height: number;
-  #data: Uint8Array;
+  #data: BitmapData;
+
+  static create(width: number, height: number): Bitmap {
+    const data = BitmapData.create(width, height);
+    return new Bitmap(data);
+  }
 
   static fromJSON({ width, height, data }: BitmapJSON): Bitmap {
-    return new Bitmap(width, height, toArrayOfBool(data, width * height));
+    const array = Uint32Array.from(data);
+    const bitmapData = new BitmapData(width, height, array);
+    return new Bitmap(bitmapData);
   }
 
   get data() {
-    return Uint8Array.from(this.#data);
+    return this.#data;
   }
 
   get width() {
-    return this.#width;
+    return this.#data.width;
   }
 
   get height() {
-    return this.#height;
-  }
-
-  get pixelCount(): number {
-    return this.#width * this.#height;
+    return this.#data.height;
   }
 
   get area(): Area {
-    return Area.fromRectangle(0, 0, this.#width, this.#height);
+    return Area.fromRectangle(0, 0, this.width, this.height);
   }
 
-  constructor(width: number, height: number, data?: Uint8Array) {
-    this.#width = width;
-    this.#height = height;
-
-    if (data && data.length !== this.pixelCount) {
-      throw new Error('Invalid bitmap data');
-    }
-
-    this.#data = data ? new Uint8Array(data) : this.#createData();
+  constructor(data: BitmapData) {
+    this.#data = data;
   }
 
-  #createData(): Uint8Array {
-    return new Uint8Array(this.pixelCount);
+  getPixelValue(coords: Coords): boolean {
+    return this.#data.getValue(coords);
   }
 
-  #pointToIndex(p: Point): number {
-    const index = p.y * this.#width + p.x;
-    // Return -1 if invalid coords
-    return index < this.pixelCount ? index : -1;
+  setPixelValue(coords: Coords, value: boolean): void {
+    return this.#data.setValue(coords, value);
   }
 
-  #prepareCoords(coords: Point | number): number {
-    return coords instanceof Point ? this.#pointToIndex(coords) : coords;
-  }
-
-  #isValidIndex(index: number): boolean {
-    return index >= 0 && index < this.pixelCount;
-  }
-
-  getPixelValue(coords: Point | number): boolean {
-    const index = this.#prepareCoords(coords);
-    return this.#isValidIndex(index) ? !!this.#data[index] : false;
-  }
-
-  setPixelValue(coords: Point | number, value: boolean): void {
-    const index = this.#prepareCoords(coords);
-    if (this.#isValidIndex(index)) {
-      this.#data[index] = Number(value);
-    }
-  }
-
-  invertPixelValue(coords: Point | number): void {
-    const index = this.#prepareCoords(coords);
-    if (this.#isValidIndex(index)) {
-      this.#data[index] = Number(!this.#data[index]);
-    }
+  invertPixelValue(coords: Coords): void {
+    this.#data.setValue(coords, !this.#data.getValue(coords));
   }
 
   findFillPixelsArea(area?: Area): Area | null {
@@ -105,12 +73,14 @@ export class Bitmap {
   }
 
   copy(area: Area): Bitmap {
-    const bitmap = new Bitmap(area.width, area.height);
+    const bitmap = Bitmap.create(area.width, area.height);
+
     area.forEach((p) => {
       const pixelValue = this.getPixelValue(p);
       const absPoint = p.minus(area.minPoint);
       bitmap.setPixelValue(absPoint, pixelValue);
     });
+
     return bitmap;
   }
 
@@ -127,21 +97,19 @@ export class Bitmap {
     if (fillPixelsArea) {
       bitmap = this.copy(fillPixelsArea);
       // Crop bitmap
-      if (bitmap.#width > width || bitmap.#height > height) {
+      if (bitmap.width > width || bitmap.height > height) {
         bitmap = bitmap.copy(
           Area.fromRectangle(
             0,
             0,
-            bitmap.#width > width ? width : bitmap.#width,
-            bitmap.#height > height ? height : bitmap.#height,
+            bitmap.width > width ? width : bitmap.width,
+            bitmap.height > height ? height : bitmap.height,
           ),
         );
       }
     }
 
-    this.#width = width;
-    this.#height = height;
-    this.#data = this.#createData();
+    this.#data = BitmapData.create(width, height);
 
     if (bitmap) {
       this.paste(new Point(0, 0), bitmap);
@@ -159,52 +127,30 @@ export class Bitmap {
     if (area) {
       return this.copy(area).isEmpty();
     }
-    return this.#data.every((v) => !v);
+    return this.#data.isEmpty();
   }
 
   clear(area?: Area): void {
-    if (area && area.isNotEqual(this.area)) {
-      area.forEach((p) => {
-        this.setPixelValue(p, false);
-      });
-    } else {
-      this.#data.fill(0);
-    }
+    (area ?? this.area).forEach((p) => {
+      this.setPixelValue(p, false);
+    });
   }
 
   invertColor(area?: Area): void {
-    if (area && area.isNotEqual(this.area)) {
-      area.forEach((p) => {
-        this.invertPixelValue(p);
-      });
-    } else {
-      this.#data = this.#data.map((val) => Number(!val));
-    }
+    (area ?? this.area).forEach((p) => {
+      this.invertPixelValue(p);
+    });
   }
 
   clone(): Bitmap {
-    return new Bitmap(this.#width, this.#height, this.#data);
-  }
-
-  toXBitMap(bitOrder: BitOrder): Uint8Array {
-    const result = new Uint8Array(Math.ceil(this.pixelCount / UINT8_BITS_PER_ELEMENT));
-    for (let dstIndex = 0; dstIndex < result.length; dstIndex++) {
-      for (let bit = 0; bit < UINT8_BITS_PER_ELEMENT; bit++) {
-        const srcIndex = dstIndex * UINT8_BITS_PER_ELEMENT + bit;
-        if (this.getPixelValue(srcIndex)) {
-          const resBit = bitOrder === BitOrder.BigEndian ? bit : UINT8_BITS_PER_ELEMENT - 1 - bit;
-          result[dstIndex] |= 1 << resBit;
-        }
-      }
-    }
-    return result;
+    return new Bitmap(this.#data.clone());
   }
 
   toJSON(): BitmapJSON {
     return {
-      width: this.#width,
-      height: this.#height,
-      data: toArrayOfNumber(this.#data),
+      width: this.width,
+      height: this.height,
+      data: Array.from(this.#data.array),
     };
   }
 }
