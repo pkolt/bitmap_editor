@@ -53,6 +53,7 @@ const clearCache = async () => {
 
 addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
+    // Sometimes, it don't update application without timeout.
     clearCache().then(() => setTimeout(() => self.skipWaiting(), 1000));
   }
 });
