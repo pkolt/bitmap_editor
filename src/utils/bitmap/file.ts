@@ -31,13 +31,13 @@ export const parseBitmapFile = (data: string): BitmapEntity[] => {
     const obj = JSON.parse(data);
     if (isBitmapFile(obj)) {
       entities = obj.entities;
-      if (obj.version === 1) {
+      if (obj.version <= 1) {
         entities = entities.map((it) => ({
           ...it,
           data: toArrayOfNumber(toArrayOfBoolLegacy(it.data)),
         }));
       }
-      if (obj.version === 2) {
+      if (obj.version <= 2) {
         entities = entities.map((it) => ({
           ...it,
           data: it.data.map(reverseBits),
