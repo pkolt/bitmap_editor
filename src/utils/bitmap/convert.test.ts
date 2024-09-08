@@ -1,5 +1,5 @@
 import { expect, test } from '@/test-utils';
-import { getArrayOfNumLength, binaryToNumber, numberToBinary, toArrayOfNumber, toArrayOfBool } from './convert';
+import { getArrayOfNumLength, binaryToNumber, numberToBinary, toArrayOfNumber, reverseBits } from './convert';
 
 const test1ArrayOfBool = Uint8Array.from([1, 1, 0, 1]);
 const test1ArrayOfNumber = [13]; // [size, elem1, elem2, ..., elemN]
@@ -9,9 +9,6 @@ const test2ArrayOfNumber = [4294901760, 65535];
 
 const test3ArrayOfBool = new Uint8Array(16).fill(1);
 const test3ArrayOfNumber = [65535];
-
-const test4ArrayOfNumber = [65535]; // Wrong size (valid size 16-32)
-const test5ArrayOfNumber = [65535]; // Valid size
 
 test('getArrayOfNumLength', () => {
   expect(getArrayOfNumLength(1)).toBe(1);
@@ -45,10 +42,7 @@ test('toArrayOfNumber', () => {
   expect(toArrayOfNumber(test3ArrayOfBool)).toEqual(test3ArrayOfNumber);
 });
 
-test('toArrayOfBool', () => {
-  expect(toArrayOfBool(test1ArrayOfNumber, test1ArrayOfBool.length)).toEqual(test1ArrayOfBool);
-  expect(toArrayOfBool(test2ArrayOfNumber, test2ArrayOfBool.length)).toEqual(test2ArrayOfBool);
-  expect(toArrayOfBool(test3ArrayOfNumber, test3ArrayOfBool.length)).toEqual(test3ArrayOfBool);
-  expect(() => toArrayOfBool(test4ArrayOfNumber, 33)).toThrowError();
-  expect(() => toArrayOfBool(test5ArrayOfNumber, 32)).not.toThrowError();
+test('reverseBits', () => {
+  expect([208432911, 4042272816].map(reverseBits)).toEqual([4042667568, 202116879]);
+  expect([4086534384, 252694479].map(reverseBits)).toEqual([252299727, 4092850416]);
 });

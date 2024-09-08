@@ -12,17 +12,17 @@ test('constructor', () => {
   const p1 = new Point(0, 0);
   const p2 = new Point(10, 20);
   const area = new Area(p1, p2);
-  expect(area.minX).toBe(0);
-  expect(area.minY).toBe(0);
-  expect(area.maxX).toBe(10);
-  expect(area.maxY).toBe(20);
+  expect(area.minPoint.x).toBe(0);
+  expect(area.minPoint.y).toBe(0);
+  expect(area.maxPoint.x).toBe(10);
+  expect(area.maxPoint.y).toBe(20);
 });
 
 test('fromRectangle', () => {
-  expect(area.minX).toBe(0);
-  expect(area.minY).toBe(0);
-  expect(area.maxX).toBe(9); //! Why 9?
-  expect(area.maxY).toBe(19); //! Why 9?
+  expect(area.minPoint.x).toBe(0);
+  expect(area.minPoint.y).toBe(0);
+  expect(area.maxPoint.x).toBe(9); //! Why 9?
+  expect(area.maxPoint.y).toBe(19); //! Why 9?
 });
 
 test('minPoint', () => {

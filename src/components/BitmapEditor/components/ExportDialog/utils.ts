@@ -1,5 +1,6 @@
 import { Area } from '@/utils/bitmap/Area';
 import { Bitmap } from '@/utils/bitmap/Bitmap';
+import { XBitmapSerializer } from '@/utils/bitmap/XBitmapSerializer';
 import { BitOrder, BitmapEntity } from '@/utils/bitmap/types';
 
 export enum SizeFormat {
@@ -41,7 +42,7 @@ export const exportBitmap = ({
 }: ExportBitmapParams): string => {
   const srcBitmap = Bitmap.fromJSON(bitmapEntity);
   const bitmap = area ? srcBitmap.copy(area) : srcBitmap;
-  const xBitMap = bitmap.toXBitMap(bitOrder);
+  const xBitMap = XBitmapSerializer.serialize(bitmap, bitOrder);
   const width = bitmap.width;
   const height = bitmap.height;
 

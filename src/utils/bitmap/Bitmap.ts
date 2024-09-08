@@ -1,72 +1,52 @@
-import { UINT8_BITS_PER_ELEMENT } from './constants';
-import { toArrayOfBool, toArrayOfNumber } from './convert';
-import { BitOrder, BitmapJSON } from './types';
+import { BitmapJSON, Coords } from './types';
 import { Area } from './Area';
 import { Point } from './Point';
+import { BitmapData } from './BitmapData';
 
 export class Bitmap {
-  width: number;
-  height: number;
-  _data: Uint8Array;
+  #data: BitmapData;
+
+  static create(width: number, height: number): Bitmap {
+    const data = BitmapData.create(width, height);
+    return new Bitmap(data);
+  }
 
   static fromJSON({ width, height, data }: BitmapJSON): Bitmap {
-    return new Bitmap(width, height, toArrayOfBool(data, width * height));
+    const array = Uint32Array.from(data);
+    const bitmapData = new BitmapData(width, height, array);
+    return new Bitmap(bitmapData);
   }
 
-  constructor(width: number, height: number, data?: Uint8Array) {
-    this.width = width;
-    this.height = height;
-
-    if (data && data.length !== this.getPixelCount()) {
-      throw new Error('Invalid bitmap data');
-    }
-
-    this._data = data ? new Uint8Array(data) : this.#createData();
+  get data() {
+    return this.#data;
   }
 
-  #createData(): Uint8Array {
-    return new Uint8Array(this.getPixelCount());
+  get width() {
+    return this.#data.width;
   }
 
-  #pointToIndex(p: Point): number {
-    const index = p.y * this.width + p.x;
-    // Return -1 if invalid coords
-    return index < this.getPixelCount() ? index : -1;
+  get height() {
+    return this.#data.height;
   }
 
-  #prepareCoords(coords: Point | number): number {
-    return coords instanceof Point ? this.#pointToIndex(coords) : coords;
-  }
-
-  #isValidIndex(index: number): boolean {
-    return index >= 0 && index < this.getPixelCount();
-  }
-
-  getPixelCount(): number {
-    return this.width * this.height;
-  }
-
-  getArea(): Area {
+  get area(): Area {
     return Area.fromRectangle(0, 0, this.width, this.height);
   }
 
-  getPixelValue(coords: Point | number): boolean {
-    const index = this.#prepareCoords(coords);
-    return this.#isValidIndex(index) ? !!this._data[index] : false;
+  constructor(data: BitmapData) {
+    this.#data = data;
   }
 
-  setPixelValue(coords: Point | number, value: boolean): void {
-    const index = this.#prepareCoords(coords);
-    if (this.#isValidIndex(index)) {
-      this._data[index] = Number(value);
-    }
+  getPixelValue(coords: Coords): boolean {
+    return this.#data.getValue(coords);
   }
 
-  invertPixelValue(coords: Point | number): void {
-    const index = this.#prepareCoords(coords);
-    if (this.#isValidIndex(index)) {
-      this._data[index] = Number(!this._data[index]);
-    }
+  setPixelValue(coords: Coords, value: boolean): void {
+    return this.#data.setValue(coords, value);
+  }
+
+  invertPixelValue(coords: Coords): void {
+    this.#data.setValue(coords, !this.#data.getValue(coords));
   }
 
   findFillPixelsArea(area?: Area): Area | null {
@@ -75,7 +55,7 @@ export class Bitmap {
     let minY: number | null = null;
     let maxY: number | null = null;
 
-    (area ?? this.getArea()).forEach((p) => {
+    (area ?? this.area).forEach((p) => {
       const isFill = this.getPixelValue(p);
       if (!isFill) {
         return;
@@ -93,17 +73,19 @@ export class Bitmap {
   }
 
   copy(area: Area): Bitmap {
-    const bitmap = new Bitmap(area.width, area.height);
+    const bitmap = Bitmap.create(area.width, area.height);
+
     area.forEach((p) => {
       const pixelValue = this.getPixelValue(p);
       const absPoint = p.minus(area.minPoint);
       bitmap.setPixelValue(absPoint, pixelValue);
     });
+
     return bitmap;
   }
 
   paste(offset: Point, bitmap: Bitmap): void {
-    bitmap.getArea().forEach((p) => {
+    bitmap.area.forEach((p) => {
       const value = bitmap.getPixelValue(p);
       this.setPixelValue(p.plus(offset), value);
     });
@@ -127,9 +109,7 @@ export class Bitmap {
       }
     }
 
-    this.width = width;
-    this.height = height;
-    this._data = this.#createData();
+    this.#data = BitmapData.create(width, height);
 
     if (bitmap) {
       this.paste(new Point(0, 0), bitmap);
@@ -137,7 +117,7 @@ export class Bitmap {
   }
 
   move(offset: Point, area?: Area): void {
-    const moveArea = this.findFillPixelsArea(area) ?? this.getArea();
+    const moveArea = this.findFillPixelsArea(area) ?? this.area;
     const bitmap = this.copy(moveArea);
     this.clear(area);
     this.paste(moveArea.minPoint.plus(offset), bitmap);
@@ -147,52 +127,30 @@ export class Bitmap {
     if (area) {
       return this.copy(area).isEmpty();
     }
-    return this._data.every((v) => !v);
+    return this.#data.isEmpty();
   }
 
   clear(area?: Area): void {
-    if (area && area.isNotEqual(this.getArea())) {
-      area.forEach((p) => {
-        this.setPixelValue(p, false);
-      });
-    } else {
-      this._data.fill(0);
-    }
+    (area ?? this.area).forEach((p) => {
+      this.setPixelValue(p, false);
+    });
   }
 
   invertColor(area?: Area): void {
-    if (area && area.isNotEqual(this.getArea())) {
-      area.forEach((p) => {
-        this.invertPixelValue(p);
-      });
-    } else {
-      this._data = this._data.map((val) => Number(!val));
-    }
+    (area ?? this.area).forEach((p) => {
+      this.invertPixelValue(p);
+    });
   }
 
   clone(): Bitmap {
-    return new Bitmap(this.width, this.height, this._data);
-  }
-
-  toXBitMap(bitOrder: BitOrder): Uint8Array {
-    const result = new Uint8Array(Math.ceil(this.getPixelCount() / UINT8_BITS_PER_ELEMENT));
-    for (let dstIndex = 0; dstIndex < result.length; dstIndex++) {
-      for (let bit = 0; bit < UINT8_BITS_PER_ELEMENT; bit++) {
-        const srcIndex = dstIndex * UINT8_BITS_PER_ELEMENT + bit;
-        if (this.getPixelValue(srcIndex)) {
-          const resBit = bitOrder === BitOrder.BigEndian ? bit : UINT8_BITS_PER_ELEMENT - 1 - bit;
-          result[dstIndex] |= 1 << resBit;
-        }
-      }
-    }
-    return result;
+    return new Bitmap(this.#data.clone());
   }
 
   toJSON(): BitmapJSON {
     return {
       width: this.width,
       height: this.height,
-      data: toArrayOfNumber(this._data),
+      data: Array.from(this.#data.array),
     };
   }
 }

@@ -3,24 +3,21 @@ import { Bitmap } from './Bitmap';
 import { bitmapEntity } from '@/test-utils/bitmaps';
 import { Point } from './Point';
 import { Area } from './Area';
-import { BitOrder } from './types';
+import { BitmapData } from './BitmapData';
 
-const bitmapData8x8 = new Uint8Array([
-  1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1,
-  1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1,
-]);
+const bitmapArray = new Uint32Array(bitmapEntity.data);
 
 let bitmap: Bitmap;
 
 beforeEach(() => {
-  bitmap = new Bitmap(8, 8, bitmapData8x8);
+  bitmap = new Bitmap(new BitmapData(8, 8, bitmapArray));
 });
 
 test('fromJSON', () => {
   const bitmapFromJson = Bitmap.fromJSON(bitmapEntity);
   expect(bitmapFromJson.width).toBe(8);
   expect(bitmapFromJson.height).toBe(8);
-  expect(bitmapFromJson._data).toEqual(bitmapData8x8);
+  expect(bitmapFromJson.data.array).toEqual(bitmapArray);
 });
 
 test('constructor', () => {
@@ -28,22 +25,14 @@ test('constructor', () => {
   expect(bitmap.height).toBe(8);
 });
 
-test('constructor (invalid data)', () => {
-  expect(() => new Bitmap(8, 10, bitmapData8x8)).toThrowError();
-});
-
-test('getPixelCount', () => {
-  expect(bitmap.getPixelCount()).toBe(64);
-});
-
 test('getArea', () => {
-  const area = bitmap.getArea();
+  const area = bitmap.area;
   expect(area.width).toBe(8);
   expect(area.height).toBe(8);
-  expect(area.minX).toBe(0);
-  expect(area.minY).toBe(0);
-  expect(area.maxX).toBe(7); //! Why 7?
-  expect(area.maxY).toBe(7); //! Why 7?
+  expect(area.minPoint.x).toBe(0);
+  expect(area.minPoint.y).toBe(0);
+  expect(area.maxPoint.x).toBe(7); //! Why 7?
+  expect(area.maxPoint.y).toBe(7); //! Why 7?
 });
 
 test('getPixelValue', () => {
@@ -51,7 +40,7 @@ test('getPixelValue', () => {
   expect(bitmap.getPixelValue(new Point(0, 0))).toBeTruthy();
   expect(bitmap.getPixelValue(4)).toBeFalsy();
   expect(bitmap.getPixelValue(new Point(0, 4))).toBeFalsy();
-  expect(bitmap.getPixelValue(bitmap.getPixelCount() + 10)).toBeFalsy(); // invalid value (no throw error)
+  expect(bitmap.getPixelValue(74)).toBeFalsy(); // invalid value (no throw error)
 });
 
 test('setPixelValue', () => {
@@ -67,7 +56,7 @@ test('invertPixelValue', () => {
 });
 
 test('findFillPixelsArea (2x2)', () => {
-  bitmap = new Bitmap(8, 8);
+  bitmap = Bitmap.create(8, 8);
   bitmap.setPixelValue(new Point(0, 0), true);
   bitmap.setPixelValue(new Point(0, 1), true);
   bitmap.setPixelValue(new Point(1, 0), true);
@@ -76,14 +65,14 @@ test('findFillPixelsArea (2x2)', () => {
   expect(area).not.toBeNull();
   expect(area?.width).toBe(2);
   expect(area?.height).toBe(2);
-  expect(area?.minX).toBe(0);
-  expect(area?.minY).toBe(0);
-  expect(area?.maxX).toBe(1); //! Why 1?
-  expect(area?.maxY).toBe(1); //! Why 1?
+  expect(area?.minPoint.x).toBe(0);
+  expect(area?.minPoint.y).toBe(0);
+  expect(area?.maxPoint.x).toBe(1); //! Why 1?
+  expect(area?.maxPoint.y).toBe(1); //! Why 1?
 });
 
 test('findFillPixelsArea (empty)', () => {
-  bitmap = new Bitmap(8, 8);
+  bitmap = Bitmap.create(8, 8);
   const area = bitmap.findFillPixelsArea();
   expect(area).toBeNull();
 });
@@ -94,8 +83,8 @@ test('copy', () => {
 });
 
 test('paste', () => {
-  bitmap.paste(new Point(3, 3), new Bitmap(4, 4));
-  expect(bitmap.toJSON()).toMatchObject({ width: 8, height: 8, data: [4086534368, 16892367] });
+  bitmap.paste(new Point(3, 3), Bitmap.create(4, 4));
+  expect(bitmap.toJSON()).toMatchObject({ width: 8, height: 8, data: [118081999, 4085481600] });
 });
 
 test('resize (8x8 -> 16x16)', () => {
@@ -103,7 +92,7 @@ test('resize (8x8 -> 16x16)', () => {
   expect(bitmap.toJSON()).toMatchObject({
     width: 16,
     height: 16,
-    data: [4076901120, 2415980544, 251662080, 3472936704, 0, 0, 0, 0],
+    data: [13172943, 983049, 15728880, 15925491, 0, 0, 0, 0],
   });
 });
 
@@ -121,19 +110,19 @@ test('move', () => {
   expect(bitmap.toJSON()).toMatchObject({
     width: 8,
     height: 8,
-    data: [15588, 3829138371],
+    data: [658243584, 3284155431],
   });
 });
 
 test('isEmpty', () => {
   expect(bitmap.isEmpty()).toBeFalsy();
-  expect(new Bitmap(8, 8).isEmpty()).toBeTruthy();
+  expect(Bitmap.create(4, 4).isEmpty()).toBeTruthy();
 });
 
 test('isEmpty (with area)', () => {
   const area = Area.fromRectangle(0, 0, 4, 4);
   expect(bitmap.isEmpty(area)).toBeFalsy();
-  expect(new Bitmap(8, 8).isEmpty(area)).toBeTruthy();
+  expect(Bitmap.create(8, 8).isEmpty(area)).toBeTruthy();
 });
 
 test('clear', () => {
@@ -151,16 +140,17 @@ test('clear (with area)', () => {
   expect(bitmap.toJSON()).toMatchObject({
     width: 8,
     height: 8,
-    data: [50528256, 252694479],
+    data: [49344, 4092850416],
   });
 });
 
 test('invertColor', () => {
   bitmap.invertColor();
+
   expect(bitmap.toJSON()).toMatchObject({
     width: 8,
     height: 8,
-    data: [208432911, 4042272816],
+    data: [4042667568, 202116879],
   });
 });
 
@@ -170,7 +160,7 @@ test('invertColor (with area)', () => {
   expect(bitmap.toJSON()).toMatchObject({
     width: 8,
     height: 8,
-    data: [56844288, 252694479],
+    data: [444096, 4092850416],
   });
 });
 
@@ -180,16 +170,6 @@ test('clone', () => {
   expect(copied.toJSON()).toMatchObject({
     width: 8,
     height: 8,
-    data: [4086534384, 252694479],
+    data: [252299727, 4092850416],
   });
-});
-
-test('toXBitMap (BE)', () => {
-  const arr = bitmap.toXBitMap(BitOrder.BigEndian);
-  expect(arr).toEqual(new Uint8Array([207, 201, 9, 15, 240, 240, 243, 243]));
-});
-
-test('toXBitMap (LE)', () => {
-  const arr = bitmap.toXBitMap(BitOrder.LittleEndian);
-  expect(arr).toEqual(new Uint8Array([243, 147, 144, 240, 15, 15, 207, 207]));
 });

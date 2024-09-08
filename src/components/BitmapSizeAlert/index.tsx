@@ -1,4 +1,4 @@
-import { UINT8_BITS_PER_ELEMENT } from '@/utils/bitmap/constants';
+import { UINT8_BITS } from '@/utils/bitmap/constants';
 import Alert from 'react-bootstrap/Alert';
 
 interface BitmapSizeAlertProps {
@@ -11,12 +11,12 @@ export const BitmapSizeAlert = ({ bitmapWidth, className }: BitmapSizeAlertProps
     typeof bitmapWidth !== 'number' ||
     Number.isNaN(bitmapWidth) ||
     bitmapWidth <= 0 ||
-    bitmapWidth % UINT8_BITS_PER_ELEMENT === 0
+    bitmapWidth % UINT8_BITS === 0
   ) {
     return null;
   }
-  const leftValue = Math.floor(bitmapWidth / 8) * UINT8_BITS_PER_ELEMENT;
-  const rightValue = Math.ceil(bitmapWidth / 8) * UINT8_BITS_PER_ELEMENT;
+  const leftValue = Math.floor(bitmapWidth / 8) * UINT8_BITS;
+  const rightValue = Math.ceil(bitmapWidth / 8) * UINT8_BITS;
   return (
     <Alert variant="danger" className={className} dismissible>
       <div className="d-flex gap-1">

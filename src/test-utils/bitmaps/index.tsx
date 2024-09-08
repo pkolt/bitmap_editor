@@ -5,7 +5,7 @@ export const bitmapEntity: BitmapEntity = {
   name: 'Test',
   createdAt: Date.now(),
   updatedAt: Date.now(),
-  data: [4086534384, 252694479],
+  data: [252299727, 4092850416],
   width: 8,
   height: 8,
   favorite: false,

@@ -11,7 +11,7 @@ export const convertCanvasToBitmap = (
   threshold: number,
   invertColor: boolean,
 ): Bitmap | null => {
-  const bitmap = new Bitmap(canvas.width, canvas.height);
+  const bitmap = Bitmap.create(canvas.width, canvas.height);
   const imageData = canvasCtx.getImageData(0, 0, canvas.width, canvas.height);
   const length = imageData.data.length / 4;
   for (let i = 0; i < length; i++) {

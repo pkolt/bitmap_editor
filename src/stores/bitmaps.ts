@@ -1,4 +1,4 @@
-import { toArrayOfNumber } from '@/utils/bitmap/convert';
+import { reverseBits, toArrayOfNumber } from '@/utils/bitmap/convert';
 import { toArrayOfBoolLegacy } from '@/utils/bitmap/convert_legacy';
 import { BitmapEntity } from '@/utils/bitmap/types';
 import { DateTime } from 'luxon';
@@ -36,9 +36,9 @@ export const useBitmapsStore = create<BitmapsState>()(
     }),
     {
       name: 'bitmaps',
-      version: 4, // a migration will be triggered if the version in the storage mismatches this one
+      version: 5, // a migration will be triggered if the version in the storage mismatches this one
       migrate: (persistedState, version) => {
-        if (version === 1) {
+        if (version <= 1) {
           // if the stored value is in version 0, we convert data
           // ...
           const persistedStateV1 = persistedState as BitmapsState;
@@ -50,7 +50,8 @@ export const useBitmapsStore = create<BitmapsState>()(
             })),
           };
         }
-        if (version === 2) {
+
+        if (version <= 2) {
           const persistedStateV2 = persistedState as BitmapsState;
           return {
             ...persistedStateV2,
@@ -60,7 +61,8 @@ export const useBitmapsStore = create<BitmapsState>()(
             })),
           };
         }
-        if (version === 3) {
+
+        if (version <= 3) {
           type BitmapEntityV3 = Omit<BitmapEntity, 'favorite'>;
           const persistedStateV3 = persistedState as Omit<BitmapsState, 'bitmaps'> & { bitmaps: BitmapEntityV3[] };
           return {
@@ -71,6 +73,18 @@ export const useBitmapsStore = create<BitmapsState>()(
             })),
           };
         }
+
+        if (version <= 4) {
+          const persistedStateV4 = persistedState as BitmapsState;
+          return {
+            ...persistedStateV4,
+            bitmaps: persistedStateV4.bitmaps.map((it) => ({
+              ...it,
+              data: it.data.map(reverseBits),
+            })),
+          };
+        }
+
         return persistedState as BitmapsState;
       },
     },
