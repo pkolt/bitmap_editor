@@ -1,8 +1,8 @@
 import { Point } from './Point';
 
 export enum BitOrder {
-  BigEndian = 'BE', // MSB (Most Significant Byte) or BE (Big-Endian)
-  LittleEndian = 'LE', // LSB (Least Significant Byte) or LE (Little-Endian)
+  MSB = 'MSB',
+  LSB = 'LSB',
 }
 
 export interface BitmapJSON {

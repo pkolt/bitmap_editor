@@ -17,6 +17,7 @@ export enum DataFormat {
 export enum Platform {
   Arduino = 'arduino',
   Clang = 'clang',
+  Pico = 'pico',
 }
 
 interface ExportBitmapParams {
@@ -29,6 +30,119 @@ interface ExportBitmapParams {
   progmem: boolean;
   area?: Area;
 }
+
+interface PlatformExportParams {
+  nameLower: string;
+  nameUpper: string;
+  width: number;
+  height: number;
+  dataArray: string;
+  sizeFormat: SizeFormat;
+  progmem: boolean;
+}
+
+const exportForArduino = ({
+  nameLower,
+  nameUpper,
+  width,
+  height,
+  dataArray,
+  sizeFormat,
+  progmem,
+}: PlatformExportParams): string => {
+  const headerName = `${nameUpper}_H`;
+  const uint8 = 'const unsigned char';
+  const varType = `static ${uint8}`;
+  const progMem = progmem ? ' PROGMEM' : '';
+
+  const includesBlock = progmem ? '#include <avr/pgmspace.h>' : '';
+
+  const sizeBlock = [
+    sizeFormat === SizeFormat.Comments && `/* width: ${width}, height: ${height} */`,
+    sizeFormat === SizeFormat.Variables &&
+      `${uint8} ${nameLower}_width = ${width};\n${uint8} ${nameLower}_height = ${height};`,
+    sizeFormat === SizeFormat.Defines && `#define ${nameUpper}_WIDTH ${width}\n#define ${nameUpper}_HEIGHT ${height}`,
+  ]
+    .filter(Boolean)
+    .join('\n');
+
+  return `
+// ${nameLower}.h
+#ifndef ${headerName}
+#define ${headerName}
+${includesBlock}
+
+${sizeBlock}
+
+${varType}${progMem} ${nameLower}[] = { ${dataArray} };
+
+#endif // ${headerName}
+`
+    .replace(/^\n/, '')
+    .replace(/\n$/, '');
+};
+
+const exportForClang = ({
+  nameLower,
+  nameUpper,
+  width,
+  height,
+  dataArray,
+  sizeFormat,
+  progmem,
+}: PlatformExportParams): string => {
+  const headerName = `${nameUpper}_H`;
+  const uint8 = 'const uint8_t';
+  const varType = uint8;
+  const progMem = progmem ? ' PROGMEM' : '';
+
+  const includesBlock = ['#include <stdint.h>', progmem && '#include <avr/pgmspace.h>'].filter(Boolean).join('\n');
+
+  const sizeBlock = [
+    sizeFormat === SizeFormat.Comments && `/* width: ${width}, height: ${height} */`,
+    sizeFormat === SizeFormat.Variables &&
+      `${uint8} ${nameLower}_width = ${width};\n${uint8} ${nameLower}_height = ${height};`,
+    sizeFormat === SizeFormat.Defines && `#define ${nameUpper}_WIDTH ${width}\n#define ${nameUpper}_HEIGHT ${height}`,
+  ]
+    .filter(Boolean)
+    .join('\n');
+
+  return `
+// ${nameLower}.h
+#ifndef ${headerName}
+#define ${headerName}
+${includesBlock}
+
+${sizeBlock}
+
+${varType}${progMem} ${nameLower}[] = { ${dataArray} };
+
+#endif // ${headerName}
+`
+    .replace(/^\n/, '')
+    .replace(/\n$/, '');
+};
+
+const exportForPico = ({ nameLower, nameUpper, width, height, dataArray }: PlatformExportParams): string => {
+  const headerName = `${nameUpper}_H`;
+  const includesBlock = ['#include <stdint.h>', '#include "bitmap.h"'].filter(Boolean).join('\n');
+  return `
+// ${nameLower}.h
+#ifndef ${headerName}
+#define ${headerName}
+${includesBlock}
+
+const bitmap_t ${nameLower} = {
+  .width = ${width},
+  .height = ${height},
+  .data = (uint8_t[]){${dataArray}}
+};
+
+#endif // ${headerName}
+`
+    .replace(/^\n/, '')
+    .replace(/\n$/, '');
+};
 
 export const exportBitmap = ({
   name,
@@ -43,12 +157,10 @@ export const exportBitmap = ({
   const srcBitmap = Bitmap.fromJSON(bitmapEntity);
   const bitmap = area ? srcBitmap.copy(area) : srcBitmap;
   const xBitMap = XBitmapSerializer.serialize(bitmap, bitOrder);
-  const width = bitmap.width;
-  const height = bitmap.height;
+  const { width, height } = bitmap;
 
   const nameLower = name.replace(/[^\w]/gi, '_').toLowerCase();
   const nameUpper = nameLower.toUpperCase();
-  const headerName = `${nameUpper}_H`;
 
   const dataArray = Array.from(xBitMap)
     .map((value) =>
@@ -56,36 +168,25 @@ export const exportBitmap = ({
     )
     .join(', ');
 
-  const uint8 = platform === Platform.Arduino ? 'const unsigned char' : 'const uint8_t';
-  const varType = platform === Platform.Arduino ? `static ${uint8}` : uint8;
-  const progMem = progmem ? ' PROGMEM' : '';
+  const params: PlatformExportParams = {
+    nameLower,
+    nameUpper,
+    width,
+    height,
+    dataArray,
+    sizeFormat,
+    progmem,
+  };
 
-  const includesBlock = [platform === Platform.Clang && '#include <stdint.h>', progmem && '#include <avr/pgmspace.h>']
-    .filter(Boolean)
-    .join('\n');
-
-  const sizeBlock = [
-    sizeFormat === SizeFormat.Comments && `/* width: ${width}, height: ${height} */`,
-    sizeFormat === SizeFormat.Variables &&
-      `${uint8} ${nameLower}_width = ${width};\n${uint8} ${nameLower}_height = ${height};`,
-    sizeFormat === SizeFormat.Defines && `#define ${nameUpper}_WIDTH ${width}\n#define ${nameUpper}_HEIGHT ${height}`,
-  ]
-    .filter(Boolean)
-    .join('\n');
-
-  const output = `
-// ${nameLower}.h
-#ifndef ${headerName}
-#define ${headerName}
-${includesBlock}
-
-${sizeBlock}
-
-${varType}${progMem} ${nameLower}[] = { ${dataArray} };
-
-#endif // ${headerName}
-`
-    .replace(/^\n/, '')
-    .replace(/\n$/, '');
-  return output;
+  switch (platform) {
+    case Platform.Arduino:
+      return exportForArduino(params);
+    case Platform.Clang:
+      return exportForClang(params);
+    case Platform.Pico:
+      return exportForPico(params);
+    default:
+      // Should not be reachable
+      return '';
+  }
 };
