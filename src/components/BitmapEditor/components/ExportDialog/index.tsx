@@ -83,13 +83,13 @@ export const ExportDialog = ({ bitmapId, area, onClose }: ExportDialogProps): JS
               <div className="text-nowrap">{t('Bit order')}</div>
               <div className="d-flex flex-wrap gap-3">
                 <CheckBox
-                  label="MSB-first"
+                  label="MSB-first (Adafruit)"
                   value={BitOrder.MSB}
                   type="radio"
                   {...register('bitOrder', { required: true })}
                 />
                 <CheckBox
-                  label="LSB-first"
+                  label="LSB-first (U8g2, Pico)"
                   value={BitOrder.LSB}
                   type="radio"
                   {...register('bitOrder', { required: true })}
