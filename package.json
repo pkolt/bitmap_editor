@@ -35,7 +35,7 @@
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
     "bootstrap": "^5.3.3",
-    "bootstrap-icons": "^1.11.3",
+    "bootstrap-icons": "^1.13.1",
     "classnames": "^2.5.1",
     "file-saver": "^2.0.5",
     "i18next": "^23.14.0",
