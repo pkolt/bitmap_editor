@@ -29,7 +29,7 @@ interface FormValues {
 
 const defaultValues: FormValues = {
   name: '',
-  bitOrder: BitOrder.BigEndian,
+  bitOrder: BitOrder.MSB,
   sizeFormat: SizeFormat.Defines,
   dataFormat: DataFormat.Hex,
   platform: Platform.Arduino,
@@ -83,14 +83,14 @@ export const ExportDialog = ({ bitmapId, area, onClose }: ExportDialogProps): JS
               <div className="text-nowrap">{t('Bit order')}</div>
               <div className="d-flex flex-wrap gap-3">
                 <CheckBox
-                  label="Big-endian (U8g2)"
-                  value={BitOrder.BigEndian}
+                  label="MSB-first"
+                  value={BitOrder.MSB}
                   type="radio"
                   {...register('bitOrder', { required: true })}
                 />
                 <CheckBox
-                  label="Little-endian (Adafruit)"
-                  value={BitOrder.LittleEndian}
+                  label="LSB-first"
+                  value={BitOrder.LSB}
                   type="radio"
                   {...register('bitOrder', { required: true })}
                 />

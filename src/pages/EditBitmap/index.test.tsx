@@ -82,7 +82,7 @@ test('export bitmap', async () => {
   const inputName = screen.getByLabelText('Name');
   await userEvent.clear(inputName);
   await userEvent.type(inputName, 'Sun');
-  await userEvent.click(screen.getByLabelText('Little-endian (Adafruit)'));
+  await userEvent.click(screen.getByLabelText('MSB-first'));
   await userEvent.click(screen.getByLabelText('Bin'));
   await userEvent.click(screen.getByLabelText('Variables'));
   await userEvent.click(screen.getByLabelText('C language'));
