@@ -114,30 +114,34 @@ export const ExportDialog = ({ bitmapId, area, onClose }: ExportDialogProps): JS
                 />
               </div>
             </div>
-            <hr className="m-0" />
-            <div className="d-flex gap-3">
-              <div className="text-nowrap">{t('Size format')}</div>
-              <div className="d-flex flex-wrap gap-3">
-                <CheckBox
-                  label={t('Variables')}
-                  value={SizeFormat.Variables}
-                  type="radio"
-                  {...register('sizeFormat', { required: true })}
-                />
-                <CheckBox
-                  label={t('Comments')}
-                  value={SizeFormat.Comments}
-                  type="radio"
-                  {...register('sizeFormat', { required: true })}
-                />
-                <CheckBox
-                  label={t('Defines')}
-                  value={SizeFormat.Defines}
-                  type="radio"
-                  {...register('sizeFormat', { required: true })}
-                />
-              </div>
-            </div>
+            {formValues.platform !== Platform.Pico && (
+              <>
+                <hr className="m-0" />
+                <div className="d-flex gap-3">
+                  <div className="text-nowrap">{t('Size format')}</div>
+                  <div className="d-flex flex-wrap gap-3">
+                    <CheckBox
+                      label={t('Variables')}
+                      value={SizeFormat.Variables}
+                      type="radio"
+                      {...register('sizeFormat', { required: true })}
+                    />
+                    <CheckBox
+                      label={t('Comments')}
+                      value={SizeFormat.Comments}
+                      type="radio"
+                      {...register('sizeFormat', { required: true })}
+                    />
+                    <CheckBox
+                      label={t('Defines')}
+                      value={SizeFormat.Defines}
+                      type="radio"
+                      {...register('sizeFormat', { required: true })}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
             <hr className="m-0" />
             <div className="d-flex gap-3">
               <div>{t('Platform')}</div>
@@ -153,9 +157,17 @@ export const ExportDialog = ({ bitmapId, area, onClose }: ExportDialogProps): JS
                 type="radio"
                 {...register('platform', { required: true })}
               />
+              <CheckBox
+                label={t('RP Pico')}
+                value={Platform.Pico}
+                type="radio"
+                {...register('platform', { required: true })}
+              />
             </div>
             <hr className="m-0" />
-            <CheckBox label={t('Include PROGMEM (AVR)')} {...register('progmem', { required: true })} />
+            {formValues.platform !== Platform.Pico && (
+              <CheckBox label={t('Include PROGMEM (AVR)')} {...register('progmem', { required: true })} />
+            )}
             <textarea className="form-control" rows={10} value={exportCode} readOnly />
           </form>
         </FormProvider>
