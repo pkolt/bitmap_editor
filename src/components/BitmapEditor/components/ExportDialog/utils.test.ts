@@ -109,15 +109,13 @@ describe('BitmapEditor/ExportDialog/utils', () => {
       });
 
       expect(result).toContain('// testbitmap.h');
-      expect(result).toContain('#ifndef TESTBITMAP_H');
-      expect(result).toContain('#define TESTBITMAP_H');
+      expect(result).toContain('#pragma once');
       expect(result).toContain('#include <stdint.h>');
       expect(result).toContain('#include "bitmap.h"');
       expect(result).toContain('const bitmap_t testbitmap = {');
       expect(result).toContain('.width = 8,');
       expect(result).toContain('.height = 8,');
       expect(result).toContain(`.data = (uint8_t[]){${expectedDataHex}}`);
-      expect(result).toContain('#endif // TESTBITMAP_H');
     });
   });
 
