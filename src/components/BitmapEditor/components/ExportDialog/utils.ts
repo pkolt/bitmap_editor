@@ -123,13 +123,12 @@ ${varType}${progMem} ${nameLower}[] = { ${dataArray} };
     .replace(/\n$/, '');
 };
 
-const exportForPico = ({ nameLower, nameUpper, width, height, dataArray }: PlatformExportParams): string => {
-  const headerName = `${nameUpper}_H`;
+const exportForPico = ({ nameLower, width, height, dataArray }: PlatformExportParams): string => {
   const includesBlock = ['#include <stdint.h>', '#include "bitmap.h"'].filter(Boolean).join('\n');
   return `
 // ${nameLower}.h
-#ifndef ${headerName}
-#define ${headerName}
+#pragma once
+
 ${includesBlock}
 
 const bitmap_t ${nameLower} = {
@@ -137,8 +136,6 @@ const bitmap_t ${nameLower} = {
   .height = ${height},
   .data = (uint8_t[]){${dataArray}}
 };
-
-#endif // ${headerName}
 `
     .replace(/^\n/, '')
     .replace(/\n$/, '');
