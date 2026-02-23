@@ -1,6 +1,6 @@
 import { useBitmapsStore } from '@/stores/bitmaps';
 import { DataFormat, Platform, SizeFormat, exportBitmap } from './utils';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { CheckBox } from '@/components/CheckBox';
 import { Input } from '@/components/Input';
@@ -46,9 +46,19 @@ export const ExportDialog = ({ bitmapId, area, onClose }: ExportDialogProps): JS
     defaultValues: { ...defaultValues, name: bitmapEntity?.name ?? '' },
   });
 
-  const { register, handleSubmit, watch } = methods;
+  const { register, handleSubmit, watch, setValue } = methods;
 
   const formValues = watch();
+  const prevPlatformRef = useRef(formValues.platform);
+
+  // Auto-select Pico-friendly bit order only when switching into RP Pico platform.
+  useEffect(() => {
+    if (prevPlatformRef.current !== Platform.Pico && formValues.platform === Platform.Pico) {
+      setValue('bitOrder', BitOrder.LSB);
+    }
+    prevPlatformRef.current = formValues.platform;
+  }, [formValues.platform, setValue]);
+
   const exportCode = useMemo<string>(
     () => (bitmapEntity ? exportBitmap({ bitmapEntity, area, ...formValues }) : ''),
     [area, bitmapEntity, formValues],

@@ -93,6 +93,28 @@ test('export bitmap', async () => {
   expect(spy).toHaveBeenCalledWith(exportCode);
 });
 
+test('select pico sets LSB bit order automatically', async () => {
+  const { userEvent } = await setupTest();
+  const exportButton = screen.getByText('Export to C');
+  expect(exportButton).toBeEnabled();
+  await userEvent.click(exportButton);
+
+  const msbRadio = screen.getByLabelText('MSB-first (Adafruit)');
+  const lsbRadio = screen.getByLabelText('LSB-first (U8g2, Pico)');
+  const picoRadio = screen.getByLabelText('RP Pico');
+
+  await userEvent.click(msbRadio);
+  expect((msbRadio as HTMLInputElement).checked).toBeTruthy();
+  expect((lsbRadio as HTMLInputElement).checked).toBeFalsy();
+
+  await userEvent.click(picoRadio);
+  expect((lsbRadio as HTMLInputElement).checked).toBeTruthy();
+
+  await userEvent.click(msbRadio);
+  expect((msbRadio as HTMLInputElement).checked).toBeTruthy();
+  expect((lsbRadio as HTMLInputElement).checked).toBeFalsy();
+});
+
 test('grid settings', async () => {
   const { userEvent, stores } = await setupTest();
   const gridButton = screen.getByText('Grid');
